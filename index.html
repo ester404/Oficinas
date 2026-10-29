@@ -146,7 +146,7 @@ td.name::before{content:"";display:inline-block;width:6px;height:6px;border-radi
 @media (prefers-reduced-motion:no-preference){.btn,.month button,.tabs button,.more{transition:background .15s,border-color .15s}}
 
 /* ===== layout de sistema: menu lateral + área de trabalho ===== */
-.app{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:100vh}
+.app{display:grid;grid-template-columns:224px minmax(0,1fr);min-height:100vh}
 .side{background:linear-gradient(180deg,var(--green) 0%,var(--green-2) 100%);color:#fff;display:flex;flex-direction:column;gap:22px;padding:24px 16px;position:sticky;top:0;height:100vh}
 .side-brand{display:flex;align-items:center;gap:10px;padding:0 8px}
 .side-brand img{width:40px;height:auto;filter:drop-shadow(0 2px 4px rgba(0,0,0,.35))}
@@ -316,6 +316,56 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .add .btn{height:42px;display:flex;align-items:center;gap:6px}
 .add .btn span{font-size:1.15rem;line-height:1}
 @media (max-width:720px){.det td{padding-left:16px}.tbl-top{padding:16px}.prog{min-width:0;width:100%}}
+
+/* ===== seletor de mês ===== */
+.mpick{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:6px 8px 6px 14px}
+.mpick label{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mpick select{font:700 .95rem var(--body);color:var(--green);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;cursor:pointer}
+.mpick select:focus{outline:2px solid var(--green);outline-offset:1px}
+@media (max-width:860px){.topbar .mpick{width:100%}.mpick select:first-of-type{flex:1}}
+/* ===== financeiro ===== */
+#v-fin:not([hidden]){display:grid;gap:18px}
+.fin-ofs{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+.fo{display:grid;gap:3px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;font:inherit;color:var(--ink);box-shadow:var(--shadow);border-left:4px solid #C9C0B8}
+.fo b{font-size:.84rem;letter-spacing:.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fo small{font-size:.72rem;color:var(--muted)}
+.fo span{font-size:.8rem;font-weight:700}
+.fo.on{border-color:var(--green);border-left-color:var(--green);box-shadow:0 0 0 2px rgba(15,59,54,.15),var(--shadow)}
+.fo.neg{border-left-color:var(--red)}
+.fo:not(.neg):has(.fpos){border-left-color:#1D7A4A}
+.fpos,.tpos{color:#1D7A4A} .fneg,.tneg{color:var(--red)} .fz{color:#A39A92}
+.fin .banner{margin-bottom:16px}
+.fstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:18px}
+.fstats div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:4px}
+.fstats small{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.fstats b{font-family:var(--serif);font-size:1.25rem;color:var(--green);font-variant-numeric:tabular-nums}
+.fstats .big.pos{background:#E8F3EE;border-color:#BCD7CE} .fstats .big.pos b{color:#1D7A4A}
+.fstats .big.neg{background:#FBEDEA;border-color:#F1CFC9} .fstats .big.neg b{color:var(--red)}
+.veh th{background:#FAF8F6;font-size:.66rem;padding:11px 6px}
+.veh td{padding:8px 4px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.veh td.name,.veh th.name{padding-left:8px}
+.veh th{white-space:normal;line-height:1.25}
+.veh td.name::before{display:none}
+.veh tr.rpos td:first-child{box-shadow:inset 4px 0 0 #1D7A4A}
+.veh tr.rneg td{background:#FDF4F2}
+.veh tr.rneg td:first-child{box-shadow:inset 4px 0 0 var(--red)}
+.veh input{font:inherit;color:var(--ink);background:var(--input);border:1px solid var(--line);height:36px;border-radius:8px;font-size:.88rem}
+.veh .tx{width:86px;padding:0 10px;text-transform:uppercase;font-weight:700}
+.veh .tx.wide{width:136px;text-transform:none;font-weight:500}
+.mo{position:relative;display:inline-block}
+.mo span{position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:.72rem;color:#A39A92;pointer-events:none}
+.mo input{width:98px;padding:0 10px 0 30px;text-align:right}
+.veh input:focus{background:#fff;border-color:var(--green);box-shadow:0 0 0 3px rgba(15,59,54,.12);outline:none}
+.comp{display:grid;justify-items:center;gap:1px;white-space:normal;max-width:130px;text-align:center}
+.comp span{font-weight:700;font-size:.85rem} .comp small{font-size:.66rem;color:var(--muted)}
+.del{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer;display:grid;place-items:center;padding:0}
+.del svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.del:hover,.del.armed{color:#fff;background:var(--red);border-color:var(--red)}
+.veh tfoot td{background:#F4F7F5;border-top:2px dashed #CFE0D9;padding:12px 5px}
+.veh tfoot .btn{height:38px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.fmsg{margin-top:16px;padding:12px 16px;border-radius:10px;font-size:.9rem}
+.fmsg.pos{background:#E8F3EE;color:#155C38;border:1px solid #BCD7CE}
+.fmsg.neg{background:#FBEDEA;color:var(--red-dark);border:1px solid #F1CFC9}
 </style>
 </head>
 <body>
@@ -329,6 +379,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
     <nav class="tabs" role="tablist" aria-label="Seções">
       <button role="tab" id="t-mes" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Avaliação do mês</button>
       <button role="tab" id="t-hist" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Histórico</button>
+      <button role="tab" id="t-fin" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20M6 15h4"/></svg>Financeiro</button>
       <button role="tab" id="t-crit" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>Critérios</button>
     </nav>
     <div class="side-foot">Setor de Sinistros<br>Departamento de Notas<span>Uso interno</span></div>
@@ -340,11 +391,10 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
         <div class="crumb">Sinistros <span>›</span> Notas <span>›</span> <b>Ranking de Oficinas</b></div>
         <h1 id="pageTitle">Avaliação do mês</h1>
       </div>
-      <div class="month" role="group" aria-label="Mês">
-        <button id="prev" aria-label="Mês anterior">‹</button>
-        <div class="lbl" id="mlabel">—</div>
-        <button id="next" aria-label="Próximo mês">›</button>
-        <button class="now" id="today">Mês atual</button>
+      <div class="mpick" role="group" aria-label="Mês de referência">
+        <label for="selMes">Mês</label>
+        <select id="selMes"></select>
+        <select id="selAno" aria-label="Ano"></select>
       </div>
     </header>
 
@@ -387,6 +437,12 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
         <div class="keys"><span><i class="k Diamante"></i>Diamante</span><span><i class="k Ouro"></i>Ouro</span><span><i class="k Prata"></i>Prata</span><span><i class="k Bronze"></i>Bronze</span></div></div>
       <div class="evo" id="hbody"></div>
     </div>
+  </section>
+
+  <section id="v-fin" hidden>
+    <div class="fin-ofs" id="finOfs"></div>
+    <div class="panel fin" id="finPanel"></div>
+    <div class="status" id="fstatus"></div>
   </section>
 
   <section id="v-crit" hidden>
@@ -438,7 +494,7 @@ const IND=[["carros","Carros atendidos"],["refeitos","Carros refeitos"],["atraso
 const FIELDS=[...PTS.map(p=>p[0]),...IND.map(i=>i[0])];
 const $=id=>document.getElementById(id);
 const now=new Date(); const CUR=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0");
-let mes=CUR, oficinas=[], aval={}, ready=false, open=new Set();
+let mes=CUR, oficinas=[], aval={}, ready=false, open=new Set(), veic={}, selOf=null, veicOk=true;
 const pending={}, chain={}, timers={};
 
 function slug(n){return n.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,60)||("of-"+Date.now())}
@@ -454,9 +510,12 @@ const store = (SUPABASE_URL&&SUPABASE_KEY) ? {
   modo:"online",
   async get(t){const r=await fetch(SB+t+"?select=*",{headers:SB_H,cache:"no-store"});if(!r.ok)throw await sbErr(r);return r.json()},
   async load(){
-    const [of,av]=await Promise.all([this.get("oficinas"),this.get("avaliacoes")]);
-    return {oficinas:of,avaliacoes:av.map(row=>{const a={};for(const [js,db] of AV_MAP)a[js]=row[db];return a})};
+    const [of,av,ve]=await Promise.all([this.get("oficinas"),this.get("avaliacoes"),this.get("veiculos").catch(()=>null)]);
+    return {oficinas:of,avaliacoes:av.map(row=>{const a={};for(const [js,db] of AV_MAP)a[js]=row[db];return a}),
+      veiculos:ve&&ve.map(r=>({id:r.id,mes:r.mes,oficinaId:r.oficina_id,placa:r.placa,descricao:r.descricao,franquia:r.franquia,liquido:r.liquido,pecas:r.pecas,obs:r.obs,criadoEm:r.criado_em}))};
   },
+  saveVeh(v){return this.upsert("veiculos",{id:v.id,mes:v.mes,oficina_id:v.oficinaId,placa:v.placa||null,descricao:v.descricao||null,franquia:num(v.franquia),liquido:num(v.liquido),pecas:num(v.pecas),obs:v.obs||null,criado_em:v.criadoEm})},
+  async delVeh(id){const r=await fetch(SB+"veiculos?id=eq."+encodeURIComponent(id),{method:"DELETE",headers:SB_H});if(!r.ok)throw await sbErr(r)},
   async upsert(t,body){const r=await fetch(SB+t,{method:"POST",headers:Object.assign({"Prefer":"resolution=merge-duplicates,return=minimal"},SB_H),body:JSON.stringify(body)});if(!r.ok)throw await sbErr(r)},
   saveAval(d){const row={};for(const [js,db] of AV_MAP)row[db]=(d[js]===undefined||d[js]==="")?null:d[js];return this.upsert("avaliacoes",row)},
   saveOf(d){return this.upsert("oficinas",{id:d.id,nome:d.nome,ativa:d.ativa!==false,ordem:Number(d.ordem)||null})}
@@ -467,17 +526,23 @@ const store = (SUPABASE_URL&&SUPABASE_KEY) ? {
   write(j){try{localStorage.setItem(LS_KEY,JSON.stringify(j))}catch(e){throw new Error("não foi possível gravar no navegador")}},
   async load(){return this.read()},
   async saveAval(d){const j=this.read();j.avaliacoes=j.avaliacoes.filter(a=>a.key!==d.key);j.avaliacoes.push(d);this.write(j)},
-  async saveOf(d){const j=this.read();j.oficinas=j.oficinas.filter(o=>o.id!==d.id);j.oficinas.push(d);this.write(j)}
+  async saveOf(d){const j=this.read();j.oficinas=j.oficinas.filter(o=>o.id!==d.id);j.oficinas.push(d);this.write(j)},
+  async saveVeh(v){const j=this.read();j.veiculos=(j.veiculos||[]).filter(x=>x.id!==v.id);j.veiculos.push(v);this.write(j)},
+  async delVeh(id){const j=this.read();j.veiculos=(j.veiculos||[]).filter(x=>x.id!==id);this.write(j)}
 };
 
 function apply(j){
   oficinas=(j.oficinas||[]).filter(o=>o.ativa!==false&&String(o.ativa).toUpperCase()!=="FALSE").map(o=>({...o,id:String(o.id),nome:String(o.nome)}))
     .sort((a,b)=>(Number(a.ordem)||0)-(Number(b.ordem)||0)||a.nome.localeCompare(b.nome));
   aval={}; for(const a of (j.avaliacoes||[])) if(a&&a.key) aval[a.key]=a;
+  veicOk=j.veiculos!==null&&j.veiculos!==undefined||store.modo==="local";
+  const nv={}; for(const v of (j.veiculos||[])) if(v&&v.id) nv[v.id]=Object.assign({},v,vPending[v.id]||{}); 
+  for(const id in vPending) if(!nv[id]) nv[id]=vPending[id];
+  veic=nv;
 }
 async function refresh(first){
   try{const j=await store.load();apply(j);ready=true;
-    if(first)renderAll();else{syncInputs();renderHist()}
+    if(first)renderAll();else{syncInputs();renderHist();if(!$("finPanel").contains(document.activeElement))renderFin()}
     if(store.modo==="online")setStatus("Atualizado às "+hora());
   }catch(e){ if(first){ $("rows").innerHTML='<tr><td colspan="11" class="empty">Não foi possível carregar os dados. Confira o link do Apps Script e a internet, depois recarregue a página.</td></tr>'} setStatus("Falha ao atualizar ("+e.message+").")}
 }
@@ -492,12 +557,11 @@ function key(m,id){return m+"__"+id}
 function rec(m,id){return pending[key(m,id)]||aval[key(m,id)]}
 function esc(s){const d=document.createElement("div");d.textContent=s==null?"":String(s);return d.innerHTML}
 function hora(){return new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}
-function setStatus(t){$("status").textContent=t}
+function setStatus(t){$("status").textContent=t;const f=$("fstatus");if(f)f.textContent=t}
 
 // ---------- render: mês ----------
 function renderMonth(){
-  $("mlabel").textContent=label(mes);
-  $("today").hidden=mes===CUR;
+  syncPicker();
   const tb=$("rows");
   if(!oficinas.length){tb.innerHTML='<tr><td colspan="10" class="empty">'+(ready?'Nenhuma oficina cadastrada. Digite o nome abaixo e clique em “Adicionar oficina”.':'Carregando oficinas…')+'</td></tr>';renderComputed();return}
   let h="";
@@ -577,7 +641,7 @@ function renderHist(){
       '<div class="ostats"><div><b>'+(last??"—")+'</b><small>Última nota</small></div><div><b>'+(avg??"—")+'</b><small>Média 12 meses</small></div><div><b>'+(best??"—")+'</b><small>Melhor nota</small></div></div>'+
       '<div class="chart">'+bars+'</div></article>'}).join("");
 }
-function renderAll(){renderMonth();renderHist()}
+function renderAll(){renderMonth();renderHist();renderFin()}
 
 // ---------- gravação ----------
 function queueSave(id){
@@ -596,6 +660,86 @@ function queueSave(id){
     }).catch(e=>setStatus("Não foi possível salvar ("+e.message+"). Confira a internet e altere o campo de novo."));
   },700);
 }
+
+
+// ---------- financeiro ----------
+const vPending={}, vTimers={};
+const BRL=new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"});
+function money(v){return BRL.format(v||0)}
+function parseBRL(t){if(t==null)return null;t=String(t).replace(/R\$|\s/g,"");if(t==="")return null;if(t.includes(","))t=t.replace(/\./g,"").replace(",",".");const n=Number(t);return isNaN(n)?null:Math.round(n*100)/100}
+function fmtIn(v){v=num(v);return v==null?"":v.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})}
+function vehList(m,of){return Object.values(veic).filter(v=>v.mes===m&&v.oficinaId===of).sort((a,b)=>String(a.criadoEm||"").localeCompare(String(b.criadoEm||""))||String(a.id).localeCompare(String(b.id)))}
+function calcMonth(list,carryIn){
+  const rows=list.map(v=>{const fr=num(v.franquia)||0,lq=num(v.liquido)||0,pc=num(v.pecas)||0;return {v,fr,lq,pc,saldo:Math.round((lq+fr-pc)*100)/100,desc:0,pagar:0}});
+  let debt=carryIn+rows.reduce((a,r)=>a+(r.saldo<0?-r.saldo:0),0);const debtTotal=debt;
+  for(const r of rows){if(r.saldo>0){r.desc=Math.min(r.saldo,debt);debt=Math.round((debt-r.desc)*100)/100;r.pagar=Math.round((r.saldo-r.desc)*100)/100}}
+  const sum=k=>rows.reduce((a,r)=>a+r[k],0);
+  return {rows,carryIn,debtTotal,restante:Math.round(debt*100)/100,fr:sum("fr"),lq:sum("lq"),pc:sum("pc"),pagar:Math.round(sum("pagar")*100)/100};
+}
+function fin(m,of){
+  const ms=[...new Set(Object.values(veic).filter(v=>v.oficinaId===of&&v.mes<m).map(v=>v.mes))].sort();
+  let carry=0;for(const mm of ms)carry=calcMonth(vehList(mm,of),carry).restante;
+  return calcMonth(vehList(m,of),carry);
+}
+function renderFin(){
+  if(!$("finPanel"))return;
+  if(!oficinas.length){$("finOfs").innerHTML="";$("finPanel").innerHTML='<div class="empty">'+(ready?"Cadastre uma oficina na aba Avaliação do mês.":"Carregando…")+'</div>';return}
+  if(!selOf||!oficinas.some(o=>o.id===selOf))selOf=oficinas[0].id;
+  $("finOfs").innerHTML=oficinas.map(o=>{const r=fin(mes,o.id);const n=r.rows.length;
+    let st='<span class="fz">Sem veículos</span>';
+    if(r.restante>0)st='<span class="fneg">Devendo '+money(r.restante)+'</span>';else if(n||r.carryIn)st='<span class="fpos">A pagar '+money(r.pagar)+'</span>';
+    return '<button class="fo'+(o.id===selOf?' on':'')+(r.restante>0?' neg':'')+'" data-of="'+esc(o.id)+'"><b>'+esc(o.nome)+'</b><small>'+n+' veículo'+(n===1?'':'s')+'</small>'+st+'</button>'}).join("");
+  const o=oficinas.find(x=>x.id===selOf), r=fin(mes,selOf);
+  let h='<div class="phead"><div><h2>'+esc(o.nome)+'</h2><p class="psub">Veículos de '+label(mes)+'. Peças compradas são descontadas do valor líquido do reparo e da franquia.</p></div></div>';
+  if(!veicOk)h+='<div class="banner">A tabela de veículos ainda não existe no Supabase. Rode o arquivo <b>supabase-financeiro.sql</b> no SQL Editor (veja o LEIA-ME) e recarregue a página.</div>';
+  h+='<div class="fstats"><div><small>Líquido dos reparos</small><b>'+money(r.lq)+'</b></div><div><small>Franquias</small><b>'+money(r.fr)+'</b></div><div><small>Peças compradas</small><b class="tneg">− '+money(r.pc)+'</b></div>'+
+     (r.carryIn?'<div><small>Débito do mês anterior</small><b class="tneg">− '+money(r.carryIn)+'</b></div>':'')+
+     '<div class="'+(r.restante>0?'big neg':'big pos')+'"><small>'+(r.restante>0?'Oficina está devendo':'Total a pagar à oficina')+'</small><b>'+money(r.restante>0?r.restante:r.pagar)+'</b></div></div>';
+  h+='<div class="scroll"><table class="veh"><thead><tr><th class="name">Placa</th><th class="name">Veículo / sinistro</th><th>Franquia</th><th>Líquido do reparo</th><th>Peças compradas</th><th>Saldo do veículo</th><th>Compensação</th><th>A pagar</th><th><span class="sr">Excluir</span></th></tr></thead><tbody>';
+  if(!r.rows.length)h+='<tr><td colspan="9" class="empty">Nenhum veículo lançado para esta oficina em '+label(mes)+'. Use a linha abaixo para adicionar.</td></tr>';
+  for(const x of r.rows){const v=x.v,id=esc(v.id),neg=x.saldo<0;
+    const comp=neg?'<span class="tneg">Faltou '+money(-x.saldo)+'</span><small>descontado de outros veículos</small>':(x.desc>0?'<span class="tneg">− '+money(x.desc)+'</span><small>cobre débito de outro veículo</small>':'<span class="fz">—</span>');
+    h+='<tr class="'+(neg?'rneg':'rpos')+'" data-v="'+id+'">'+
+      '<td class="name"><input class="tx" data-vf="placa" value="'+esc(v.placa||"")+'" placeholder="Placa" aria-label="Placa"></td>'+
+      '<td class="name"><input class="tx wide" data-vf="descricao" value="'+esc(v.descricao||"")+'" placeholder="Modelo, nº do sinistro…" aria-label="Veículo"></td>'+
+      ['franquia','liquido','pecas'].map(k=>'<td><label class="mo"><span>R$</span><input inputmode="decimal" data-vf="'+k+'" value="'+fmtIn(v[k])+'" placeholder="0,00" aria-label="'+k+'"></label></td>').join("")+
+      '<td><b class="'+(neg?'tneg':'tpos')+'">'+money(x.saldo)+'</b></td><td class="comp">'+comp+'</td><td><b class="'+(x.pagar>0?'tpos':'fz')+'">'+money(x.pagar)+'</b></td>'+
+      '<td><button class="del" data-del="'+id+'" title="Excluir veículo" aria-label="Excluir veículo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 13h12l1-13M9 7V4h6v3"/></svg></button></td></tr>';
+  }
+  h+='</tbody><tfoot><tr class="addrow"><td class="name"><input class="tx" id="nvPlaca" placeholder="Placa" aria-label="Placa do novo veículo"></td><td class="name"><input class="tx wide" id="nvDesc" placeholder="Modelo, nº do sinistro…" aria-label="Descrição do novo veículo"></td>'+
+     '<td><label class="mo"><span>R$</span><input inputmode="decimal" id="nvFr" placeholder="0,00" aria-label="Franquia"></label></td><td><label class="mo"><span>R$</span><input inputmode="decimal" id="nvLq" placeholder="0,00" aria-label="Líquido do reparo"></label></td><td><label class="mo"><span>R$</span><input inputmode="decimal" id="nvPc" placeholder="0,00" aria-label="Peças compradas"></label></td>'+
+     '<td colspan="4"><button class="btn" id="nvAdd"><span aria-hidden="true">+</span> Adicionar veículo</button></td></tr></tfoot></table></div>';
+  if(r.restante>0)h+='<div class="fmsg neg"><b>A oficina ficou devendo '+money(r.restante)+'.</b> As peças compradas passaram do valor dos reparos e franquias deste mês. Esse valor será descontado automaticamente dos veículos do próximo mês.</div>';
+  else if(r.debtTotal>0)h+='<div class="fmsg pos"><b>Débito de '+money(r.debtTotal)+' compensado.</b> O valor que faltou'+(r.carryIn?' (incluindo o débito do mês anterior)':'')+' foi descontado de outros veículos desta oficina.</div>';
+  else if(r.rows.length)h+='<div class="fmsg pos"><b>Tudo certo.</b> Nenhum veículo ficou com saldo negativo.</div>';
+  $("finPanel").innerHTML=h;
+}
+function addVeh(){
+  const pl=$("nvPlaca").value.trim(),ds=$("nvDesc").value.trim(),fr=parseBRL($("nvFr").value),lq=parseBRL($("nvLq").value),pc=parseBRL($("nvPc").value);
+  if(!pl&&!ds){setStatus("Digite a placa ou a descrição do veículo.");$("nvPlaca").focus();return}
+  const v={id:"v"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),mes,oficinaId:selOf,placa:pl.toUpperCase(),descricao:ds,franquia:fr,liquido:lq,pecas:pc,criadoEm:new Date().toISOString()};
+  veic[v.id]=v;vPending[v.id]=v;renderFin();$("nvPlaca").focus();setStatus("Salvando…");
+  store.saveVeh(v).then(()=>{delete vPending[v.id];setStatus("Veículo salvo às "+hora())}).catch(e=>{setStatus("Não foi possível salvar o veículo ("+e.message+").")});
+}
+$("v-fin").addEventListener("click",e=>{
+  const fo=e.target.closest("[data-of]");if(fo){selOf=fo.dataset.of;renderFin();return}
+  if(e.target.closest("#nvAdd")){addVeh();return}
+  const d=e.target.closest("[data-del]");
+  if(d){if(d.dataset.armed!=="1"){d.dataset.armed="1";d.classList.add("armed");d.title="Clique de novo para excluir";setTimeout(()=>{if(d.isConnected){d.dataset.armed="";d.classList.remove("armed")}},4000);return}
+    const id=d.dataset.del;const old=veic[id];delete veic[id];delete vPending[id];renderFin();
+    store.delVeh(id).then(()=>setStatus("Veículo excluído.")).catch(er=>{veic[id]=old;renderFin();setStatus("Não foi possível excluir ("+er.message+").")})}
+});
+$("v-fin").addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.closest(".addrow")){e.preventDefault();addVeh()}});
+$("v-fin").addEventListener("change",e=>{
+  const el=e.target,f=el.dataset.vf;if(!f)return;const id=el.closest("tr").dataset.v;const v=veic[id];if(!v)return;
+  const val=(f==="placa"||f==="descricao")?(f==="placa"?el.value.trim().toUpperCase():el.value.trim()):parseBRL(el.value);
+  const nv=Object.assign({},v,{[f]:val});veic[id]=nv;vPending[id]=nv;
+  const focusId=document.activeElement&&document.activeElement.dataset?[document.activeElement.closest("tr")?.dataset.v,document.activeElement.dataset.vf]:null;
+  renderFin();
+  if(focusId&&focusId[0]){const t=document.querySelector('tr[data-v="'+focusId[0]+'"] [data-vf="'+focusId[1]+'"]');if(t)t.focus()}
+  setStatus("Salvando…");clearTimeout(vTimers[id]);
+  vTimers[id]=setTimeout(()=>{const body=vPending[id];if(!body)return;store.saveVeh(body).then(()=>{if(vPending[id]===body)delete vPending[id];setStatus("Salvo às "+hora())}).catch(er=>setStatus("Não foi possível salvar ("+er.message+")."))},400);
+});
 
 // ---------- eventos ----------
 $("rows").addEventListener("input",e=>{
@@ -619,12 +763,13 @@ $("addForm").addEventListener("submit",e=>{
   const o={id:slug(nome),nome,ativa:true,ordem:oficinas.length?Math.max(...oficinas.map(o=>Number(o.ordem)||0))+1:1};
   store.saveOf(o).then(()=>{oficinas.push(o);$("newName").value="";renderAll();setStatus(nome+" adicionada.")}).catch(e=>setStatus("Não foi possível adicionar ("+e.message+")."));
 });
-$("prev").onclick=()=>{mes=addMonth(mes,-1);renderAll()};
-$("next").onclick=()=>{mes=addMonth(mes,1);renderAll()};
-$("today").onclick=()=>{mes=CUR;renderAll()};
+(function(){const y=+CUR.slice(0,4);$("selMes").innerHTML=MESES.map((n,i)=>'<option value="'+String(i+1).padStart(2,"0")+'">'+n+'</option>').join("");
+  let o="";for(let a=2025;a<=y+2;a++)o+='<option value="'+a+'">'+a+'</option>';$("selAno").innerHTML=o})();
+function syncPicker(){const [y,m]=mes.split("-");if(!$("selAno").querySelector('option[value="'+y+'"]'))$("selAno").insertAdjacentHTML("beforeend",'<option value="'+y+'">'+y+'</option>');$("selMes").value=m;$("selAno").value=y}
+$("selMes").onchange=$("selAno").onchange=()=>{mes=$("selAno").value+"-"+$("selMes").value;renderAll()};
 $("v-hist").addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(b){mes=b.dataset.go;renderAll();tab("mes")}});
-function tab(n){for(const t of ["mes","hist","crit"]){$("t-"+t).setAttribute("aria-selected",t===n);$("v-"+t).hidden=t!==n}$("pageTitle").textContent={mes:"Avaliação do mês",hist:"Histórico",crit:"Critérios"}[n]}
-["mes","hist","crit"].forEach(t=>$("t-"+t).onclick=()=>tab(t));
+function tab(n){for(const t of ["mes","hist","fin","crit"]){$("t-"+t).setAttribute("aria-selected",t===n);$("v-"+t).hidden=t!==n}$("pageTitle").textContent={mes:"Avaliação do mês",hist:"Histórico",fin:"Financeiro",crit:"Critérios"}[n]}
+["mes","hist","fin","crit"].forEach(t=>$("t-"+t).onclick=()=>tab(t));
 
 if(store.modo==="local"){$("banner").hidden=false;$("banner").textContent="Modo local: as notas ficam salvas só neste computador e neste navegador. Para usar em vários computadores com os mesmos dados, configure o Supabase (passo 1 do LEIA-ME)."}
 document.querySelectorAll("[data-medal]").forEach(e=>e.innerHTML=medal(COR[e.dataset.medal],e.dataset.medal));
