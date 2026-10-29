@@ -18,6 +18,7 @@
   --shadow:0 1px 2px rgba(15,59,54,.06),0 6px 18px rgba(15,59,54,.07);
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 .wrap>*,#v-mes>*{min-width:0}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5}
 .gut{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
@@ -182,6 +183,85 @@ td.name::before{content:"";display:inline-block;width:6px;height:6px;border-radi
   .topbar .month{width:100%}
   .month .lbl{flex:1;min-width:0}
 }
+
+/* ===== painéis: histórico e critérios ===== */
+#v-hist:not([hidden]),#v-crit:not([hidden]){display:grid;gap:20px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:22px;min-width:0}
+.phead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:18px}
+.phead h2{font-size:1.35rem}
+.phead h2::after{content:"";display:block;width:28px;height:2px;background:var(--red);margin-top:8px}
+.psub{margin:8px 0 0;color:var(--muted);font-size:.88rem}
+h3{margin:0;font-size:.95rem;font-weight:700;color:var(--ink)}
+.rank{list-style:none;margin:0;padding:0;display:grid}
+.rank li{display:grid;grid-template-columns:44px minmax(120px,190px) minmax(80px,1fr) 44px 92px 64px;align-items:center;gap:12px;padding:10px 4px;border-bottom:1px solid var(--line)}
+.rank li:last-child{border-bottom:0}
+.rpos{font-family:var(--serif);font-weight:700;font-size:1.15rem;color:var(--muted);text-align:center}
+.rpos.top{color:#fff;background:var(--green);border-radius:50%;width:34px;height:34px;display:grid;place-items:center;font-size:.95rem;justify-self:center}
+.rname{font-weight:700;font-size:.9rem;letter-spacing:.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rbar{height:10px;background:var(--icon-bg);border-radius:99px;overflow:hidden}
+.rbar i{display:block;height:100%;border-radius:99px}
+i.Diamante,.k.Diamante{background:#2A9DB0} i.Ouro,.k.Ouro{background:#D4A21C} i.Prata,.k.Prata{background:#9AA3A6} i.Bronze,.k.Bronze{background:#B8642E} i.nil{background:#E3DDD7}
+.rval{font-family:var(--serif);font-weight:700;font-size:1.2rem;color:var(--green);text-align:right;font-variant-numeric:tabular-nums}
+.rank .badge{justify-self:start}
+.dl{font-size:.78rem;font-weight:700;color:var(--muted);white-space:nowrap}
+.dl.up{color:#1D7A4A} .dl.down{color:var(--red)}
+.rank li.rnone{display:block;color:var(--muted);font-size:.85rem;padding-top:14px}
+.rank li.rnone span{font-weight:700;color:var(--ink)}
+.rank li.empty{display:block}
+.keys{display:flex;flex-wrap:wrap;gap:12px;font-size:.78rem;color:var(--muted)}
+.keys span{display:flex;align-items:center;gap:6px}
+.k{display:inline-block;width:10px;height:10px;border-radius:3px}
+.evo{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.ocard{border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:14px;background:linear-gradient(180deg,#fff 0%,#FCFAF8 100%)}
+.ocard header{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ocard h3{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.badge.none{background:var(--icon-bg);color:var(--muted)}
+.ostats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ostats div{display:grid;gap:2px}
+.ostats b{font-family:var(--serif);font-size:1.35rem;color:var(--green);line-height:1}
+.ostats small{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.chart{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;align-items:end;height:84px;border-bottom:1px solid var(--line)}
+.col{display:grid;grid-template-rows:1fr auto;height:100%;padding:0;border:0;background:none;cursor:pointer;gap:3px}
+.col .bw{display:flex;align-items:flex-end;height:100%}
+.col i{display:block;width:100%;border-radius:3px 3px 0 0}
+.col em{font-style:normal;font-size:.62rem;color:var(--muted);text-align:center;line-height:1;padding-bottom:3px}
+.col:hover i{filter:brightness(1.12)}
+.col:last-child em{color:var(--red);font-weight:700}
+.stack{display:flex;height:46px;border-radius:10px;overflow:hidden;margin-bottom:18px}
+.seg{display:grid;place-items:center;color:#fff;font-weight:700;font-size:.9rem;border-right:2px solid #fff;min-width:0}
+.seg:last-child{border-right:0;color:var(--green)}
+.seg:nth-last-child(2){color:var(--green)}
+.ccards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.ccard{display:flex;gap:14px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:14px}
+.cpts{flex:none;width:58px;height:58px;border-radius:12px;background:var(--c);color:#fff;display:grid;place-content:center;text-align:center;font-family:var(--serif);font-size:1.4rem;font-weight:700;line-height:1}
+.ccard:nth-child(5) .cpts,.ccard:nth-child(6) .cpts{color:var(--green)}
+.cpts small{font-family:var(--body);font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-top:3px}
+.ccard p,.lcard p{margin:4px 0 0;color:var(--muted);font-size:.86rem}
+.scale{margin:4px 0 30px}
+.scale .bar{display:flex;height:34px;border-radius:10px;overflow:hidden}
+.scale .b{display:grid;place-items:center;font-size:.78rem;font-weight:700;border-right:2px solid #fff;min-width:0;overflow:hidden;white-space:nowrap}
+.scale .b:last-child{border-right:0}
+.b.Bronze{background:var(--bronze);color:var(--bronze-ink)} .b.Prata{background:var(--prata);color:var(--prata-ink)} .b.Ouro{background:var(--ouro);color:var(--ouro-ink)} .b.Diamante{background:var(--dia);color:var(--dia-ink)}
+.ticks{position:relative;height:18px;margin:6px 8px 0}
+.ticks span{position:absolute;transform:translateX(-50%);font-size:.74rem;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+.lcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.lcard{border:1px solid var(--line);border-radius:12px;padding:16px;border-top:4px solid}
+.lcard.Bronze{border-top-color:#B8642E} .lcard.Prata{border-top-color:#9AA3A6} .lcard.Ouro{border-top-color:#D4A21C} .lcard.Diamante{border-top-color:#2A9DB0;background:var(--green)}
+.lcard.Diamante h3{color:#fff} .lcard.Diamante p,.lcard.Diamante .range{color:rgba(255,255,255,.8)}
+.lhead{display:flex;align-items:center;gap:12px}
+.lhead .ic{flex:none;width:40px;height:40px;border-radius:50%;background:var(--icon-bg);display:grid;place-items:center}
+.lcard.Diamante .ic{background:#fff}
+.lhead .ic svg{width:22px;height:22px}
+.range{font-size:.78rem;font-weight:700;color:var(--red);margin-top:2px}
+.metas td{text-align:center}
+.metas td.name{text-align:left}
+.metas th{background:transparent}
+@media (max-width:720px){
+  .rank li{grid-template-columns:34px minmax(0,1fr) 40px;row-gap:6px}
+  .rank .rbar{grid-column:2/4;grid-row:2}
+  .rank .badge,.rank .dl{display:none}
+  .panel{padding:16px}
+}
 </style>
 </head>
 <body>
@@ -240,39 +320,40 @@ td.name::before{content:"";display:inline-block;width:6px;height:6px;border-radi
   </section>
 
   <section id="v-hist" hidden>
-    <div class="card">
-      <div class="scroll"><table class="hist"><thead id="hhead"></thead><tbody id="hbody"></tbody></table></div>
-      <div class="legend"><span class="badge Diamante">Diamante 90–100</span><span class="badge Ouro">Ouro 80–89</span><span class="badge Prata">Prata 65–79</span><span class="badge Bronze">Bronze abaixo de 65</span><span>Clique numa nota para abrir o mês.</span></div>
+    <div class="panel">
+      <div class="phead"><div><h2 id="rkTitle">Ranking do mês</h2><p class="psub">Oficinas ordenadas pela nota total. A seta compara com o mês anterior.</p></div></div>
+      <ol class="rank" id="rank"></ol>
+    </div>
+    <div class="panel">
+      <div class="phead"><div><h2>Evolução nos últimos 12 meses</h2><p class="psub">Cada barra é um mês. Clique numa barra para abrir aquele mês.</p></div>
+        <div class="keys"><span><i class="k Diamante"></i>Diamante</span><span><i class="k Ouro"></i>Ouro</span><span><i class="k Prata"></i>Prata</span><span><i class="k Bronze"></i>Bronze</span></div></div>
+      <div class="evo" id="hbody"></div>
     </div>
   </section>
 
-  <section id="v-crit" class="crit" hidden>
-    <div class="card"><h2>Pontos por critério</h2>
-      <table><tbody>
-        <tr><td>Qualidade do reparo</td><td>até 30</td><td>Sem retrabalho; sem reclamação de peças ou pintura</td></tr>
-        <tr><td>Prazo de entrega</td><td>até 20</td><td>Veículo entregue na data prometida ou antes</td></tr>
-        <tr><td>Satisfação do cliente</td><td>até 20</td><td>Notas e avaliações dos associados</td></tr>
-        <tr><td>Preço e orçamento</td><td>até 15</td><td>Orçamento final igual ao aprovado</td></tr>
-        <tr><td>Documentação</td><td>até 10</td><td>Notas fiscais e fotos enviadas rápido</td></tr>
-        <tr><td>Estrutura da oficina</td><td>até 5</td><td>Ferramentas, alinhamento, organização</td></tr>
-      </tbody></table>
+  <section id="v-crit" hidden>
+    <div class="panel">
+      <div class="phead"><div><h2>Como a nota é formada</h2><p class="psub">Seis critérios somam até 100 pontos por oficina, a cada mês.</p></div></div>
+      <div class="stack"><div class="seg" style="flex:30;background:#0F3B36" title="Qualidade do reparo: 30 pts"><span>30</span></div><div class="seg" style="flex:20;background:#1F5A52" title="Prazo de entrega: 20 pts"><span>20</span></div><div class="seg" style="flex:20;background:#2F7A6F" title="Satisfação do cliente: 20 pts"><span>20</span></div><div class="seg" style="flex:15;background:#5E9B90" title="Preço e orçamento: 15 pts"><span>15</span></div><div class="seg" style="flex:10;background:#8DB8AE" title="Documentação: 10 pts"><span>10</span></div><div class="seg" style="flex:5;background:#C3DCD5" title="Estrutura da oficina: 5 pts"><span>5</span></div></div>
+      <div class="ccards"><div class="ccard"><div class="cpts" style="--c:#0F3B36">30<small>pts</small></div><div><h3>Qualidade do reparo</h3><p>Sem retrabalho; sem reclamação de peças ou pintura</p></div></div><div class="ccard"><div class="cpts" style="--c:#1F5A52">20<small>pts</small></div><div><h3>Prazo de entrega</h3><p>Veículo entregue na data prometida ou antes</p></div></div><div class="ccard"><div class="cpts" style="--c:#2F7A6F">20<small>pts</small></div><div><h3>Satisfação do cliente</h3><p>Notas e avaliações dos associados</p></div></div><div class="ccard"><div class="cpts" style="--c:#5E9B90">15<small>pts</small></div><div><h3>Preço e orçamento</h3><p>Orçamento final igual ao aprovado, sem extras</p></div></div><div class="ccard"><div class="cpts" style="--c:#8DB8AE">10<small>pts</small></div><div><h3>Documentação</h3><p>Notas fiscais e fotos enviadas rápido</p></div></div><div class="ccard"><div class="cpts" style="--c:#C3DCD5">5<small>pts</small></div><div><h3>Estrutura da oficina</h3><p>Ferramentas, alinhamento e organização</p></div></div></div>
     </div>
-    <div class="card"><h2>Níveis e incentivos</h2>
-      <table><tbody>
-        <tr><td><span class="badge Diamante">Diamante</span></td><td>90–100</td><td>Prioridade total no envio de carros, pagamento rápido e destaque no app/site</td></tr>
-        <tr><td><span class="badge Ouro">Ouro</span></td><td>80–89</td><td>Envio frequente de carros e pagamento em prazo normal</td></tr>
-        <tr><td><span class="badge Prata">Prata</span></td><td>65–79</td><td>Volume moderado de serviços com acompanhamento mensal</td></tr>
-        <tr><td><span class="badge Bronze">Bronze</span></td><td>abaixo de 65</td><td>Menos serviços; 60 a 90 dias para melhorar ou ser descredenciada</td></tr>
-      </tbody></table>
+    <div class="panel">
+      <div class="phead"><div><h2>Níveis e incentivos</h2><p class="psub">A soma dos pontos define o nível da oficina no mês.</p></div></div>
+      <div class="scale">
+        <div class="bar"><div class="b Bronze" style="flex:65">Bronze</div><div class="b Prata" style="flex:15">Prata</div><div class="b Ouro" style="flex:10">Ouro</div><div class="b Diamante" style="flex:10">Diam.</div></div>
+        <div class="ticks"><span style="left:0">0</span><span style="left:65%">65</span><span style="left:80%">80</span><span style="left:90%">90</span><span style="left:100%">100</span></div>
+      </div>
+      <div class="lcards"><div class="lcard Bronze"><div class="lhead"><span class="ic" data-medal="Bronze"></span><div><h3>Bronze</h3><div class="range">abaixo de 65 pontos</div></div></div><p>Menos serviços direcionados; 60 a 90 dias para melhorar ou ser descredenciada</p></div><div class="lcard Prata"><div class="lhead"><span class="ic" data-medal="Prata"></span><div><h3>Prata</h3><div class="range">65 a 79 pontos</div></div></div><p>Volume moderado de serviços com acompanhamento mensal</p></div><div class="lcard Ouro"><div class="lhead"><span class="ic" data-medal="Ouro"></span><div><h3>Ouro</h3><div class="range">80 a 89 pontos</div></div></div><p>Envio frequente de carros e pagamento em prazo normal</p></div><div class="lcard Diamante"><div class="lhead"><span class="ic" data-medal="Diamante"></span><div><h3>Diamante</h3><div class="range">90 a 100 pontos</div></div></div><p>Prioridade total no envio de carros, pagamento rápido e destaque no app/site</p></div></div>
     </div>
-    <div class="card" style="grid-column:1/-1"><h2>Metas a cada 10 carros</h2>
-      <div class="scroll"><table>
-        <thead><tr><th class="name">Indicador</th><th>Bronze</th><th>Prata</th><th>Ouro</th><th>Diamante</th></tr></thead>
+    <div class="panel">
+      <div class="phead"><div><h2>Metas a cada 10 carros</h2><p class="psub">Referência do que cada nível exige na prática.</p></div></div>
+      <div class="scroll"><table class="metas">
+        <thead><tr><th class="name">Indicador</th><th><span class="badge Bronze">Bronze</span></th><th><span class="badge Prata">Prata</span></th><th><span class="badge Ouro">Ouro</span></th><th><span class="badge Diamante">Diamante</span></th></tr></thead>
         <tbody>
-          <tr><td>Carros com reparo refeito</td><td>máx. 1 em 10</td><td>máx. 1 em 20</td><td>quase zero</td><td>zero</td></tr>
-          <tr><td>Atrasos na entrega</td><td>até 2 em 10</td><td>até 1 em 10</td><td>quase sempre no dia</td><td>100% no prazo</td></tr>
-          <tr><td>Nota dos clientes (0–10)</td><td>mín. 5</td><td>mín. 7</td><td>mín. 8</td><td>9 ou 10</td></tr>
-          <tr><td>Aumento não planejado no orçamento</td><td>até 2 em 10</td><td>máx. 1 em 10</td><td>raro</td><td>nenhum</td></tr>
+          <tr><td class="name">Carros com reparo refeito</td><td>máx. 1 em 10</td><td>máx. 1 em 20</td><td>quase zero</td><td>zero</td></tr>
+          <tr><td class="name">Atrasos na entrega</td><td>até 2 em 10</td><td>até 1 em 10</td><td>quase sempre no dia</td><td>100% no prazo</td></tr>
+          <tr><td class="name">Nota dos clientes (0–10)</td><td>mín. 5</td><td>mín. 7</td><td>mín. 8</td><td>9 ou 10</td></tr>
+          <tr><td class="name">Aumento não planejado no orçamento</td><td>até 2 em 10</td><td>máx. 1 em 10</td><td>raro</td><td>nenhum</td></tr>
         </tbody>
       </table></div>
     </div>
@@ -410,15 +491,26 @@ function syncInputs(){
 // ---------- render: histórico ----------
 function renderHist(){
   const ms=[];for(let i=11;i>=0;i--)ms.push(addMonth(mes,-i));
-  $("hhead").innerHTML='<tr><th class="name">Oficina</th>'+ms.map(m=>{const [y,mm]=m.split("-");return '<th>'+ABR[+mm-1]+'<small>'+y+'</small></th>'}).join("")+'<th>Média</th><th>Nível atual</th></tr>';
-  if(!oficinas.length){$("hbody").innerHTML='<tr><td colspan="15" class="empty">'+(ready?'Nenhuma oficina cadastrada ainda.':'Carregando…')+'</td></tr>';return}
+  const prev=addMonth(mes,-1);
+  $("rkTitle").textContent="Ranking de "+label(mes);
+  if(!oficinas.length){$("rank").innerHTML='<li class="empty">'+(ready?'Nenhuma oficina cadastrada ainda.':'Carregando…')+'</li>';$("hbody").innerHTML="";return}
+  const rows=oficinas.map(o=>({o,t:total(rec(mes,o.id)),p:total(rec(prev,o.id))}));
+  const sc=rows.filter(r=>r.t!=null).sort((a,b)=>b.t-a.t), ns=rows.filter(r=>r.t==null);
+  let html=sc.map(r=>{const n=nivel(r.t);const pos=sc.findIndex(x=>x.t===r.t)+1;
+    let d='<span class="dl">—</span>';if(r.p!=null){const v=Math.round((r.t-r.p)*10)/10;d=v>0?'<span class="dl up">▲ '+v+'</span>':v<0?'<span class="dl down">▼ '+Math.abs(v)+'</span>':'<span class="dl">= 0</span>'}
+    return '<li><span class="rpos'+(pos<=3?' top':'')+'">'+pos+'º</span><span class="rname">'+esc(r.o.nome)+'</span><span class="rbar"><i class="'+n+'" style="width:'+Math.max(2,Math.min(100,r.t))+'%"></i></span><span class="rval">'+r.t+'</span><span class="badge '+n+'">'+n+'</span>'+d+'</li>'}).join("");
+  if(ns.length)html+='<li class="rnone"><span>Sem nota neste mês:</span> '+ns.map(r=>esc(r.o.nome)).join(" · ")+'</li>';
+  if(!sc.length&&!ns.length)html='<li class="empty">Nenhuma nota lançada.</li>';
+  $("rank").innerHTML=html;
   $("hbody").innerHTML=oficinas.map(o=>{
-    let vals=[],last=null;
-    const cells=ms.map(m=>{const t=total(rec(m,o.id));if(t!=null){vals.push(t);last=t}const n=nivel(t);
-      return '<td>'+(t==null?'<span style="color:var(--muted)">·</span>':'<button class="hcell '+n+'" data-go="'+m+'" title="'+label(m)+': '+n+'">'+t+'</button>')+'</td>'}).join("");
-    const avg=vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length*10)/10:null;const n=nivel(last);
-    return '<tr><td class="name">'+esc(o.nome)+'</td>'+cells+'<td><b>'+(avg??"—")+'</b></td><td>'+(n?'<span class="badge '+n+'">'+n+'</span>':'<span style="color:var(--muted)">Sem nota</span>')+'</td></tr>';
-  }).join("");
+    const vals=ms.map(m=>total(rec(m,o.id)));const f=vals.filter(v=>v!=null);
+    const last=[...vals].reverse().find(v=>v!=null);const n=nivel(last??null);
+    const avg=f.length?Math.round(f.reduce((a,b)=>a+b,0)/f.length*10)/10:null;const best=f.length?Math.max(...f):null;
+    const bars=ms.map((m,i)=>{const t=vals[i];const mm=+m.split("-")[1];
+      return '<button class="col" data-go="'+m+'" title="'+label(m)+(t==null?': sem nota':': '+t+' ('+nivel(t)+')')+'"><span class="bw"><i class="'+(t==null?'nil':nivel(t))+'" style="height:'+(t==null?4:Math.max(6,t))+'%"></i></span><em>'+ABR[mm-1][0]+'</em></button>'}).join("");
+    return '<article class="ocard"><header><h3>'+esc(o.nome)+'</h3>'+(n?'<span class="badge '+n+'">'+n+'</span>':'<span class="badge none">Sem nota</span>')+'</header>'+
+      '<div class="ostats"><div><b>'+(last??"—")+'</b><small>Última nota</small></div><div><b>'+(avg??"—")+'</b><small>Média 12 meses</small></div><div><b>'+(best??"—")+'</b><small>Melhor nota</small></div></div>'+
+      '<div class="chart">'+bars+'</div></article>'}).join("");
 }
 function renderAll(){renderMonth();renderHist()}
 
@@ -465,11 +557,12 @@ $("addForm").addEventListener("submit",e=>{
 $("prev").onclick=()=>{mes=addMonth(mes,-1);renderAll()};
 $("next").onclick=()=>{mes=addMonth(mes,1);renderAll()};
 $("today").onclick=()=>{mes=CUR;renderAll()};
-$("hbody").addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(b){mes=b.dataset.go;renderAll();tab("mes")}});
+$("v-hist").addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(b){mes=b.dataset.go;renderAll();tab("mes")}});
 function tab(n){for(const t of ["mes","hist","crit"]){$("t-"+t).setAttribute("aria-selected",t===n);$("v-"+t).hidden=t!==n}$("pageTitle").textContent={mes:"Avaliação do mês",hist:"Histórico",crit:"Critérios"}[n]}
 ["mes","hist","crit"].forEach(t=>$("t-"+t).onclick=()=>tab(t));
 
 if(store.modo==="local"){$("banner").hidden=false;$("banner").textContent="Modo local: as notas ficam salvas só neste computador e neste navegador. Para usar em vários computadores com os mesmos dados, configure o Supabase (passo 1 do LEIA-ME)."}
+document.querySelectorAll("[data-medal]").forEach(e=>e.innerHTML=medal(COR[e.dataset.medal],e.dataset.medal));
 renderAll();
 refresh(true);
 if(store.modo==="online"){setInterval(()=>{if(!document.hidden)refresh(false)},60000);window.addEventListener("focus",()=>refresh(false))}
