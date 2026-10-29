@@ -366,6 +366,35 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .fmsg{margin-top:16px;padding:12px 16px;border-radius:10px;font-size:.9rem}
 .fmsg.pos{background:#E8F3EE;color:#155C38;border:1px solid #BCD7CE}
 .fmsg.neg{background:#FBEDEA;color:var(--red-dark);border:1px solid #F1CFC9}
+
+/* ===== descredenciamento ===== */
+.tbl-right{display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px}
+.dcbtn{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 14px;border:1px solid var(--line);background:var(--surface);color:var(--red);border-radius:8px;font:700 .82rem var(--body);cursor:pointer}
+.dcbtn svg,.dcx svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.dcbtn span{background:var(--red);color:#fff;border-radius:99px;padding:1px 8px;font-size:.72rem}
+.dcbtn:hover,.dcbtn[aria-expanded="true"]{border-color:var(--red);background:#FBEDEA}
+.acts{white-space:nowrap}
+.acts button{display:inline-grid;vertical-align:middle;margin-left:4px}
+.dcx{width:34px;height:34px;padding:0;place-items:center;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:#B5ADA5;cursor:pointer}
+.dcx:hover{color:var(--red);border-color:var(--red);background:#FBEDEA}
+.dcrow td{background:#FDF4F2;padding:16px 22px 18px 70px;text-align:left}
+.dcform{display:grid;gap:12px;max-width:720px}
+.dchead{display:grid;gap:2px} .dchead b{color:var(--red-dark)} .dchead span{font-size:.82rem;color:var(--muted)}
+.dcform label{display:grid;gap:4px;font-size:.74rem;font-weight:700;color:var(--muted)}
+.dcform textarea{min-height:64px;resize:vertical;border-radius:8px;padding:10px;font:inherit;border:1px solid #F1CFC9;background:#fff}
+.dcacts{display:flex;flex-wrap:wrap;gap:8px}
+.btn.red{background:var(--red)} .btn.red:hover{background:var(--red-dark)}
+.btn.ghost2{background:var(--surface);color:var(--green);border:1px solid var(--line)} .btn.ghost2:hover{border-color:var(--green);background:var(--surface)}
+.dcpanel{border-bottom:1px solid var(--line);background:#FDF8F6;padding:16px 22px}
+.dclist-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.dclist-h span{font-size:.8rem;color:var(--muted)}
+.dclist{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.dclist li{display:grid;grid-template-columns:minmax(160px,220px) minmax(0,1fr) auto;gap:16px;align-items:center;background:#fff;border:1px solid var(--line);border-left:4px solid var(--red);border-radius:10px;padding:12px 14px}
+.dcl-name{display:grid;gap:2px} .dcl-name b{font-size:.88rem} .dcl-name small{font-size:.72rem;color:var(--muted)}
+.dcl-mot{margin:0;font-size:.86rem;color:var(--ink)} .dcl-mot span{display:block;font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin-bottom:2px}
+.dcl-empty{margin:0;color:var(--muted);font-size:.86rem}
+.fstats .big.zero{background:var(--bg)} .fstats .big.zero b{color:#A39A92}
+@media (max-width:720px){.dclist li{grid-template-columns:1fr}.dcrow td{padding-left:16px}.dcpanel{padding:14px 16px}}
 </style>
 </head>
 <body>
@@ -406,8 +435,12 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
     <div class="card">
       <div class="tbl-top">
         <div><h2 id="tblTitle">Lançamento de notas</h2><p class="psub">Digite os pontos de cada critério. O total, o nível e a posição são calculados sozinhos.</p></div>
-        <div class="prog"><div class="prog-txt"><b id="progN">0 de 0</b> oficinas com nota</div><div class="pbar"><i id="progBar"></i></div></div>
+        <div class="tbl-right">
+          <div class="prog"><div class="prog-txt"><b id="progN">0 de 0</b> oficinas com nota</div><div class="pbar"><i id="progBar"></i></div></div>
+          <button type="button" class="dcbtn" id="dcToggle" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>Descredenciadas <span id="dcCount">0</span></button>
+        </div>
       </div>
+      <div class="dcpanel" id="dcPanel" hidden></div>
       <div class="scroll">
         <table class="eval">
           <thead><tr>
@@ -494,7 +527,7 @@ const IND=[["carros","Carros atendidos"],["refeitos","Carros refeitos"],["atraso
 const FIELDS=[...PTS.map(p=>p[0]),...IND.map(i=>i[0])];
 const $=id=>document.getElementById(id);
 const now=new Date(); const CUR=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0");
-let mes=CUR, oficinas=[], aval={}, ready=false, open=new Set(), veic={}, selOf=null, veicOk=true;
+let descreds=[], mes=CUR, oficinas=[], aval={}, ready=false, open=new Set(), veic={}, selOf=null, veicOk=true;
 const pending={}, chain={}, timers={};
 
 function slug(n){return n.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,60)||("of-"+Date.now())}
@@ -512,13 +545,13 @@ const store = (SUPABASE_URL&&SUPABASE_KEY) ? {
   async load(){
     const [of,av,ve]=await Promise.all([this.get("oficinas"),this.get("avaliacoes"),this.get("veiculos").catch(()=>null)]);
     return {oficinas:of,avaliacoes:av.map(row=>{const a={};for(const [js,db] of AV_MAP)a[js]=row[db];return a}),
-      veiculos:ve&&ve.map(r=>({id:r.id,mes:r.mes,oficinaId:r.oficina_id,placa:r.placa,descricao:r.descricao,franquia:r.franquia,liquido:r.liquido,pecas:r.pecas,obs:r.obs,criadoEm:r.criado_em}))};
+      veiculos:ve&&ve.map(r=>({id:r.id,mes:r.mes,oficinaId:r.oficina_id,placa:r.placa,descricao:r.descricao,franquia:r.franquia,liquido:r.liquido,pecas:r.pecas,pago:r.pago,obs:r.obs,criadoEm:r.criado_em}))};
   },
-  saveVeh(v){return this.upsert("veiculos",{id:v.id,mes:v.mes,oficina_id:v.oficinaId,placa:v.placa||null,descricao:v.descricao||null,franquia:num(v.franquia),liquido:num(v.liquido),pecas:num(v.pecas),obs:v.obs||null,criado_em:v.criadoEm})},
+  saveVeh(v){return this.upsert("veiculos",{id:v.id,mes:v.mes,oficina_id:v.oficinaId,placa:v.placa||null,descricao:v.descricao||null,franquia:num(v.franquia),liquido:num(v.liquido),pecas:num(v.pecas),pago:num(v.pago),obs:v.obs||null,criado_em:v.criadoEm})},
   async delVeh(id){const r=await fetch(SB+"veiculos?id=eq."+encodeURIComponent(id),{method:"DELETE",headers:SB_H});if(!r.ok)throw await sbErr(r)},
   async upsert(t,body){const r=await fetch(SB+t,{method:"POST",headers:Object.assign({"Prefer":"resolution=merge-duplicates,return=minimal"},SB_H),body:JSON.stringify(body)});if(!r.ok)throw await sbErr(r)},
   saveAval(d){const row={};for(const [js,db] of AV_MAP)row[db]=(d[js]===undefined||d[js]==="")?null:d[js];return this.upsert("avaliacoes",row)},
-  saveOf(d){return this.upsert("oficinas",{id:d.id,nome:d.nome,ativa:d.ativa!==false,ordem:Number(d.ordem)||null})}
+  saveOf(d){const row={id:d.id,nome:d.nome,ativa:d.ativa!==false,ordem:Number(d.ordem)||null};if("descredenciada" in d){row.descredenciada=!!d.descredenciada;row.motivo=d.motivo||null;row.descredenciada_em=d.descredenciada_em||null}return this.upsert("oficinas",row)}
 } : {
   modo:"local",
   read(){try{const j=JSON.parse(localStorage.getItem(LS_KEY));if(j)return j}catch(e){}
@@ -532,8 +565,10 @@ const store = (SUPABASE_URL&&SUPABASE_KEY) ? {
 };
 
 function apply(j){
-  oficinas=(j.oficinas||[]).filter(o=>o.ativa!==false&&String(o.ativa).toUpperCase()!=="FALSE").map(o=>({...o,id:String(o.id),nome:String(o.nome)}))
+  const all=(j.oficinas||[]).filter(o=>o.ativa!==false&&String(o.ativa).toUpperCase()!=="FALSE").map(o=>({...o,id:String(o.id),nome:String(o.nome)}))
     .sort((a,b)=>(Number(a.ordem)||0)-(Number(b.ordem)||0)||a.nome.localeCompare(b.nome));
+  const isDc=o=>o.descredenciada===true||String(o.descredenciada).toUpperCase()==="TRUE";
+  oficinas=all.filter(o=>!isDc(o)); descreds=all.filter(isDc);
   aval={}; for(const a of (j.avaliacoes||[])) if(a&&a.key) aval[a.key]=a;
   veicOk=j.veiculos!==null&&j.veiculos!==undefined||store.modo==="local";
   const nv={}; for(const v of (j.veiculos||[])) if(v&&v.id) nv[v.id]=Object.assign({},v,vPending[v.id]||{}); 
@@ -570,7 +605,8 @@ function renderMonth(){
     const ini=o.nome.replace(/[^A-Z0-9 ]/gi,"").split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join("");
     h+='<tr data-id="'+esc(o.id)+'"><td class="name"><div class="who"><span class="av" data-c="av">'+esc(ini)+'</span><span class="nm">'+esc(o.nome)+'<small data-c="st">Pendente</small></span></div></td>';
     for(const [k,mx] of PTS) h+='<td><label class="pt"><input type="number" inputmode="decimal" min="0" max="'+mx+'" step="0.5" placeholder="–" data-f="'+k+'" id="i-'+esc(o.id)+'-'+k+'" aria-label="'+k+' '+esc(o.nome)+'" value="'+esc(a[k]??"")+'"><span>/'+mx+'</span></label></td>';
-    h+='<td class="tcell"><div class="total" data-c="total"></div><div class="tbar"><i data-c="tbar"></i></div></td><td class="res"><div data-c="nivel"></div><small class="pos" data-c="pos"></small></td><td><button class="more" data-more="'+esc(o.id)+'" aria-expanded="'+open.has(o.id)+'" aria-label="Detalhes de '+esc(o.nome)+'" title="Detalhes, indicadores e observações"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></td></tr>';
+    h+='<td class="tcell"><div class="total" data-c="total"></div><div class="tbar"><i data-c="tbar"></i></div></td><td class="res"><div data-c="nivel"></div><small class="pos" data-c="pos"></small></td><td class="acts"><button class="dcx" data-dc="'+esc(o.id)+'" title="Descredenciar oficina" aria-label="Descredenciar '+esc(o.nome)+'"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg></button><button class="more" data-more="'+esc(o.id)+'" aria-expanded="'+open.has(o.id)+'" aria-label="Detalhes de '+esc(o.nome)+'" title="Detalhes, indicadores e observações"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></td></tr>';
+    h+='<tr class="dcrow" data-dcrow="'+esc(o.id)+'" hidden><td colspan="10"><div class="dcform"><div class="dchead"><b>Descredenciar '+esc(o.nome)+'</b><span>A oficina sai da avaliação e do ranking. As notas e os valores antigos continuam salvos.</span></div><label>Motivo do descredenciamento<textarea id="dcm-'+esc(o.id)+'" placeholder="Ex.: atrasos recorrentes, reclamações de qualidade, nota Bronze por 3 meses…"></textarea></label><div class="dcacts"><button type="button" class="btn red" data-dcok="'+esc(o.id)+'">Confirmar descredenciamento</button><button type="button" class="btn ghost2" data-dcno="'+esc(o.id)+'">Cancelar</button></div></div></td></tr>';
     h+='<tr class="det" data-det="'+esc(o.id)+'"'+(open.has(o.id)?"":" hidden")+'><td colspan="10"><div class="grid">';
     for(const [k,l] of IND) h+='<label>'+l+'<input type="number" inputmode="decimal" min="0" '+(k==="notaCliente"?'max="10" step="0.1"':'step="1"')+' data-f="'+k+'" id="i-'+esc(o.id)+'-'+k+'" value="'+esc(a[k]??"")+'"></label>';
     h+='<label class="grow">Observações<textarea data-f="obs" id="i-'+esc(o.id)+'-obs">'+esc(a.obs||"")+'</textarea></label>';
@@ -641,7 +677,13 @@ function renderHist(){
       '<div class="ostats"><div><b>'+(last??"—")+'</b><small>Última nota</small></div><div><b>'+(avg??"—")+'</b><small>Média 12 meses</small></div><div><b>'+(best??"—")+'</b><small>Melhor nota</small></div></div>'+
       '<div class="chart">'+bars+'</div></article>'}).join("");
 }
-function renderAll(){renderMonth();renderHist();renderFin()}
+function colErr(er){return /column|coluna|schema/i.test(er.message)?"Falta atualizar o Supabase: rode o SQL de descredenciamento (veja a mensagem da Claude / LEIA-ME).":"Não foi possível salvar ("+er.message+")."}
+function fdate(d){if(!d)return"";const [y,m,dd]=String(d).slice(0,10).split("-");return dd+"/"+m+"/"+y}
+function renderDc(){
+  $("dcCount").textContent=descreds.length;
+  $("dcPanel").innerHTML='<div class="dclist-h"><h3>Oficinas descredenciadas</h3><span>'+descreds.length+' no total</span></div>'+(descreds.length?'<ul class="dclist">'+descreds.map(o=>'<li><div class="dcl-name"><b>'+esc(o.nome)+'</b><small>Descredenciada em '+fdate(o.descredenciada_em)+'</small></div><p class="dcl-mot"><span>Motivo</span>'+esc(o.motivo||"Sem motivo registrado")+'</p><button type="button" class="btn ghost2" data-rec="'+esc(o.id)+'">Recredenciar</button></li>').join("")+'</ul>':'<p class="dcl-empty">Nenhuma oficina descredenciada até agora.</p>');
+}
+function renderAll(){renderMonth();renderHist();renderFin();renderDc()}
 
 // ---------- gravação ----------
 function queueSave(id){
@@ -666,15 +708,15 @@ function queueSave(id){
 const vPending={}, vTimers={};
 const BRL=new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"});
 function money(v){return BRL.format(v||0)}
-function parseBRL(t){if(t==null)return null;t=String(t).replace(/R\$|\s/g,"");if(t==="")return null;if(t.includes(","))t=t.replace(/\./g,"").replace(",",".");const n=Number(t);return isNaN(n)?null:Math.round(n*100)/100}
+function parseBRL(t){if(t==null)return null;t=String(t).replace(/R\$|\s/g,"");if(t==="")return null;if(t.includes(","))t=t.replace(/\./g,"").replace(",",".");else if(/^-?\d{1,3}(\.\d{3})+$/.test(t))t=t.replace(/\./g,"");const n=Number(t);return isNaN(n)?null:Math.round(n*100)/100}
 function fmtIn(v){v=num(v);return v==null?"":v.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})}
 function vehList(m,of){return Object.values(veic).filter(v=>v.mes===m&&v.oficinaId===of).sort((a,b)=>String(a.criadoEm||"").localeCompare(String(b.criadoEm||""))||String(a.id).localeCompare(String(b.id)))}
 function calcMonth(list,carryIn){
-  const rows=list.map(v=>{const fr=num(v.franquia)||0,lq=num(v.liquido)||0,pc=num(v.pecas)||0;return {v,fr,lq,pc,saldo:Math.round((lq+fr-pc)*100)/100,desc:0,pagar:0}});
+  const rows=list.map(v=>{const fr=num(v.franquia)||0,lq=num(v.liquido)||0,pc=num(v.pecas)||0,pg=num(v.pago)||0;return {v,fr,lq,pc,pg,saldo:Math.round((lq+fr-pg-pc)*100)/100,desc:0,pagar:0}});
   let debt=carryIn+rows.reduce((a,r)=>a+(r.saldo<0?-r.saldo:0),0);const debtTotal=debt;
   for(const r of rows){if(r.saldo>0){r.desc=Math.min(r.saldo,debt);debt=Math.round((debt-r.desc)*100)/100;r.pagar=Math.round((r.saldo-r.desc)*100)/100}}
   const sum=k=>rows.reduce((a,r)=>a+r[k],0);
-  return {rows,carryIn,debtTotal,restante:Math.round(debt*100)/100,fr:sum("fr"),lq:sum("lq"),pc:sum("pc"),pagar:Math.round(sum("pagar")*100)/100};
+  return {rows,carryIn,debtTotal,restante:Math.round(debt*100)/100,fr:sum("fr"),lq:sum("lq"),pc:sum("pc"),pg:sum("pg"),pagar:Math.round(sum("pagar")*100)/100};
 }
 function fin(m,of){
   const ms=[...new Set(Object.values(veic).filter(v=>v.oficinaId===of&&v.mes<m).map(v=>v.mes))].sort();
@@ -684,40 +726,41 @@ function fin(m,of){
 function renderFin(){
   if(!$("finPanel"))return;
   if(!oficinas.length){$("finOfs").innerHTML="";$("finPanel").innerHTML='<div class="empty">'+(ready?"Cadastre uma oficina na aba Avaliação do mês.":"Carregando…")+'</div>';return}
-  if(!selOf||!oficinas.some(o=>o.id===selOf))selOf=oficinas[0].id;
-  $("finOfs").innerHTML=oficinas.map(o=>{const r=fin(mes,o.id);const n=r.rows.length;
+  const fOfs=oficinas.concat(descreds);
+  if(!selOf||!fOfs.some(o=>o.id===selOf))selOf=fOfs[0].id;
+  $("finOfs").innerHTML=fOfs.map(o=>{const r=fin(mes,o.id);const n=r.rows.length;
     let st='<span class="fz">Sem veículos</span>';
     if(r.restante>0)st='<span class="fneg">Devendo '+money(r.restante)+'</span>';else if(n||r.carryIn)st='<span class="fpos">A pagar '+money(r.pagar)+'</span>';
-    return '<button class="fo'+(o.id===selOf?' on':'')+(r.restante>0?' neg':'')+'" data-of="'+esc(o.id)+'"><b>'+esc(o.nome)+'</b><small>'+n+' veículo'+(n===1?'':'s')+'</small>'+st+'</button>'}).join("");
-  const o=oficinas.find(x=>x.id===selOf), r=fin(mes,selOf);
-  let h='<div class="phead"><div><h2>'+esc(o.nome)+'</h2><p class="psub">Veículos de '+label(mes)+'. Peças compradas são descontadas do valor líquido do reparo e da franquia.</p></div></div>';
+    return '<button class="fo'+(o.id===selOf?' on':'')+(r.restante>0?' neg':'')+'" data-of="'+esc(o.id)+'"><b>'+esc(o.nome)+'</b><small>'+n+' veículo'+(n===1?'':'s')+(o.descredenciada?' · descredenciada':'')+'</small>'+st+'</button>'}).join("");
+  const o=fOfs.find(x=>x.id===selOf), r=fin(mes,selOf);
+  let h='<div class="phead"><div><h2>'+esc(o.nome)+'</h2><p class="psub">Veículos de '+label(mes)+'. Saldo = líquido do reparo + franquia − já pago − peças compradas.</p></div></div>';
   if(!veicOk)h+='<div class="banner">A tabela de veículos ainda não existe no Supabase. Rode o arquivo <b>supabase-financeiro.sql</b> no SQL Editor (veja o LEIA-ME) e recarregue a página.</div>';
-  h+='<div class="fstats"><div><small>Líquido dos reparos</small><b>'+money(r.lq)+'</b></div><div><small>Franquias</small><b>'+money(r.fr)+'</b></div><div><small>Peças compradas</small><b class="tneg">− '+money(r.pc)+'</b></div>'+
+  h+='<div class="fstats"><div><small>Líquido dos reparos</small><b>'+money(r.lq)+'</b></div><div><small>Franquias</small><b>'+money(r.fr)+'</b></div><div><small>Já pago</small><b class="tneg">− '+money(r.pg)+'</b></div><div><small>Peças compradas</small><b class="tneg">− '+money(r.pc)+'</b></div>'+
      (r.carryIn?'<div><small>Débito do mês anterior</small><b class="tneg">− '+money(r.carryIn)+'</b></div>':'')+
-     '<div class="'+(r.restante>0?'big neg':'big pos')+'"><small>'+(r.restante>0?'Oficina está devendo':'Total a pagar à oficina')+'</small><b>'+money(r.restante>0?r.restante:r.pagar)+'</b></div></div>';
-  h+='<div class="scroll"><table class="veh"><thead><tr><th class="name">Placa</th><th class="name">Veículo / sinistro</th><th>Franquia</th><th>Líquido do reparo</th><th>Peças compradas</th><th>Saldo do veículo</th><th>Compensação</th><th>A pagar</th><th><span class="sr">Excluir</span></th></tr></thead><tbody>';
-  if(!r.rows.length)h+='<tr><td colspan="9" class="empty">Nenhum veículo lançado para esta oficina em '+label(mes)+'. Use a linha abaixo para adicionar.</td></tr>';
+     '<div class="big pos"><small>Total a pagar</small><b>'+money(r.pagar)+'</b></div><div class="big '+(r.restante>0?'neg':'zero')+'"><small>Devendo</small><b>'+money(r.restante)+'</b></div></div>';
+  h+='<div class="scroll"><table class="veh"><thead><tr><th class="name">Placa</th><th class="name">Veículo / sinistro</th><th>Líquido do reparo</th><th>Franquia</th><th>Já pago</th><th>Peças compradas</th><th>Saldo do veículo</th><th>Compensação</th><th>A pagar</th><th><span class="sr">Excluir</span></th></tr></thead><tbody>';
+  if(!r.rows.length)h+='<tr><td colspan="10" class="empty">Nenhum veículo lançado para esta oficina em '+label(mes)+'. Use a linha abaixo para adicionar.</td></tr>';
   for(const x of r.rows){const v=x.v,id=esc(v.id),neg=x.saldo<0;
     const comp=neg?'<span class="tneg">Faltou '+money(-x.saldo)+'</span><small>descontado de outros veículos</small>':(x.desc>0?'<span class="tneg">− '+money(x.desc)+'</span><small>cobre débito de outro veículo</small>':'<span class="fz">—</span>');
     h+='<tr class="'+(neg?'rneg':'rpos')+'" data-v="'+id+'">'+
       '<td class="name"><input class="tx" data-vf="placa" value="'+esc(v.placa||"")+'" placeholder="Placa" aria-label="Placa"></td>'+
       '<td class="name"><input class="tx wide" data-vf="descricao" value="'+esc(v.descricao||"")+'" placeholder="Modelo, nº do sinistro…" aria-label="Veículo"></td>'+
-      ['franquia','liquido','pecas'].map(k=>'<td><label class="mo"><span>R$</span><input inputmode="decimal" data-vf="'+k+'" value="'+fmtIn(v[k])+'" placeholder="0,00" aria-label="'+k+'"></label></td>').join("")+
+      ['liquido','franquia','pago','pecas'].map(k=>'<td><label class="mo"><span>R$</span><input inputmode="decimal" data-vf="'+k+'" value="'+fmtIn(v[k])+'" placeholder="0,00" aria-label="'+k+'"></label></td>').join("")+
       '<td><b class="'+(neg?'tneg':'tpos')+'">'+money(x.saldo)+'</b></td><td class="comp">'+comp+'</td><td><b class="'+(x.pagar>0?'tpos':'fz')+'">'+money(x.pagar)+'</b></td>'+
       '<td><button class="del" data-del="'+id+'" title="Excluir veículo" aria-label="Excluir veículo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 13h12l1-13M9 7V4h6v3"/></svg></button></td></tr>';
   }
   h+='</tbody><tfoot><tr class="addrow"><td class="name"><input class="tx" id="nvPlaca" placeholder="Placa" aria-label="Placa do novo veículo"></td><td class="name"><input class="tx wide" id="nvDesc" placeholder="Modelo, nº do sinistro…" aria-label="Descrição do novo veículo"></td>'+
-     '<td><label class="mo"><span>R$</span><input inputmode="decimal" id="nvFr" placeholder="0,00" aria-label="Franquia"></label></td><td><label class="mo"><span>R$</span><input inputmode="decimal" id="nvLq" placeholder="0,00" aria-label="Líquido do reparo"></label></td><td><label class="mo"><span>R$</span><input inputmode="decimal" id="nvPc" placeholder="0,00" aria-label="Peças compradas"></label></td>'+
+     '<td><label class="mo"><span>R$</span><input inputmode="decimal" id="nvLq" placeholder="0,00" aria-label="Líquido do reparo"></label></td><td><label class="mo"><span>R$</span><input inputmode="decimal" id="nvFr" placeholder="0,00" aria-label="Franquia"></label></td><td><label class="mo"><span>R$</span><input inputmode="decimal" id="nvPg" placeholder="0,00" aria-label="Já pago"></label></td><td><label class="mo"><span>R$</span><input inputmode="decimal" id="nvPc" placeholder="0,00" aria-label="Peças compradas"></label></td>'+
      '<td colspan="4"><button class="btn" id="nvAdd"><span aria-hidden="true">+</span> Adicionar veículo</button></td></tr></tfoot></table></div>';
-  if(r.restante>0)h+='<div class="fmsg neg"><b>A oficina ficou devendo '+money(r.restante)+'.</b> As peças compradas passaram do valor dos reparos e franquias deste mês. Esse valor será descontado automaticamente dos veículos do próximo mês.</div>';
+  if(r.restante>0)h+='<div class="fmsg neg"><b>A oficina ficou devendo '+money(r.restante)+'.</b> Os valores já pagos e as peças compradas passaram do valor dos reparos e franquias deste mês. Esse valor será descontado automaticamente dos veículos do próximo mês.</div>';
   else if(r.debtTotal>0)h+='<div class="fmsg pos"><b>Débito de '+money(r.debtTotal)+' compensado.</b> O valor que faltou'+(r.carryIn?' (incluindo o débito do mês anterior)':'')+' foi descontado de outros veículos desta oficina.</div>';
   else if(r.rows.length)h+='<div class="fmsg pos"><b>Tudo certo.</b> Nenhum veículo ficou com saldo negativo.</div>';
   $("finPanel").innerHTML=h;
 }
 function addVeh(){
-  const pl=$("nvPlaca").value.trim(),ds=$("nvDesc").value.trim(),fr=parseBRL($("nvFr").value),lq=parseBRL($("nvLq").value),pc=parseBRL($("nvPc").value);
+  const pl=$("nvPlaca").value.trim(),ds=$("nvDesc").value.trim(),fr=parseBRL($("nvFr").value),lq=parseBRL($("nvLq").value),pc=parseBRL($("nvPc").value),pg=parseBRL($("nvPg").value);
   if(!pl&&!ds){setStatus("Digite a placa ou a descrição do veículo.");$("nvPlaca").focus();return}
-  const v={id:"v"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),mes,oficinaId:selOf,placa:pl.toUpperCase(),descricao:ds,franquia:fr,liquido:lq,pecas:pc,criadoEm:new Date().toISOString()};
+  const v={id:"v"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),mes,oficinaId:selOf,placa:pl.toUpperCase(),descricao:ds,franquia:fr,liquido:lq,pecas:pc,pago:pg,criadoEm:new Date().toISOString()};
   veic[v.id]=v;vPending[v.id]=v;renderFin();$("nvPlaca").focus();setStatus("Salvando…");
   store.saveVeh(v).then(()=>{delete vPending[v.id];setStatus("Veículo salvo às "+hora())}).catch(e=>{setStatus("Não foi possível salvar o veículo ("+e.message+").")});
 }
@@ -748,6 +791,16 @@ $("rows").addEventListener("input",e=>{
   const tr=el.closest("tr"); queueSave(tr.dataset.id||tr.dataset.det);
 });
 $("rows").addEventListener("click",e=>{
+  const dc=e.target.closest("[data-dc]");
+  if(dc){const r=[...document.querySelectorAll("[data-dcrow]")].find(x=>x.dataset.dcrow===dc.dataset.dc);r.hidden=!r.hidden;if(!r.hidden)r.querySelector("textarea").focus();return}
+  const no=e.target.closest("[data-dcno]");
+  if(no){[...document.querySelectorAll("[data-dcrow]")].find(x=>x.dataset.dcrow===no.dataset.dcno).hidden=true;return}
+  const ok=e.target.closest("[data-dcok]");
+  if(ok){const o=oficinas.find(x=>x.id===ok.dataset.dcok);if(!o)return;const motivo=$("dcm-"+o.id).value.trim();
+    if(!motivo){setStatus("Escreva o motivo do descredenciamento.");$("dcm-"+o.id).focus();return}
+    const d=new Date();const hoje=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+    const nv=Object.assign({},o,{descredenciada:true,motivo,descredenciada_em:hoje});
+    store.saveOf(nv).then(()=>{oficinas=oficinas.filter(x=>x.id!==o.id);descreds.push(nv);renderAll();setStatus(o.nome+" descredenciada.")}).catch(er=>setStatus(colErr(er)));return}
   const mo=e.target.closest("[data-more]");
   if(mo){const id=mo.dataset.more;const r=[...document.querySelectorAll("[data-det]")].find(x=>x.dataset.det===id);r.hidden=!r.hidden;r.hidden?open.delete(id):open.add(id);mo.setAttribute("aria-expanded",!r.hidden);return}
   const rm=e.target.closest("[data-rm]");
@@ -757,9 +810,15 @@ $("rows").addEventListener("click",e=>{
     store.saveOf({id:o.id,nome:o.nome,ativa:false,ordem:o.ordem}).then(()=>{oficinas=oficinas.filter(x=>x.id!==o.id);renderAll();setStatus(o.nome+" removida. As notas antigas continuam salvas.")}).catch(e=>setStatus("Não foi possível remover ("+e.message+")."));
   }
 });
+$("dcToggle").onclick=()=>{const p=$("dcPanel");p.hidden=!p.hidden;$("dcToggle").setAttribute("aria-expanded",!p.hidden)};
+$("dcPanel").addEventListener("click",e=>{const b=e.target.closest("[data-rec]");if(!b)return;
+  if(b.dataset.armed!=="1"){b.dataset.armed="1";b.textContent="Clique de novo para confirmar";setTimeout(()=>{if(b.isConnected){b.dataset.armed="";b.textContent="Recredenciar"}},4000);return}
+  const o=descreds.find(x=>x.id===b.dataset.rec);if(!o)return;const nv=Object.assign({},o,{descredenciada:false,motivo:null,descredenciada_em:null});
+  store.saveOf(nv).then(()=>{descreds=descreds.filter(x=>x.id!==o.id);oficinas.push(nv);oficinas.sort((a,b)=>(Number(a.ordem)||0)-(Number(b.ordem)||0));renderAll();setStatus(o.nome+" voltou a ser credenciada.")}).catch(er=>setStatus(colErr(er)))});
 $("addForm").addEventListener("submit",e=>{
   e.preventDefault(); const nome=$("newName").value.trim().toUpperCase(); if(!nome)return;
   if(oficinas.some(o=>o.nome===nome)){setStatus(nome+" já está cadastrada.");return}
+  if(descreds.some(o=>o.nome===nome)){setStatus(nome+" está descredenciada. Use “Recredenciar” na lista de descredenciadas.");return}
   const o={id:slug(nome),nome,ativa:true,ordem:oficinas.length?Math.max(...oficinas.map(o=>Number(o.ordem)||0))+1:1};
   store.saveOf(o).then(()=>{oficinas.push(o);$("newName").value="";renderAll();setStatus(nome+" adicionada.")}).catch(e=>setStatus("Não foi possível adicionar ("+e.message+")."));
 });
