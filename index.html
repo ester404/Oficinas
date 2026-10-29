@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ranking de Oficinas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+/* Layout: painel de oficina — barra de mês no topo, tabela de lançamento do mês, abas para histórico e critérios */
+:root{
+  --bg:#F3F5F8; --surface:#FFFFFF; --ink:#18212D; --muted:#5D6878; --line:#DCE1E8; --accent:#1E5AA8; --accent-ink:#FFFFFF; --input:#FFFBEA; --danger:#B3261E;
+  --dia:#CDEFF7; --dia-ink:#0B5566; --ouro:#FBE7A6; --ouro-ink:#6B4E00; --prata:#E3E6EA; --prata-ink:#3C4552; --bronze:#F6CDB0; --bronze-ink:#7A3A10;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif; --body:"Barlow",Arial,Helvetica,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F151D; --surface:#17202B; --ink:#E6EBF1; --muted:#97A3B3; --line:#2A3644; --accent:#6EA8F0; --accent-ink:#0B1320; --input:#1F2A36; --danger:#F2867E;
+  --dia:#123F4A; --dia-ink:#9FE3F2; --ouro:#4A3B0E; --ouro-ink:#F5D774; --prata:#2E3742; --prata-ink:#CBD3DD; --bronze:#4A2A16; --bronze-ink:#F3B88E; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F151D; --surface:#17202B; --ink:#E6EBF1; --muted:#97A3B3; --line:#2A3644; --accent:#6EA8F0; --accent-ink:#0B1320; --input:#1F2A36; --danger:#F2867E;
+  --dia:#123F4A; --dia-ink:#9FE3F2; --ouro:#4A3B0E; --ouro-ink:#F5D774; --prata:#2E3742; --prata-ink:#CBD3DD; --bronze:#4A2A16; --bronze-ink:#F3B88E; color-scheme:dark}
+*{box-sizing:border-box}
+.wrap>*,#v-mes>*{min-width:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45}
+.wrap{max-width:1180px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:18px}
+h1,h2{font-family:var(--display);font-weight:700;letter-spacing:.01em;margin:0;text-wrap:balance}
+h1{font-size:2rem;line-height:1}
+h2{font-size:1.35rem}
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px}
+.sub{color:var(--muted);font-size:.9rem;margin:4px 0 0}
+.month{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:4px}
+.month button{border:0;background:transparent;color:var(--ink);font-size:1.2rem;width:36px;height:36px;border-radius:8px;cursor:pointer}
+.month button:hover{background:var(--bg)}
+.month .lbl{font-family:var(--display);font-size:1.3rem;font-weight:700;min-width:150px;text-align:center;text-transform:uppercase;letter-spacing:.04em}
+.month .now{font-family:var(--body);font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;width:auto;padding:0 10px;color:var(--accent)}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tabs button{border:0;background:none;color:var(--muted);font:600 .95rem var(--body);padding:10px 14px;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--ink);border-color:var(--accent)}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.lv{border-radius:10px;padding:10px 14px;display:flex;justify-content:space-between;align-items:baseline}
+.lv b{font-family:var(--display);font-size:1.9rem;line-height:1;font-variant-numeric:tabular-nums}
+.lv span{font-weight:600;font-size:.85rem;text-transform:uppercase;letter-spacing:.06em}
+.Diamante{background:var(--dia);color:var(--dia-ink)} .Ouro{background:var(--ouro);color:var(--ouro-ink)}
+.Prata{background:var(--prata);color:var(--prata-ink)} .Bronze{background:var(--bronze);color:var(--bronze-ink)}
+.none{background:var(--surface);color:var(--muted);border:1px dashed var(--line)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;text-align:center;padding:10px 6px;border-bottom:1px solid var(--line);white-space:nowrap}
+th small{display:block;font-size:.7rem;letter-spacing:0;text-transform:none;font-weight:500}
+td{padding:6px;border-bottom:1px solid var(--line);text-align:center;vertical-align:middle}
+td.name,th.name{text-align:left;padding-left:14px}
+td.name{font-weight:600;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+input[type=number],input[type=text],textarea{font:inherit;color:var(--ink);background:var(--input);border:1px solid var(--line);border-radius:6px;padding:6px 4px}
+input[type=number]{width:58px;text-align:center}
+input.bad{border-color:var(--danger);color:var(--danger)}
+input:disabled,textarea:disabled{opacity:.6}
+.total{font-family:var(--display);font-size:1.5rem;font-weight:700;min-width:44px}
+.badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:.78rem;font-weight:600;white-space:nowrap}
+.pos{color:var(--muted);font-weight:600}
+.more{border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:6px;padding:4px 8px;cursor:pointer;font:500 .8rem var(--body)}
+.det td{background:var(--bg);text-align:left;padding:12px 14px}
+.det .grid{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end}
+.det label{display:grid;gap:3px;font-size:.75rem;color:var(--muted);font-weight:600}
+.det textarea{width:min(420px,100%);min-height:38px;resize:vertical}
+.det .grow{flex:1 1 260px}
+.det .grow textarea{width:100%}
+.det .rm{margin-left:auto}
+.btn{border:0;border-radius:8px;padding:9px 14px;font:600 .9rem var(--body);cursor:pointer;background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;color:var(--danger);border:1px solid var(--line)}
+.add{display:flex;flex-wrap:wrap;gap:8px;padding:14px;border-top:1px solid var(--line)}
+.add input{flex:1 1 220px;padding:9px 10px}
+.status{font-size:.8rem;color:var(--muted);min-height:1.2em}
+.banner{padding:10px 14px;border-radius:10px;background:var(--bronze);color:var(--bronze-ink);font-size:.9rem}
+.empty{padding:28px 16px;text-align:center;color:var(--muted)}
+.hist td{min-width:58px}
+.hcell{display:inline-block;min-width:42px;padding:4px 6px;border-radius:6px;font-weight:600;cursor:pointer;border:0;font:600 .9rem var(--body)}
+.legend{display:flex;flex-wrap:wrap;gap:8px;font-size:.8rem;color:var(--muted);padding:12px 14px;border-top:1px solid var(--line)}
+.crit{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.crit .card{padding:16px;min-width:0}
+.crit table td,.crit table th{text-align:left;padding:8px 6px}
+.crit td:nth-child(2){font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
+.help{font-size:.85rem;color:var(--muted);margin:0}
+@media (prefers-reduced-motion:no-preference){.btn,.month button,.tabs button{transition:background .15s,border-color .15s}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Ranking de Oficinas</h1>
+      <p class="sub">Nota de 0 a 100 por mês. Cada mês fica salvo; o mês atual começa em branco.</p>
+    </div>
+    <div class="month" role="group" aria-label="Mês">
+      <button id="prev" aria-label="Mês anterior">‹</button>
+      <div class="lbl" id="mlabel">—</div>
+      <button id="next" aria-label="Próximo mês">›</button>
+      <button class="now" id="today">Mês atual</button>
+    </div>
+  </header>
+
+  <div id="banner" class="banner" hidden></div>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" id="t-mes" aria-selected="true">Avaliação do mês</button>
+    <button role="tab" id="t-hist" aria-selected="false">Histórico</button>
+    <button role="tab" id="t-crit" aria-selected="false">Critérios</button>
+  </nav>
+
+  <section id="v-mes" style="display:grid;gap:16px">
+    <div class="levels" id="levels"></div>
+    <div class="card">
+      <div class="scroll">
+        <table>
+          <thead><tr>
+            <th class="name">Oficina</th>
+            <th>Qualidade<small>0–30</small></th><th>Prazo<small>0–20</small></th><th>Satisfação<small>0–20</small></th>
+            <th>Preço<small>0–15</small></th><th>Documentação<small>0–10</small></th><th>Estrutura<small>0–5</small></th>
+            <th>Total</th><th>Nível</th><th>Posição</th><th></th>
+          </tr></thead>
+          <tbody id="rows"><tr><td colspan="11" class="empty">Carregando oficinas…</td></tr></tbody>
+        </table>
+      </div>
+      <form class="add" id="addForm">
+        <input type="text" id="newName" placeholder="Nome da nova oficina" aria-label="Nome da nova oficina" maxlength="60">
+        <button class="btn" type="submit">Adicionar oficina</button>
+      </form>
+    </div>
+    <div class="status" id="status"></div>
+  </section>
+
+  <section id="v-hist" hidden>
+    <div class="card">
+      <div class="scroll"><table class="hist"><thead id="hhead"></thead><tbody id="hbody"></tbody></table></div>
+      <div class="legend"><span class="badge Diamante">Diamante 90–100</span><span class="badge Ouro">Ouro 80–89</span><span class="badge Prata">Prata 65–79</span><span class="badge Bronze">Bronze abaixo de 65</span><span>Clique numa nota para abrir o mês.</span></div>
+    </div>
+  </section>
+
+  <section id="v-crit" class="crit" hidden>
+    <div class="card"><h2>Pontos por critério</h2>
+      <table><tbody>
+        <tr><td>Qualidade do reparo</td><td>até 30</td><td>Sem retrabalho; sem reclamação de peças ou pintura</td></tr>
+        <tr><td>Prazo de entrega</td><td>até 20</td><td>Veículo entregue na data prometida ou antes</td></tr>
+        <tr><td>Satisfação do cliente</td><td>até 20</td><td>Notas e avaliações dos associados</td></tr>
+        <tr><td>Preço e orçamento</td><td>até 15</td><td>Orçamento final igual ao aprovado</td></tr>
+        <tr><td>Documentação</td><td>até 10</td><td>Notas fiscais e fotos enviadas rápido</td></tr>
+        <tr><td>Estrutura da oficina</td><td>até 5</td><td>Ferramentas, alinhamento, organização</td></tr>
+      </tbody></table>
+    </div>
+    <div class="card"><h2>Níveis e incentivos</h2>
+      <table><tbody>
+        <tr><td><span class="badge Diamante">Diamante</span></td><td>90–100</td><td>Prioridade total no envio de carros, pagamento rápido e destaque no app/site</td></tr>
+        <tr><td><span class="badge Ouro">Ouro</span></td><td>80–89</td><td>Envio frequente de carros e pagamento em prazo normal</td></tr>
+        <tr><td><span class="badge Prata">Prata</span></td><td>65–79</td><td>Volume moderado de serviços com acompanhamento mensal</td></tr>
+        <tr><td><span class="badge Bronze">Bronze</span></td><td>abaixo de 65</td><td>Menos serviços; 60 a 90 dias para melhorar ou ser descredenciada</td></tr>
+      </tbody></table>
+    </div>
+    <div class="card" style="grid-column:1/-1"><h2>Metas a cada 10 carros</h2>
+      <div class="scroll"><table>
+        <thead><tr><th class="name">Indicador</th><th>Bronze</th><th>Prata</th><th>Ouro</th><th>Diamante</th></tr></thead>
+        <tbody>
+          <tr><td>Carros com reparo refeito</td><td>máx. 1 em 10</td><td>máx. 1 em 20</td><td>quase zero</td><td>zero</td></tr>
+          <tr><td>Atrasos na entrega</td><td>até 2 em 10</td><td>até 1 em 10</td><td>quase sempre no dia</td><td>100% no prazo</td></tr>
+          <tr><td>Nota dos clientes (0–10)</td><td>mín. 5</td><td>mín. 7</td><td>mín. 8</td><td>9 ou 10</td></tr>
+          <tr><td>Aumento não planejado no orçamento</td><td>até 2 em 10</td><td>máx. 1 em 10</td><td>raro</td><td>nenhum</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+</div>
+
+<script>
+// =====================================================================
+//  CONFIGURAÇÃO: cole aqui o link do Apps Script (veja o LEIA-ME).
+//  Deixando vazio, o site funciona só neste computador (modo local).
+// =====================================================================
+const SCRIPT_URL = "";
+
+(function(){
+const OFICINAS_INICIAIS=["RECAMI AUTOS","TECAUTO AUTOS","DG MOTOCROSS","EDIGLEI MOTO","RBP AUTOS","F. GUERREIRO AUTOS","RRX REPARADORA","EASY MATH AUTOS","RETOCAR AUTOS"];
+const MESES=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+const ABR=["JAN","FEV","MAR","ABR","MAI","JUN","JUL","AGO","SET","OUT","NOV","DEZ"];
+const PTS=[["q",30],["p",20],["s",20],["o",15],["d",10],["e",5]];
+const IND=[["carros","Carros atendidos"],["refeitos","Carros refeitos"],["atrasos","Entregas atrasadas"],["notaCliente","Nota média clientes (0–10)"],["extras","Orçamentos com extra"]];
+const FIELDS=[...PTS.map(p=>p[0]),...IND.map(i=>i[0])];
+const $=id=>document.getElementById(id);
+const now=new Date(); const CUR=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0");
+let mes=CUR, oficinas=[], aval={}, ready=false, open=new Set();
+const pending={}, chain={}, timers={};
+
+function slug(n){return n.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,60)||("of-"+Date.now())}
+
+// ---------- armazenamento ----------
+const LS_KEY="ranking-oficinas-v1";
+const store = SCRIPT_URL ? {
+  modo:"online",
+  async load(){const r=await fetch(SCRIPT_URL+"?t="+Date.now());if(!r.ok)throw new Error("HTTP "+r.status);return r.json()},
+  async post(b){const r=await fetch(SCRIPT_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(b)});const j=await r.json();if(!j.ok)throw new Error(j.erro||"erro")},
+  saveAval(d){return this.post({action:"saveAval",data:d})},
+  saveOf(d){return this.post({action:"saveOficina",data:d})}
+} : {
+  modo:"local",
+  read(){try{const j=JSON.parse(localStorage.getItem(LS_KEY));if(j)return j}catch(e){}
+    return {oficinas:OFICINAS_INICIAIS.map((n,i)=>({id:slug(n),nome:n,ativa:true,ordem:i+1})),avaliacoes:[]}},
+  write(j){try{localStorage.setItem(LS_KEY,JSON.stringify(j))}catch(e){throw new Error("não foi possível gravar no navegador")}},
+  async load(){return this.read()},
+  async saveAval(d){const j=this.read();j.avaliacoes=j.avaliacoes.filter(a=>a.key!==d.key);j.avaliacoes.push(d);this.write(j)},
+  async saveOf(d){const j=this.read();j.oficinas=j.oficinas.filter(o=>o.id!==d.id);j.oficinas.push(d);this.write(j)}
+};
+
+function apply(j){
+  oficinas=(j.oficinas||[]).filter(o=>o.ativa!==false&&String(o.ativa).toUpperCase()!=="FALSE").map(o=>({...o,id:String(o.id),nome:String(o.nome)}))
+    .sort((a,b)=>(Number(a.ordem)||0)-(Number(b.ordem)||0)||a.nome.localeCompare(b.nome));
+  aval={}; for(const a of (j.avaliacoes||[])) if(a&&a.key) aval[a.key]=a;
+}
+async function refresh(first){
+  try{const j=await store.load();apply(j);ready=true;
+    if(first)renderAll();else{syncInputs();renderHist()}
+    if(store.modo==="online")setStatus("Atualizado às "+hora());
+  }catch(e){ if(first){ $("rows").innerHTML='<tr><td colspan="11" class="empty">Não foi possível carregar os dados. Confira o link do Apps Script e a internet, depois recarregue a página.</td></tr>'} setStatus("Falha ao atualizar ("+e.message+").")}
+}
+
+// ---------- utilidades ----------
+function addMonth(k,n){let [y,m]=k.split("-").map(Number);m+=n;while(m>12){m-=12;y++}while(m<1){m+=12;y--}return y+"-"+String(m).padStart(2,"0")}
+function label(k){const [y,m]=k.split("-");return MESES[+m-1]+" "+y}
+function nivel(t){return t==null?null:t>=90?"Diamante":t>=80?"Ouro":t>=65?"Prata":"Bronze"}
+function num(v){if(v===null||v===undefined||v==="")return null;const n=Number(v);return isNaN(n)?null:n}
+function total(a){if(!a)return null;let any=false,s=0;for(const [k] of PTS){const v=num(a[k]);if(v!=null){any=true;s+=v}}return any?Math.round(s*10)/10:null}
+function key(m,id){return m+"__"+id}
+function rec(m,id){return pending[key(m,id)]||aval[key(m,id)]}
+function esc(s){const d=document.createElement("div");d.textContent=s==null?"":String(s);return d.innerHTML}
+function hora(){return new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}
+function setStatus(t){$("status").textContent=t}
+
+// ---------- render: mês ----------
+function renderMonth(){
+  $("mlabel").textContent=label(mes);
+  $("today").hidden=mes===CUR;
+  const tb=$("rows");
+  if(!oficinas.length){tb.innerHTML='<tr><td colspan="11" class="empty">'+(ready?'Nenhuma oficina cadastrada. Digite o nome abaixo e clique em “Adicionar oficina”.':'Carregando oficinas…')+'</td></tr>';renderComputed();return}
+  let h="";
+  for(const o of oficinas){
+    const a=rec(mes,o.id)||{};
+    h+='<tr data-id="'+esc(o.id)+'"><td class="name">'+esc(o.nome)+'</td>';
+    for(const [k,mx] of PTS) h+='<td><input type="number" inputmode="decimal" min="0" max="'+mx+'" step="0.5" data-f="'+k+'" id="i-'+esc(o.id)+'-'+k+'" aria-label="'+k+' '+esc(o.nome)+'" value="'+esc(a[k]??"")+'"></td>';
+    h+='<td class="total" data-c="total"></td><td data-c="nivel"></td><td class="pos" data-c="pos"></td><td><button class="more" data-more="'+esc(o.id)+'" aria-expanded="'+open.has(o.id)+'">Detalhes</button></td></tr>';
+    h+='<tr class="det" data-det="'+esc(o.id)+'"'+(open.has(o.id)?"":" hidden")+'><td colspan="11"><div class="grid">';
+    for(const [k,l] of IND) h+='<label>'+l+'<input type="number" inputmode="decimal" min="0" '+(k==="notaCliente"?'max="10" step="0.1"':'step="1"')+' data-f="'+k+'" id="i-'+esc(o.id)+'-'+k+'" value="'+esc(a[k]??"")+'"></label>';
+    h+='<label class="grow">Observações<textarea data-f="obs" id="i-'+esc(o.id)+'-obs">'+esc(a.obs||"")+'</textarea></label>';
+    h+='<button type="button" class="btn ghost rm" data-rm="'+esc(o.id)+'">Remover oficina</button>';
+    h+='</div></td></tr>';
+  }
+  tb.innerHTML=h; renderComputed();
+}
+function renderComputed(){
+  const list=oficinas.map(o=>({id:o.id,t:total(rec(mes,o.id))}));
+  const scored=list.filter(x=>x.t!=null).sort((a,b)=>b.t-a.t);
+  const cnt={Diamante:0,Ouro:0,Prata:0,Bronze:0};
+  for(const x of list){
+    const n=nivel(x.t); if(n)cnt[n]++;
+    const tr=[...document.querySelectorAll('tr[data-id]')].find(r=>r.dataset.id===x.id); if(!tr)continue;
+    tr.querySelector('[data-c=total]').textContent=x.t==null?"—":x.t;
+    tr.querySelector('[data-c=nivel]').innerHTML=n?'<span class="badge '+n+'">'+n+'</span>':'';
+    tr.querySelector('[data-c=pos]').textContent=x.t==null?"":(scored.findIndex(s=>s.t===x.t)+1)+"º";
+  }
+  const sem=list.length-scored.length;
+  $("levels").innerHTML=["Diamante","Ouro","Prata","Bronze"].map(n=>'<div class="lv '+n+'"><span>'+n+'</span><b>'+cnt[n]+'</b></div>').join("")+'<div class="lv none"><span>Sem nota</span><b>'+sem+'</b></div>';
+}
+function syncInputs(){
+  const ids=[...document.querySelectorAll('tr[data-id]')].map(r=>r.dataset.id).join("|");
+  if(ids!==oficinas.map(o=>o.id).join("|")){renderMonth();return}
+  for(const o of oficinas){
+    if(pending[key(mes,o.id)])continue;
+    const a=rec(mes,o.id)||{};
+    for(const k of [...FIELDS,"obs"]){
+      const el=$("i-"+o.id+"-"+k); if(!el||el===document.activeElement)continue;
+      const v=a[k]??""; if(el.value!==String(v))el.value=v;
+    }
+  }
+  renderComputed();
+}
+
+// ---------- render: histórico ----------
+function renderHist(){
+  const ms=[];for(let i=11;i>=0;i--)ms.push(addMonth(mes,-i));
+  $("hhead").innerHTML='<tr><th class="name">Oficina</th>'+ms.map(m=>{const [y,mm]=m.split("-");return '<th>'+ABR[+mm-1]+'<small>'+y+'</small></th>'}).join("")+'<th>Média</th><th>Nível atual</th></tr>';
+  if(!oficinas.length){$("hbody").innerHTML='<tr><td colspan="15" class="empty">'+(ready?'Nenhuma oficina cadastrada ainda.':'Carregando…')+'</td></tr>';return}
+  $("hbody").innerHTML=oficinas.map(o=>{
+    let vals=[],last=null;
+    const cells=ms.map(m=>{const t=total(rec(m,o.id));if(t!=null){vals.push(t);last=t}const n=nivel(t);
+      return '<td>'+(t==null?'<span style="color:var(--muted)">·</span>':'<button class="hcell '+n+'" data-go="'+m+'" title="'+label(m)+': '+n+'">'+t+'</button>')+'</td>'}).join("");
+    const avg=vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length*10)/10:null;const n=nivel(last);
+    return '<tr><td class="name">'+esc(o.nome)+'</td>'+cells+'<td><b>'+(avg??"—")+'</b></td><td>'+(n?'<span class="badge '+n+'">'+n+'</span>':'<span style="color:var(--muted)">Sem nota</span>')+'</td></tr>';
+  }).join("");
+}
+function renderAll(){renderMonth();renderHist()}
+
+// ---------- gravação ----------
+function queueSave(id){
+  const k=key(mes,id), m=mes;
+  const base=Object.assign({},aval[k]||{},pending[k]||{});
+  for(const f of FIELDS){const el=$("i-"+id+"-"+f); if(el){const v=el.value.trim()===""?null:Number(el.value.replace(",","."));base[f]=(v==null||isNaN(v))?null:v}}
+  const ob=$("i-"+id+"-obs"); if(ob) base.obs=ob.value;
+  base.key=k; base.mes=m; base.oficinaId=id;
+  pending[k]=base; renderComputed(); renderHist();
+  clearTimeout(timers[k]); setStatus("Salvando…");
+  timers[k]=setTimeout(()=>{
+    const body=Object.assign({},pending[k],{atualizadoEm:new Date().toISOString()});
+    const snap=pending[k];
+    chain[k]=(chain[k]||Promise.resolve()).then(()=>store.saveAval(body)).then(()=>{
+      aval[k]=body; if(pending[k]===snap)delete pending[k]; setStatus("Salvo às "+hora());
+    }).catch(e=>setStatus("Não foi possível salvar ("+e.message+"). Confira a internet e altere o campo de novo."));
+  },700);
+}
+
+// ---------- eventos ----------
+$("rows").addEventListener("input",e=>{
+  const el=e.target; if(!el.dataset.f)return;
+  if(el.type==="number"){const mx=el.max?Number(el.max):Infinity;const v=Number(el.value);const bad=el.value!==""&&(isNaN(v)||v<0||v>mx);el.classList.toggle("bad",bad);if(bad){setStatus("Valor fora do limite (0 a "+el.max+"). Corrija para salvar.");return}}
+  const tr=el.closest("tr"); queueSave(tr.dataset.id||tr.dataset.det);
+});
+$("rows").addEventListener("click",e=>{
+  const mo=e.target.closest("[data-more]");
+  if(mo){const id=mo.dataset.more;const r=[...document.querySelectorAll("[data-det]")].find(x=>x.dataset.det===id);r.hidden=!r.hidden;r.hidden?open.delete(id):open.add(id);mo.setAttribute("aria-expanded",!r.hidden);return}
+  const rm=e.target.closest("[data-rm]");
+  if(rm){
+    if(rm.dataset.armed!=="1"){rm.dataset.armed="1";rm.textContent="Clique de novo para confirmar";setTimeout(()=>{if(rm.isConnected){rm.dataset.armed="";rm.textContent="Remover oficina"}},4000);return}
+    const o=oficinas.find(x=>x.id===rm.dataset.rm); if(!o)return;
+    store.saveOf({id:o.id,nome:o.nome,ativa:false,ordem:o.ordem}).then(()=>{oficinas=oficinas.filter(x=>x.id!==o.id);renderAll();setStatus(o.nome+" removida. As notas antigas continuam salvas.")}).catch(e=>setStatus("Não foi possível remover ("+e.message+")."));
+  }
+});
+$("addForm").addEventListener("submit",e=>{
+  e.preventDefault(); const nome=$("newName").value.trim().toUpperCase(); if(!nome)return;
+  if(oficinas.some(o=>o.nome===nome)){setStatus(nome+" já está cadastrada.");return}
+  const o={id:slug(nome),nome,ativa:true,ordem:oficinas.length?Math.max(...oficinas.map(o=>Number(o.ordem)||0))+1:1};
+  store.saveOf(o).then(()=>{oficinas.push(o);$("newName").value="";renderAll();setStatus(nome+" adicionada.")}).catch(e=>setStatus("Não foi possível adicionar ("+e.message+")."));
+});
+$("prev").onclick=()=>{mes=addMonth(mes,-1);renderAll()};
+$("next").onclick=()=>{mes=addMonth(mes,1);renderAll()};
+$("today").onclick=()=>{mes=CUR;renderAll()};
+$("hbody").addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(b){mes=b.dataset.go;renderAll();tab("mes")}});
+function tab(n){for(const t of ["mes","hist","crit"]){$("t-"+t).setAttribute("aria-selected",t===n);$("v-"+t).hidden=t!==n}}
+["mes","hist","crit"].forEach(t=>$("t-"+t).onclick=()=>tab(t));
+
+if(store.modo==="local"){$("banner").hidden=false;$("banner").textContent="Modo local: as notas ficam salvas só neste computador e neste navegador. Para usar em vários computadores com os mesmos dados, siga o passo 1 do LEIA-ME."}
+renderAll();
+refresh(true);
+if(store.modo==="online"){setInterval(()=>{if(!document.hidden)refresh(false)},60000);window.addEventListener("focus",()=>refresh(false))}
+})();
+
+</script>
+</body>
+</html>
