@@ -72,7 +72,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 .hcell.Prata{background:var(--prata);color:var(--prata-ink)} .hcell.Bronze{background:var(--bronze);color:var(--bronze-ink)}
 
 .card{background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow)}
-.scroll{overflow-x:auto}
+.scroll{overflow-x:auto;position:relative}
 table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
 th{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--green);font-weight:700;text-align:center;padding:12px 6px;border-bottom:1px solid var(--line);white-space:nowrap;background:var(--soft)}
 th small{display:block;font-size:.7rem;letter-spacing:0;text-transform:none;font-weight:500;color:var(--muted)}
@@ -262,6 +262,60 @@ i.Diamante,.k.Diamante{background:#2A9DB0} i.Ouro,.k.Ouro{background:#D4A21C} i.
   .rank .badge,.rank .dl{display:none}
   .panel{padding:16px}
 }
+
+/* ===== tabela de lançamento ===== */
+.tbl-top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px;padding:20px 22px 16px;border-bottom:1px solid var(--line)}
+.tbl-top h2{font-size:1.25rem}
+.tbl-top h2::after{content:"";display:block;width:28px;height:2px;background:var(--red);margin-top:8px}
+.prog{min-width:220px;display:grid;gap:6px}
+.prog-txt{font-size:.82rem;color:var(--muted)} .prog-txt b{color:var(--green)}
+.pbar{height:8px;border-radius:99px;background:var(--icon-bg);overflow:hidden}
+.pbar i{display:block;height:100%;background:var(--green);border-radius:99px;transition:width .3s}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.eval th{background:#FAF8F6;padding:12px 6px;font-size:.68rem}
+.eval th small{font-size:.66rem;color:#9A928A;margin-top:2px}
+.eval th.name{padding-left:22px}
+.eval td{padding:10px 5px}
+.eval td.name{padding-left:22px}
+.eval td.name::before{display:none}
+.who{display:flex;align-items:center;gap:12px}
+.av{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font:700 .74rem var(--body);letter-spacing:.04em;background:var(--icon-bg);color:var(--green);border:2px solid transparent}
+.av.Diamante{background:var(--dia);color:var(--dia-ink);border-color:#2A9DB0}
+.av.Ouro{background:var(--ouro);color:var(--ouro-ink);border-color:#D4A21C}
+.av.Prata{background:var(--prata);color:var(--prata-ink);border-color:#9AA3A6}
+.av.Bronze{background:var(--bronze);color:var(--bronze-ink);border-color:#B8642E}
+.nm{display:grid;gap:2px;font-size:.88rem}
+.nm small{font-size:.7rem;font-weight:600;letter-spacing:.02em;color:#A39A92}
+.nm small.mid{color:#B07A0A} .nm small.ok{color:#1D7A4A}
+.pt{position:relative;display:inline-block}
+.pt input{width:62px;height:38px;padding:0 22px 0 8px;text-align:center;border-radius:8px;font-weight:600;font-size:.95rem}
+.pt span{position:absolute;right:7px;top:50%;transform:translateY(-50%);font-size:.66rem;color:#A39A92;pointer-events:none}
+.pt input:not(:placeholder-shown){background:#EEF5F2;border-color:#BCD7CE;color:var(--green)}
+.pt input::placeholder{color:#C9C0B8}
+.pt input:focus{background:#fff;border-color:var(--green);box-shadow:0 0 0 3px rgba(15,59,54,.12);outline:none}
+.pt input.bad{background:#FBEDEA;border-color:var(--red);color:var(--red)}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{-moz-appearance:textfield;appearance:textfield}
+.tcell{min-width:78px}
+.tcell .total{font-size:1.45rem;line-height:1}
+.tbar{height:5px;width:56px;margin:6px auto 0;border-radius:99px;background:var(--icon-bg);overflow:hidden}
+.tbar i{display:block;height:100%;border-radius:99px;background:#C9C0B8}
+.tbar i.Diamante{background:#2A9DB0}.tbar i.Ouro{background:#D4A21C}.tbar i.Prata{background:#9AA3A6}.tbar i.Bronze{background:#B8642E}
+.res{min-width:96px}
+.res .pos{display:block;margin-top:4px;font-family:var(--body);font-size:.72rem;font-weight:700;color:var(--red)}
+.dash{font-size:.74rem;color:#B5ADA5}
+.more{width:34px;height:34px;padding:0;display:grid;place-items:center;border-radius:50%}
+.more svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
+.more[aria-expanded="true"]{background:var(--green);color:#fff;border-color:var(--green)}
+.more[aria-expanded="true"] svg{transform:rotate(180deg)}
+.eval tbody tr:not(.det):hover td{background:#FCFAF8}
+.det td{background:#FAF8F6;border-top:0;padding:16px 22px 18px 70px}
+.det label input{width:110px;height:36px;border-radius:8px;padding:0 10px;text-align:left}
+.add{padding:16px 22px}
+.add input{height:42px}
+.add .btn{height:42px;display:flex;align-items:center;gap:6px}
+.add .btn span{font-size:1.15rem;line-height:1}
+@media (max-width:720px){.det td{padding-left:16px}.tbl-top{padding:16px}.prog{min-width:0;width:100%}}
 </style>
 </head>
 <body>
@@ -300,20 +354,24 @@ i.Diamante,.k.Diamante{background:#2A9DB0} i.Ouro,.k.Ouro{background:#D4A21C} i.
   <section id="v-mes" style="display:grid;gap:16px">
     <div class="levels" id="levels"></div>
     <div class="card">
+      <div class="tbl-top">
+        <div><h2 id="tblTitle">Lançamento de notas</h2><p class="psub">Digite os pontos de cada critério. O total, o nível e a posição são calculados sozinhos.</p></div>
+        <div class="prog"><div class="prog-txt"><b id="progN">0 de 0</b> oficinas com nota</div><div class="pbar"><i id="progBar"></i></div></div>
+      </div>
       <div class="scroll">
-        <table>
+        <table class="eval">
           <thead><tr>
             <th class="name">Oficina</th>
-            <th>Qualidade<small>0–30</small></th><th>Prazo<small>0–20</small></th><th>Satisfação<small>0–20</small></th>
-            <th>Preço<small>0–15</small></th><th>Documentação<small>0–10</small></th><th>Estrutura<small>0–5</small></th>
-            <th>Total</th><th>Nível</th><th>Posição</th><th></th>
+            <th>Qualidade<small>máx. 30</small></th><th>Prazo<small>máx. 20</small></th><th>Satisfação<small>máx. 20</small></th>
+            <th>Preço<small>máx. 15</small></th><th>Documentação<small>máx. 10</small></th><th>Estrutura<small>máx. 5</small></th>
+            <th class="tot">Total<small>de 100</small></th><th>Resultado</th><th><span class="sr">Detalhes</span></th>
           </tr></thead>
-          <tbody id="rows"><tr><td colspan="11" class="empty">Carregando oficinas…</td></tr></tbody>
+          <tbody id="rows"><tr><td colspan="10" class="empty">Carregando oficinas…</td></tr></tbody>
         </table>
       </div>
       <form class="add" id="addForm">
         <input type="text" id="newName" placeholder="Nome da nova oficina" aria-label="Nome da nova oficina" maxlength="60">
-        <button class="btn" type="submit">Adicionar oficina</button>
+        <button class="btn" type="submit"><span aria-hidden="true">+</span> Adicionar oficina</button>
       </form>
     </div>
     <div class="status" id="status"></div>
@@ -441,14 +499,15 @@ function renderMonth(){
   $("mlabel").textContent=label(mes);
   $("today").hidden=mes===CUR;
   const tb=$("rows");
-  if(!oficinas.length){tb.innerHTML='<tr><td colspan="11" class="empty">'+(ready?'Nenhuma oficina cadastrada. Digite o nome abaixo e clique em “Adicionar oficina”.':'Carregando oficinas…')+'</td></tr>';renderComputed();return}
+  if(!oficinas.length){tb.innerHTML='<tr><td colspan="10" class="empty">'+(ready?'Nenhuma oficina cadastrada. Digite o nome abaixo e clique em “Adicionar oficina”.':'Carregando oficinas…')+'</td></tr>';renderComputed();return}
   let h="";
   for(const o of oficinas){
     const a=rec(mes,o.id)||{};
-    h+='<tr data-id="'+esc(o.id)+'"><td class="name">'+esc(o.nome)+'</td>';
-    for(const [k,mx] of PTS) h+='<td><input type="number" inputmode="decimal" min="0" max="'+mx+'" step="0.5" data-f="'+k+'" id="i-'+esc(o.id)+'-'+k+'" aria-label="'+k+' '+esc(o.nome)+'" value="'+esc(a[k]??"")+'"></td>';
-    h+='<td class="total" data-c="total"></td><td data-c="nivel"></td><td class="pos" data-c="pos"></td><td><button class="more" data-more="'+esc(o.id)+'" aria-expanded="'+open.has(o.id)+'">Detalhes</button></td></tr>';
-    h+='<tr class="det" data-det="'+esc(o.id)+'"'+(open.has(o.id)?"":" hidden")+'><td colspan="11"><div class="grid">';
+    const ini=o.nome.replace(/[^A-Z0-9 ]/gi,"").split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join("");
+    h+='<tr data-id="'+esc(o.id)+'"><td class="name"><div class="who"><span class="av" data-c="av">'+esc(ini)+'</span><span class="nm">'+esc(o.nome)+'<small data-c="st">Pendente</small></span></div></td>';
+    for(const [k,mx] of PTS) h+='<td><label class="pt"><input type="number" inputmode="decimal" min="0" max="'+mx+'" step="0.5" placeholder="–" data-f="'+k+'" id="i-'+esc(o.id)+'-'+k+'" aria-label="'+k+' '+esc(o.nome)+'" value="'+esc(a[k]??"")+'"><span>/'+mx+'</span></label></td>';
+    h+='<td class="tcell"><div class="total" data-c="total"></div><div class="tbar"><i data-c="tbar"></i></div></td><td class="res"><div data-c="nivel"></div><small class="pos" data-c="pos"></small></td><td><button class="more" data-more="'+esc(o.id)+'" aria-expanded="'+open.has(o.id)+'" aria-label="Detalhes de '+esc(o.nome)+'" title="Detalhes, indicadores e observações"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></td></tr>';
+    h+='<tr class="det" data-det="'+esc(o.id)+'"'+(open.has(o.id)?"":" hidden")+'><td colspan="10"><div class="grid">';
     for(const [k,l] of IND) h+='<label>'+l+'<input type="number" inputmode="decimal" min="0" '+(k==="notaCliente"?'max="10" step="0.1"':'step="1"')+' data-f="'+k+'" id="i-'+esc(o.id)+'-'+k+'" value="'+esc(a[k]??"")+'"></label>';
     h+='<label class="grow">Observações<textarea data-f="obs" id="i-'+esc(o.id)+'-obs">'+esc(a.obs||"")+'</textarea></label>';
     h+='<button type="button" class="btn ghost rm" data-rm="'+esc(o.id)+'">Remover oficina</button>';
@@ -464,10 +523,16 @@ function renderComputed(){
     const n=nivel(x.t); if(n)cnt[n]++;
     const tr=[...document.querySelectorAll('tr[data-id]')].find(r=>r.dataset.id===x.id); if(!tr)continue;
     tr.querySelector('[data-c=total]').textContent=x.t==null?"—":x.t;
-    tr.querySelector('[data-c=nivel]').innerHTML=n?'<span class="badge '+n+'">'+n+'</span>':'';
-    tr.querySelector('[data-c=pos]').textContent=x.t==null?"":(scored.findIndex(s=>s.t===x.t)+1)+"º";
+    const tb=tr.querySelector('[data-c=tbar]');tb.style.width=(x.t==null?0:Math.min(100,x.t))+"%";tb.className=n||"";
+    tr.querySelector('[data-c=av]').className="av "+(n||"");
+    const st=tr.querySelector('[data-c=st]');const r=rec(mes,x.id)||{};const filled=PTS.filter(([k])=>num(r[k])!=null).length;
+    st.textContent=filled===0?"Pendente":filled<PTS.length?"Em andamento · "+filled+"/6":"Avaliada";st.className=filled===0?"":filled<PTS.length?"mid":"ok";
+    tr.querySelector('[data-c=nivel]').innerHTML=n?'<span class="badge '+n+'">'+n+'</span>':'<span class="dash">Sem nota</span>';
+    tr.querySelector('[data-c=pos]').textContent=x.t==null?"":(scored.findIndex(s=>s.t===x.t)+1)+"º lugar";
   }
   const sem=list.length-scored.length;
+  $("progN").textContent=scored.length+" de "+list.length;$("progBar").style.width=(list.length?scored.length/list.length*100:0)+"%";
+  $("tblTitle").textContent="Lançamento de notas · "+label(mes);
   $("levels").innerHTML=["Diamante","Ouro","Prata","Bronze"].map(n=>tile(n,cnt[n],n==="Diamante"?" featured":"")).join("")+tile("Sem nota",sem," none");
 }
 const COR={Diamante:"#2A9DB0",Ouro:"#D4A21C",Prata:"#9AA3A6",Bronze:"#B8642E","Sem nota":"#B9B2AB"};
