@@ -175,10 +175,12 @@ input:disabled,textarea:disabled{opacity:.6}
 
 <script>
 // =====================================================================
-//  CONFIGURAÇÃO: cole aqui o link do Apps Script (veja o LEIA-ME).
+//  CONFIGURAÇÃO DO SUPABASE (veja o LEIA-ME).
+//  Cole o "Project URL" e a chave "anon public" / "publishable".
 //  Deixando vazio, o site funciona só neste computador (modo local).
 // =====================================================================
-const SCRIPT_URL = "";
+const SUPABASE_URL = "https://jhzkyjdhtiobriyfdvub.supabase.co";
+const SUPABASE_KEY = "sb_publishable_GSq1fsySo92TAfSqZTd6Vg_394tdxAS";
 
 (function(){
 const OFICINAS_INICIAIS=["RECAMI AUTOS","TECAUTO AUTOS","DG MOTOCROSS","EDIGLEI MOTO","RBP AUTOS","F. GUERREIRO AUTOS","RRX REPARADORA","EASY MATH AUTOS","RETOCAR AUTOS"];
@@ -196,12 +198,21 @@ function slug(n){return n.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().
 
 // ---------- armazenamento ----------
 const LS_KEY="ranking-oficinas-v1";
-const store = SCRIPT_URL ? {
+const SB=SUPABASE_URL.replace(/\/+$/,"")+"/rest/v1/";
+const SB_H={"apikey":SUPABASE_KEY,"Content-Type":"application/json"};
+if(/^eyJ/.test(SUPABASE_KEY))SB_H.Authorization="Bearer "+SUPABASE_KEY; // chave antiga (anon JWT)
+const AV_MAP=[["key","key"],["mes","mes"],["oficinaId","oficina_id"],["q","q"],["p","p"],["s","s"],["o","o"],["d","d"],["e","e"],["carros","carros"],["refeitos","refeitos"],["atrasos","atrasos"],["notaCliente","nota_cliente"],["extras","extras"],["obs","obs"],["atualizadoEm","atualizado_em"]];
+async function sbErr(r){let t="";try{const j=await r.json();t=j.message||j.hint||""}catch(e){}return new Error("HTTP "+r.status+(t?" – "+t:""))}
+const store = (SUPABASE_URL&&SUPABASE_KEY) ? {
   modo:"online",
-  async load(){const r=await fetch(SCRIPT_URL+"?t="+Date.now());if(!r.ok)throw new Error("HTTP "+r.status);return r.json()},
-  async post(b){const r=await fetch(SCRIPT_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(b)});const j=await r.json();if(!j.ok)throw new Error(j.erro||"erro")},
-  saveAval(d){return this.post({action:"saveAval",data:d})},
-  saveOf(d){return this.post({action:"saveOficina",data:d})}
+  async get(t){const r=await fetch(SB+t+"?select=*",{headers:SB_H,cache:"no-store"});if(!r.ok)throw await sbErr(r);return r.json()},
+  async load(){
+    const [of,av]=await Promise.all([this.get("oficinas"),this.get("avaliacoes")]);
+    return {oficinas:of,avaliacoes:av.map(row=>{const a={};for(const [js,db] of AV_MAP)a[js]=row[db];return a})};
+  },
+  async upsert(t,body){const r=await fetch(SB+t,{method:"POST",headers:Object.assign({"Prefer":"resolution=merge-duplicates,return=minimal"},SB_H),body:JSON.stringify(body)});if(!r.ok)throw await sbErr(r)},
+  saveAval(d){const row={};for(const [js,db] of AV_MAP)row[db]=(d[js]===undefined||d[js]==="")?null:d[js];return this.upsert("avaliacoes",row)},
+  saveOf(d){return this.upsert("oficinas",{id:d.id,nome:d.nome,ativa:d.ativa!==false,ordem:Number(d.ordem)||null})}
 } : {
   modo:"local",
   read(){try{const j=JSON.parse(localStorage.getItem(LS_KEY));if(j)return j}catch(e){}
@@ -346,7 +357,7 @@ $("hbody").addEventListener("click",e=>{const b=e.target.closest("[data-go]");if
 function tab(n){for(const t of ["mes","hist","crit"]){$("t-"+t).setAttribute("aria-selected",t===n);$("v-"+t).hidden=t!==n}}
 ["mes","hist","crit"].forEach(t=>$("t-"+t).onclick=()=>tab(t));
 
-if(store.modo==="local"){$("banner").hidden=false;$("banner").textContent="Modo local: as notas ficam salvas só neste computador e neste navegador. Para usar em vários computadores com os mesmos dados, siga o passo 1 do LEIA-ME."}
+if(store.modo==="local"){$("banner").hidden=false;$("banner").textContent="Modo local: as notas ficam salvas só neste computador e neste navegador. Para usar em vários computadores com os mesmos dados, configure o Supabase (passo 1 do LEIA-ME)."}
 renderAll();
 refresh(true);
 if(store.modo==="online"){setInterval(()=>{if(!document.hidden)refresh(false)},60000);window.addEventListener("focus",()=>refresh(false))}
