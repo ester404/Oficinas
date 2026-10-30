@@ -737,7 +737,7 @@ function renderFin(){
   if(!veicOk)h+='<div class="banner">A tabela de veículos ainda não existe no Supabase. Rode o arquivo <b>supabase-financeiro.sql</b> no SQL Editor (veja o LEIA-ME) e recarregue a página.</div>';
   h+='<div class="fstats"><div><small>Líquido dos reparos</small><b>'+money(r.lq)+'</b></div><div><small>Franquias</small><b>'+money(r.fr)+'</b></div><div><small>Já pago</small><b class="tneg">− '+money(r.pg)+'</b></div><div><small>Peças compradas</small><b class="tneg">− '+money(r.pc)+'</b></div>'+
      (r.carryIn?'<div><small>Débito do mês anterior</small><b class="tneg">− '+money(r.carryIn)+'</b></div>':'')+
-     '<div class="big pos"><small>Total a pagar</small><b>'+money(r.pagar)+'</b></div><div class="big '+(r.restante>0?'neg':'zero')+'"><small>Devendo</small><b>'+money(r.restante)+'</b></div></div>';
+     '<div class="'+(r.restante>0?'big neg':'big pos')+'"><small>'+(r.restante>0?'Devendo':'Total a pagar')+'</small><b>'+money(r.restante>0?r.restante:r.pagar)+'</b></div></div>';
   h+='<div class="scroll"><table class="veh"><thead><tr><th class="name">Placa</th><th class="name">Veículo / sinistro</th><th>Líquido do reparo</th><th>Franquia</th><th>Já pago</th><th>Peças compradas</th><th>Saldo do veículo</th><th>Compensação</th><th>A pagar</th><th><span class="sr">Excluir</span></th></tr></thead><tbody>';
   if(!r.rows.length)h+='<tr><td colspan="10" class="empty">Nenhum veículo lançado para esta oficina em '+label(mes)+'. Use a linha abaixo para adicionar.</td></tr>';
   for(const x of r.rows){const v=x.v,id=esc(v.id),neg=x.saldo<0;
