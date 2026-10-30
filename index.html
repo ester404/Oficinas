@@ -506,6 +506,58 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .exp svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 @media (max-width:1100px){.summ{grid-template-columns:minmax(0,1fr)}.sm-r{border-left:0;padding-left:0;border-top:1px solid var(--line);padding-top:18px}}
 @media (max-width:640px){.lvt{grid-template-columns:repeat(3,minmax(0,1fr))}.stats4{grid-template-columns:repeat(2,minmax(0,1fr))}.summ{padding:16px}.exp{width:100%;justify-content:center}}
+
+/* ===== critérios em cartões ===== */
+.crits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.ccrit{border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:12px;background:var(--surface);transition:border-color .15s,box-shadow .15s}
+.ccrit:focus-within{border-color:var(--green);box-shadow:0 0 0 3px rgba(15,59,54,.10)}
+.ccrit.filled{background:#FBFDFC}
+.cc-top{display:flex;gap:10px;align-items:flex-start;min-height:52px}
+.cc-ic{flex:none;width:34px;height:34px;border-radius:50%;background:var(--icon-bg);color:var(--green);display:grid;place-items:center}
+.ccrit.filled .cc-ic{background:var(--green);color:#fff}
+.cc-ic svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.cc-t{display:grid;gap:2px;min-width:0} .cc-t b{font-size:.88rem;line-height:1.2} .cc-t small{font-size:.74rem;color:var(--muted);line-height:1.3}
+.cc-in{display:grid;grid-template-columns:38px minmax(0,1fr) 38px;align-items:center;gap:6px}
+.stp{height:38px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--green);font:700 1.2rem var(--body);cursor:pointer;line-height:1}
+.stp:hover{border-color:var(--green);background:#EEF5F2}
+.cc-val{position:relative;display:flex;align-items:baseline;justify-content:center;gap:4px;height:44px;border:1px solid var(--line);border-radius:8px;background:var(--input)}
+.cc-val:focus-within{border-color:var(--green);background:#fff}
+.cc-val input{width:56px;border:0;background:transparent;outline:0;text-align:right;font-family:var(--serif);font-size:1.5rem;font-weight:700;color:var(--green);padding:0;height:100%}
+.cc-val input.bad{color:var(--red)}
+.cc-val span{font-size:.72rem;color:var(--muted);font-weight:600;white-space:nowrap}
+.cc-bar{height:6px;border-radius:99px;background:var(--icon-bg);overflow:hidden}
+.cc-bar i{display:block;height:100%;width:0;border-radius:99px;background:#C9C0B8;transition:width .25s}
+.cc-bar i.hi{background:#1D7A4A} .cc-bar i.md{background:#D4A21C} .cc-bar i.lo{background:#B8642E}
+.cc-ft{display:flex;justify-content:space-between;align-items:center;font-size:.72rem;color:var(--muted)}
+.cc-max{border:0;background:none;color:var(--green);font:700 .72rem var(--body);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px}
+@media (max-width:1250px){.crits{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.crits{grid-template-columns:minmax(0,1fr)}}
+
+.h3o{color:var(--green)}
+.ep-head{position:sticky;top:0;z-index:5;background:var(--surface);margin:-24px -24px 0;padding:20px 24px;border-radius:14px 14px 0 0}
+@media (max-width:860px){.ep-head{margin:-16px -16px 0;padding:14px 16px}}
+
+/* ===== editar / excluir ===== */
+.ofacts{display:flex;flex-wrap:wrap;gap:18px}
+.lnk{color:var(--green)}
+.lnk:hover{text-decoration:underline}
+.lnk.armed{background:var(--red);color:#fff;border-radius:6px;padding:6px 10px;text-decoration:none}
+.renform{background:#F4F7F5;border:1px solid #CFE0D9;border-radius:12px;padding:16px;display:grid;gap:12px}
+.renform label,.dcedit label{display:grid;gap:4px;font-size:.74rem;font-weight:700;color:var(--muted)}
+.renform input,.dcedit input,.dcadd input{height:40px;border:1px solid var(--line);border-radius:8px;padding:0 12px;font:600 .95rem var(--body);color:var(--ink);background:#fff;text-transform:uppercase}
+.dcedit textarea,.dcadd textarea{min-height:56px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:inherit;resize:vertical;background:#fff}
+.dclist li{grid-template-columns:minmax(150px,200px) minmax(0,1fr) auto}
+.dcl-acts{display:flex;align-items:center;gap:6px}
+.ico{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--green);display:grid;place-items:center;cursor:pointer;padding:0}
+.ico svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ico.red{color:var(--red)} .ico:hover{border-color:currentColor}
+.ico.armed{background:var(--red);color:#fff;border-color:var(--red)}
+.dclist li.editing{display:block}
+.dcedit{display:grid;gap:10px}
+.dcadd{margin-top:14px;padding-top:14px;border-top:1px dashed #E8CFC9;display:grid;gap:8px}
+.dcadd b{font-size:.85rem;color:var(--red-dark)} .dcadd small{font-size:.74rem;color:var(--muted);margin-top:-4px}
+.dcadd .btn{justify-self:start}
+.olist .dclist li{grid-template-columns:1fr}
 </style>
 </head>
 <body>
@@ -675,7 +727,9 @@ const store = (SUPABASE_URL&&SUPABASE_KEY) ? {
   async delVeh(id){const j=this.read();j.veiculos=(j.veiculos||[]).filter(x=>x.id!==id);this.write(j)}
 };
 
+let knownIds=new Set();
 function apply(j){
+  knownIds=new Set((j.oficinas||[]).map(o=>String(o.id)));
   const all=(j.oficinas||[]).filter(o=>o.ativa!==false&&String(o.ativa).toUpperCase()!=="FALSE").map(o=>({...o,id:String(o.id),nome:String(o.nome)}))
     .sort((a,b)=>(Number(a.ordem)||0)-(Number(b.ordem)||0)||a.nome.localeCompare(b.nome));
   const isDc=o=>o.descredenciada===true||String(o.descredenciada).toUpperCase()==="TRUE";
@@ -706,6 +760,10 @@ function hora(){return new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",min
 function setStatus(t){$("status").textContent=t;const f=$("fstatus");if(f)f.textContent=t}
 
 // ---------- render: mês ----------
+const CRIT_IC={q:'<svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg>',p:'<svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg>',s:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9.5h.01M15 9.5h.01"/></svg>',o:'<svg viewBox="0 0 24 24"><path d="M6 2h12v20l-3-2-3 2-3-2-3 2z"/><path d="M9 7h6M9 11h6M9 15h4"/></svg>',d:'<svg viewBox="0 0 24 24"><path d="M14 3H6v18h12V7z"/><path d="M14 3v4h4M9 13h6M9 17h6"/></svg>',e:'<svg viewBox="0 0 24 24"><path d="M3 21V9l9-6 9 6v12"/><path d="M8 21v-7h8v7"/></svg>'};
+function updCards(){for(const [k,mx] of PTS){const el=$("i-"+selEval+"-"+k);const b=document.querySelector('[data-ccb="'+k+'"]');if(!el||!b)continue;const v=num(el.value);const pc=v==null?0:Math.max(0,Math.min(100,v/mx*100));
+  b.style.width=pc+"%";b.className=pc>=90?"hi":pc>=65?"md":pc>0?"lo":"";const c=document.querySelector('[data-cc="'+k+'"]');c.classList.toggle("filled",v!=null);
+  document.querySelector('[data-ccp="'+k+'"]').textContent=v==null?"Sem nota":Math.round(pc)+"% do máximo"}}
 const CRIT_TXT={q:["Qualidade do reparo","Sem retrabalho; sem reclamação de peças ou pintura"],p:["Prazo de entrega","Veículo entregue na data prometida ou antes"],s:["Satisfação do cliente","Notas e avaliações dos associados"],o:["Preço e orçamento","Orçamento final igual ao aprovado, sem extras"],d:["Documentação","Notas fiscais e fotos enviadas rápido"],e:["Estrutura da oficina","Ferramentas, alinhamento e organização"]};
 let selEval=null;
 function inis(n){return n.replace(/[^A-Z0-9 ]/gi,"").split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join("")}
@@ -726,18 +784,21 @@ function renderMonth(){
   let h='<div class="ep-head"><div class="ep-who"><span class="av big" id="epAv">'+esc(inis(o.nome))+'</span><div><div class="ep-k">Avaliação de '+label(mes)+'</div><h2>'+esc(o.nome)+'</h2><small id="epSt"></small></div></div>'+
     '<div class="ep-score"><svg viewBox="0 0 120 120" class="ring" aria-hidden="true"><circle cx="60" cy="60" r="50" class="rg-bg"/><circle cx="60" cy="60" r="50" class="rg-fg" id="rgFg" pathLength="100"/></svg><div class="ring-c"><b id="epTot">—</b><small>de 100</small></div></div>'+
     '<div class="ep-res"><div id="epBadge"></div><div class="ep-pos" id="epPos"></div></div></div>';
-  h+='<div class="ep-sec"><h3>Critérios</h3><div class="crits">';
+  h+='<div class="ep-sec"><h3>Critérios · <span class="h3o">'+esc(o.nome)+'</span></h3><div class="crits">';
   for(const [k,mx] of PTS){const v=a[k]??"";
-    h+='<div class="crit-row"><div class="cr-l"><b>'+CRIT_TXT[k][0]+'</b><small>'+CRIT_TXT[k][1]+'</small></div>'+
-      '<input type="range" class="sl" min="0" max="'+mx+'" step="0.5" value="'+(v===""?0:v)+'" data-sl="'+k+'" aria-label="'+CRIT_TXT[k][0]+' (barra)" style="--p:'+(v===""?0:v/mx*100)+'%">'+
-      '<label class="pt"><input type="number" inputmode="decimal" min="0" max="'+mx+'" step="0.5" placeholder="–" data-f="'+k+'" id="i-'+id+'-'+k+'" aria-label="'+CRIT_TXT[k][0]+'" value="'+esc(v)+'"><span>/'+mx+'</span></label></div>'}
-  h+='</div></div><div class="ep-sec"><h3>Indicadores do mês</h3><div class="inds">';
+    h+='<div class="ccrit" data-cc="'+k+'"><div class="cc-top"><span class="cc-ic">'+CRIT_IC[k]+'</span><div class="cc-t"><b>'+CRIT_TXT[k][0]+'</b><small>'+CRIT_TXT[k][1]+'</small></div></div>'+
+      '<div class="cc-in"><button type="button" class="stp" data-step="'+k+'" data-d="-1" aria-label="Diminuir">−</button>'+
+      '<label class="cc-val"><input type="number" inputmode="decimal" min="0" max="'+mx+'" step="0.5" placeholder="–" data-f="'+k+'" id="i-'+id+'-'+k+'" aria-label="'+CRIT_TXT[k][0]+'" value="'+esc(v)+'"><span>de '+mx+'</span></label>'+
+      '<button type="button" class="stp" data-step="'+k+'" data-d="1" aria-label="Aumentar">+</button></div>'+
+      '<div class="cc-bar"><i data-ccb="'+k+'"></i></div><div class="cc-ft"><span data-ccp="'+k+'">Sem nota</span><button type="button" class="cc-max" data-step="'+k+'" data-d="max">Nota máxima</button></div></div>'}
+  h+='</div></div><div class="ep-sec"><h3>Indicadores do mês · <span class="h3o">'+esc(o.nome)+'</span></h3><div class="inds">';
   for(const [k,l] of IND) h+='<label>'+l+'<input type="number" inputmode="decimal" min="0" '+(k==="notaCliente"?'max="10" step="0.1"':'step="1"')+' placeholder="–" data-f="'+k+'" id="i-'+id+'-'+k+'" value="'+esc(a[k]??"")+'"></label>';
   h+='<label class="obs">Observações<textarea data-f="obs" id="i-'+id+'-obs" placeholder="Anotações sobre a oficina neste mês">'+esc(a.obs||"")+'</textarea></label></div></div>';
   h+='<div class="dcform" id="dcForm" hidden><div class="dchead"><b>Descredenciar '+esc(o.nome)+'</b><span>A oficina sai da avaliação e do ranking. As notas e os valores antigos continuam salvos.</span></div><label>Motivo do descredenciamento<textarea id="dcm-'+id+'" placeholder="Ex.: atrasos recorrentes, reclamações de qualidade, nota Bronze por 3 meses…"></textarea></label><div class="dcacts"><button type="button" class="btn red" data-dcok="'+id+'">Confirmar descredenciamento</button><button type="button" class="btn ghost2" data-dcno="1">Cancelar</button></div></div>';
-  h+='<div class="ep-foot"><button type="button" class="lnk red" data-dc="'+id+'"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>Descredenciar oficina</button>'+
+  h+='<div class="renform" id="renForm" hidden><label>Novo nome da oficina<input type="text" id="renIn" maxlength="60" value="'+esc(o.nome)+'"></label><div class="dcacts"><button type="button" class="btn" data-renok="'+id+'">Salvar nome</button><button type="button" class="btn ghost2" data-renno="1">Cancelar</button></div></div>';
+  h+='<div class="ep-foot"><div class="ofacts"><button type="button" class="lnk" data-ren="'+id+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></svg>Editar nome</button><button type="button" class="lnk red" data-delof="'+id+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 13h12l1-13M9 7V4h6v3"/></svg><span>Excluir oficina</span></button><button type="button" class="lnk red" data-dc="'+id+'"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>Descredenciar oficina</button></div>'+
     '<div class="navb"><button type="button" class="btn ghost2" data-nav="-1"'+(idx===0?' disabled':'')+'>‹ Anterior</button><button type="button" class="btn" data-nav="1"'+(idx===oficinas.length-1?' disabled':'')+'>Próxima oficina ›</button></div></div>';
-  $("evalPanel").innerHTML=h; renderComputed();
+  $("evalPanel").innerHTML=h; updCards(); renderComputed();
 }
 function renderComputed(){
   const list=oficinas.map(o=>({id:o.id,t:total(rec(mes,o.id))}));
@@ -778,7 +839,7 @@ function syncInputs(){
   if(!$("evalPanel").contains(document.activeElement)&&!Object.keys(pending).length){renderMonth();return}
   if(selEval&&!pending[key(mes,selEval)]){const a=rec(mes,selEval)||{};
     for(const k of [...FIELDS,"obs"]){const el=$("i-"+selEval+"-"+k); if(!el||el===document.activeElement)continue;
-      const v=a[k]??""; if(el.value!==String(v)){el.value=v;const sl=document.querySelector('[data-sl="'+k+'"]');if(sl){sl.value=v||0;sl.style.setProperty("--p",(v||0)/sl.max*100+"%")}}}}
+      const v=a[k]??""; if(el.value!==String(v))el.value=v}updCards()}
   renderComputed();
 }
 
@@ -808,10 +869,27 @@ function renderHist(){
 }
 function colErr(er){return /column|coluna|schema/i.test(er.message)?"Falta atualizar o Supabase: rode o SQL de descredenciamento (veja a mensagem da Claude / LEIA-ME).":"Não foi possível salvar ("+er.message+")."}
 function fdate(d){if(!d)return"";const [y,m,dd]=String(d).slice(0,10).split("-");return dd+"/"+m+"/"+y}
+let dcEdit=null;
 function renderDc(){
   $("dcCount").textContent=descreds.length;
-  $("dcPanel").innerHTML='<div class="dclist-h"><h3>Oficinas descredenciadas</h3><span>'+descreds.length+' no total</span></div>'+(descreds.length?'<ul class="dclist">'+descreds.map(o=>'<li><div class="dcl-name"><b>'+esc(o.nome)+'</b><small>Descredenciada em '+fdate(o.descredenciada_em)+'</small></div><p class="dcl-mot"><span>Motivo</span>'+esc(o.motivo||"Sem motivo registrado")+'</p><button type="button" class="btn ghost2" data-rec="'+esc(o.id)+'">Recredenciar</button></li>').join("")+'</ul>':'<p class="dcl-empty">Nenhuma oficina descredenciada até agora.</p>');
+  const it=o=>dcEdit===o.id
+    ?'<li class="editing"><div class="dcedit"><label>Nome<input type="text" id="dcEdN" maxlength="60" value="'+esc(o.nome)+'"></label><label>Motivo<textarea id="dcEdM">'+esc(o.motivo||"")+'</textarea></label><div class="dcacts"><button type="button" class="btn" data-dcsave="'+esc(o.id)+'">Salvar</button><button type="button" class="btn ghost2" data-dccancel="1">Cancelar</button></div></div></li>'
+    :'<li><div class="dcl-name"><b>'+esc(o.nome)+'</b><small>Descredenciada em '+fdate(o.descredenciada_em)+'</small></div><p class="dcl-mot"><span>Motivo</span>'+esc(o.motivo||"Sem motivo registrado")+'</p><div class="dcl-acts"><button type="button" class="ico" data-dced="'+esc(o.id)+'" title="Editar nome e motivo" aria-label="Editar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></svg></button><button type="button" class="ico red" data-delof="'+esc(o.id)+'" title="Excluir oficina" aria-label="Excluir"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 13h12l1-13M9 7V4h6v3"/></svg></button><button type="button" class="btn ghost2" data-rec="'+esc(o.id)+'">Recredenciar</button></div></li>';
+  $("dcPanel").innerHTML='<div class="dclist-h"><h3>Oficinas descredenciadas</h3><span>'+descreds.length+' no total · aparecem no Financeiro</span></div>'+
+    (descreds.length?'<ul class="dclist">'+descreds.map(it).join("")+'</ul>':'<p class="dcl-empty">Nenhuma oficina descredenciada até agora.</p>')+
+    '<div class="dcadd"><b>Cadastrar oficina já descredenciada</b><small>Para oficinas que não são mais avaliadas, mas ainda têm valores no Financeiro.</small><input type="text" id="dcNewN" maxlength="60" placeholder="Nome da oficina"><textarea id="dcNewM" placeholder="Motivo do descredenciamento"></textarea><button type="button" class="btn red" id="dcNewBtn">+ Cadastrar descredenciada</button></div>';
 }
+function hojeISO(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function nomeExiste(n,exceto){return oficinas.concat(descreds).some(o=>o.nome===n&&o.id!==exceto)}
+function renameOf(id,nome){nome=String(nome||"").trim().toUpperCase();if(!nome){setStatus("Digite o nome da oficina.");return}
+  if(nomeExiste(nome,id)){setStatus("Já existe uma oficina com o nome "+nome+".");return}
+  const o=oficinas.find(x=>x.id===id)||descreds.find(x=>x.id===id);if(!o)return;const nv=Object.assign({},o,{nome});
+  store.saveOf(nv).then(()=>{oficinas=oficinas.map(x=>x.id===id?nv:x);descreds=descreds.map(x=>x.id===id?nv:x);renderAll();setStatus("Nome alterado para "+nome+".")}).catch(er=>setStatus(colErr(er)))}
+function delOf(btn,id){
+  if(btn.dataset.armed!=="1"){btn.dataset.armed="1";btn.classList.add("armed");const sp=btn.querySelector("span");if(sp)sp.textContent="Clique de novo para excluir";btn.title="Clique de novo para excluir";
+    setTimeout(()=>{if(btn.isConnected){btn.dataset.armed="";btn.classList.remove("armed");if(sp)sp.textContent="Excluir oficina"}},4000);return}
+  const o=oficinas.find(x=>x.id===id)||descreds.find(x=>x.id===id);if(!o)return;
+  store.saveOf(Object.assign({},o,{ativa:false})).then(()=>{oficinas=oficinas.filter(x=>x.id!==id);descreds=descreds.filter(x=>x.id!==id);if(selEval===id)selEval=null;if(selOf===id)selOf=null;renderAll();setStatus(o.nome+" excluída.")}).catch(er=>setStatus(colErr(er)))}
 function renderAll(){renderMonth();renderHist();renderFin();renderDc()}
 
 // ---------- gravação ----------
@@ -919,11 +997,19 @@ $("evalPanel").addEventListener("input",e=>{
   if(el.dataset.sl){const k=el.dataset.sl;el.style.setProperty("--p",el.value/el.max*100+"%");const n=$("i-"+selEval+"-"+k);n.value=el.value;n.classList.remove("bad");queueSave(selEval);return}
   if(!el.dataset.f)return;
   if(el.type==="number"){const mx=el.max?Number(el.max):Infinity;const v=Number(el.value);const bad=el.value!==""&&(isNaN(v)||v<0||v>mx);el.classList.toggle("bad",bad);if(bad){setStatus("Valor fora do limite (0 a "+el.max+"). Corrija para salvar.");return}
-    const sl=document.querySelector('[data-sl="'+el.dataset.f+'"]');if(sl){sl.value=el.value||0;sl.style.setProperty("--p",(el.value||0)/sl.max*100+"%")}}
+  }
+  updCards();
   queueSave(selEval);
 });
 $("v-mes").addEventListener("click",e=>{
   const sel=e.target.closest("[data-sel]");if(sel){selEval=sel.dataset.sel;renderMonth();return}
+  if(e.target.closest("[data-ren]")){const f=$("renForm");f.hidden=!f.hidden;if(!f.hidden){$("renIn").focus();$("renIn").select()}return}
+  if(e.target.closest("[data-renno]")){$("renForm").hidden=true;return}
+  const rk=e.target.closest("[data-renok]");if(rk){renameOf(rk.dataset.renok,$("renIn").value);return}
+  const dl=e.target.closest("[data-delof]");if(dl){delOf(dl,dl.dataset.delof);return}
+  const sp=e.target.closest("[data-step]");
+  if(sp){const k=sp.dataset.step,mx=PTS.find(x=>x[0]===k)[1],el=$("i-"+selEval+"-"+k);let v=num(el.value)||0;
+    v=sp.dataset.d==="max"?mx:Math.max(0,Math.min(mx,v+Number(sp.dataset.d)));el.value=v;el.dispatchEvent(new Event("input",{bubbles:true}));return}
   const nv=e.target.closest("[data-nav]");if(nv){const i=oficinas.findIndex(o=>o.id===selEval)+Number(nv.dataset.nav);if(oficinas[i]){selEval=oficinas[i].id;renderMonth();$("evalPanel").scrollIntoView({block:"nearest"})}return}
   const dc=e.target.closest("[data-dc]");if(dc){const f=$("dcForm");f.hidden=!f.hidden;if(!f.hidden)f.querySelector("textarea").focus();return}
   if(e.target.closest("[data-dcno]")){$("dcForm").hidden=true;return}
@@ -947,7 +1033,21 @@ $("expBtn").onclick=()=>{
   setStatus("Relatório de "+label(mes)+" exportado (abre no Excel).");
 };
 $("dcToggle").onclick=()=>{const p=$("dcPanel");p.hidden=!p.hidden;$("dcToggle").setAttribute("aria-expanded",!p.hidden)};
-$("dcPanel").addEventListener("click",e=>{const b=e.target.closest("[data-rec]");if(!b)return;
+$("dcPanel").addEventListener("click",e=>{
+  const ed=e.target.closest("[data-dced]");if(ed){dcEdit=ed.dataset.dced;renderDc();$("dcEdN").focus();return}
+  if(e.target.closest("[data-dccancel]")){dcEdit=null;renderDc();return}
+  const sv=e.target.closest("[data-dcsave]");if(sv){const id=sv.dataset.dcsave,o=descreds.find(x=>x.id===id);const nome=$("dcEdN").value.trim().toUpperCase(),motivo=$("dcEdM").value.trim();
+    if(!nome){setStatus("Digite o nome da oficina.");return}if(nomeExiste(nome,id)){setStatus("Já existe uma oficina com o nome "+nome+".");return}
+    const nv=Object.assign({},o,{nome,motivo});store.saveOf(nv).then(()=>{descreds=descreds.map(x=>x.id===id?nv:x);dcEdit=null;renderAll();setStatus("Oficina atualizada.")}).catch(er=>setStatus(colErr(er)));return}
+  const dl=e.target.closest("[data-delof]");if(dl){delOf(dl,dl.dataset.delof);return}
+  if(e.target.closest("#dcNewBtn")){const nome=$("dcNewN").value.trim().toUpperCase(),motivo=$("dcNewM").value.trim();
+    if(!nome){setStatus("Digite o nome da oficina.");$("dcNewN").focus();return}
+    if(nomeExiste(nome)){setStatus(nome+" já está cadastrada.");return}
+    let id=slug(nome);while(knownIds.has(id)||oficinas.concat(descreds).some(x=>x.id===id))id+="-2";knownIds.add(id);
+    const ordem=Math.max(0,...oficinas.concat(descreds).map(x=>Number(x.ordem)||0))+1;
+    const o={id,nome,ativa:true,ordem,descredenciada:true,motivo:motivo||null,descredenciada_em:hojeISO()};
+    store.saveOf(o).then(()=>{descreds.push(o);renderAll();setStatus(nome+" cadastrada como descredenciada. Ela já aparece no Financeiro.")}).catch(er=>setStatus(colErr(er)));return}
+  const b=e.target.closest("[data-rec]");if(!b)return;
   if(b.dataset.armed!=="1"){b.dataset.armed="1";b.textContent="Clique de novo para confirmar";setTimeout(()=>{if(b.isConnected){b.dataset.armed="";b.textContent="Recredenciar"}},4000);return}
   const o=descreds.find(x=>x.id===b.dataset.rec);if(!o)return;const nv=Object.assign({},o,{descredenciada:false,motivo:null,descredenciada_em:null});
   store.saveOf(nv).then(()=>{descreds=descreds.filter(x=>x.id!==o.id);oficinas.push(nv);oficinas.sort((a,b)=>(Number(a.ordem)||0)-(Number(b.ordem)||0));renderAll();setStatus(o.nome+" voltou a ser credenciada.")}).catch(er=>setStatus(colErr(er)))});
@@ -955,7 +1055,8 @@ $("addForm").addEventListener("submit",e=>{
   e.preventDefault(); const nome=$("newName").value.trim().toUpperCase(); if(!nome)return;
   if(oficinas.some(o=>o.nome===nome)){setStatus(nome+" já está cadastrada.");return}
   if(descreds.some(o=>o.nome===nome)){setStatus(nome+" está descredenciada. Use “Recredenciar” na lista de descredenciadas.");return}
-  const o={id:slug(nome),nome,ativa:true,ordem:oficinas.length?Math.max(...oficinas.map(o=>Number(o.ordem)||0))+1:1};
+  let nid=slug(nome);while(knownIds.has(nid)||oficinas.concat(descreds).some(x=>x.id===nid))nid+="-2";knownIds.add(nid);
+  const o={id:nid,nome,ativa:true,ordem:oficinas.length?Math.max(...oficinas.map(o=>Number(o.ordem)||0))+1:1};
   store.saveOf(o).then(()=>{oficinas.push(o);$("newName").value="";renderAll();setStatus(nome+" adicionada.")}).catch(e=>setStatus("Não foi possível adicionar ("+e.message+")."));
 });
 (function(){const y=+CUR.slice(0,4);$("selMes").innerHTML=MESES.map((n,i)=>'<option value="'+String(i+1).padStart(2,"0")+'">'+n+'</option>').join("");
