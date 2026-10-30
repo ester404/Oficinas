@@ -395,6 +395,117 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .dcl-empty{margin:0;color:var(--muted);font-size:.86rem}
 .fstats .big.zero{background:var(--bg)} .fstats .big.zero b{color:#A39A92}
 @media (max-width:720px){.dclist li{grid-template-columns:1fr}.dcrow td{padding-left:16px}.dcpanel{padding:14px 16px}}
+
+/* ===== avaliação: lista + painel ===== */
+.evgrid{display:grid;grid-template-columns:300px minmax(0,1fr);gap:18px;align-items:start}
+.evgrid>*{min-width:0}
+.olist{position:sticky;top:16px;display:flex;flex-direction:column;max-height:calc(100vh - 32px)}
+.ol-top{padding:16px 16px 12px;border-bottom:1px solid var(--line);display:grid;gap:12px}
+.ol-h{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ol-h h2{font-size:1.15rem;line-height:1.1}
+.ol-h h2 small{display:block;font-family:var(--body);font-size:.72rem;font-weight:600;color:var(--muted);margin-top:3px}
+.ol-h .dcbtn{height:30px;padding:0 9px;font-size:.72rem;gap:5px}
+.olist .prog{min-width:0}
+.ol{list-style:none;margin:0;padding:8px;overflow-y:auto;display:grid;gap:2px}
+.ol .empty{padding:20px 8px}
+.oi{width:100%;display:grid;grid-template-columns:34px minmax(0,1fr) auto;align-items:center;gap:10px;padding:9px 10px;border:0;background:transparent;border-radius:10px;cursor:pointer;text-align:left;font:inherit;color:var(--ink);border-left:3px solid transparent}
+.oi:hover{background:var(--bg)}
+.oi.on{background:#EEF5F2;border-left-color:var(--green)}
+.oi .av{width:34px;height:34px;font-size:.68rem}
+.oi-n{display:grid;gap:1px;min-width:0}
+.oi-n b{font-size:.82rem;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.oi-n small{font-size:.68rem;font-weight:600;color:#A39A92}
+.oi-n small.mid{color:#B07A0A} .oi-n small.ok{color:#1D7A4A}
+.oi-t b{display:inline-block;min-width:38px;text-align:center;padding:3px 8px;border-radius:99px;font-size:.82rem;font-variant-numeric:tabular-nums}
+.oi-t b.Diamante{background:var(--dia);color:var(--dia-ink)} .oi-t b.Ouro{background:var(--ouro);color:var(--ouro-ink)} .oi-t b.Prata{background:var(--prata);color:var(--prata-ink)} .oi-t b.Bronze{background:var(--bronze);color:var(--bronze-ink)}
+.oi-t .nil{color:#C9C0B8;padding-right:10px}
+.olist .add{padding:12px;gap:6px;border-radius:0 0 14px 14px}
+.olist .add input{flex:1 1 120px;height:38px;min-width:0}
+.olist .add .btn{height:38px;padding:0 12px}
+.olist .dcpanel{padding:12px;max-height:280px;overflow:auto}
+.olist .dclist li{grid-template-columns:1fr;gap:6px}
+.epanel{padding:24px;display:grid;gap:22px}
+.ep-head{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:22px;padding-bottom:20px;border-bottom:1px solid var(--line)}
+.ep-who{display:flex;align-items:center;gap:14px;min-width:0}
+.av.big{width:56px;height:56px;font-size:1rem}
+.ep-k{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--red)}
+.ep-who h2{font-size:1.6rem;margin:2px 0}
+.ep-who small{font-size:.76rem;font-weight:600;color:#A39A92} .ep-who small.mid{color:#B07A0A} .ep-who small.ok{color:#1D7A4A}
+.ep-score{position:relative;width:104px;height:104px}
+.ring{width:100%;height:100%;transform:rotate(-90deg)}
+.rg-bg{fill:none;stroke:var(--icon-bg);stroke-width:10}
+.rg-fg{fill:none;stroke:#C9C0B8;stroke-width:10;stroke-linecap:round;stroke-dasharray:0 100;transition:stroke-dasharray .35s}
+.rg-fg.Diamante{stroke:#2A9DB0} .rg-fg.Ouro{stroke:#D4A21C} .rg-fg.Prata{stroke:#9AA3A6} .rg-fg.Bronze{stroke:#B8642E}
+.ring-c{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.ring-c b{font-family:var(--serif);font-size:1.9rem;color:var(--green);line-height:1}
+.ring-c small{font-size:.66rem;color:var(--muted);font-weight:600}
+.ep-res{display:grid;gap:6px;justify-items:start;min-width:110px}
+.ep-res .badge{font-size:.85rem;padding:5px 14px}
+.ep-pos{font-size:.8rem;font-weight:700;color:var(--red)}
+.ep-sec h3{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.crits{display:grid;gap:4px}
+.crit-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(140px,240px) auto;align-items:center;gap:18px;padding:10px 12px;border-radius:10px}
+.crit-row:hover{background:var(--bg)}
+.cr-l{display:grid;gap:2px;min-width:0} .cr-l b{font-size:.92rem} .cr-l small{font-size:.78rem;color:var(--muted)}
+.sl{-webkit-appearance:none;appearance:none;width:100%;height:8px;border-radius:99px;background:linear-gradient(90deg,var(--green) var(--p,0%),var(--icon-bg) var(--p,0%));cursor:pointer;margin:0}
+.sl::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid var(--green);box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.sl::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid var(--green)}
+.sl:focus-visible{outline:2px solid var(--green);outline-offset:4px}
+.crit-row .pt input{width:72px;height:40px;font-size:1rem}
+.inds{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.inds label{display:grid;gap:4px;font-size:.74rem;font-weight:600;color:var(--muted)}
+.inds input{width:100%;text-align:left;height:38px;border-radius:8px;padding:0 10px;font:inherit;font-size:.95rem;color:var(--ink);background:var(--input);border:1px solid var(--line)}
+.inds input:focus,.inds textarea:focus{border-color:var(--green);outline:none;box-shadow:0 0 0 3px rgba(15,59,54,.12);background:#fff}
+.inds .obs{grid-column:1/-1}
+.inds textarea{min-height:70px;border-radius:8px;padding:10px;resize:vertical}
+.epanel .dcform{background:#FDF4F2;border:1px solid #F1CFC9;border-radius:12px;padding:16px;max-width:none}
+.ep-foot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;padding-top:18px;border-top:1px solid var(--line)}
+.lnk{display:inline-flex;align-items:center;gap:6px;border:0;background:none;font:700 .82rem var(--body);cursor:pointer;padding:6px 0}
+.lnk svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.lnk.red{color:var(--red)} .lnk.red:hover{text-decoration:underline}
+.navb{display:flex;gap:8px}
+.navb .btn{height:40px}
+.btn:disabled{opacity:.4;cursor:default}
+@media (max-width:1100px){.evgrid{grid-template-columns:240px minmax(0,1fr)}.crit-row{grid-template-columns:minmax(0,1fr) auto}.crit-row .sl{grid-column:1/-1;grid-row:2}}
+@media (max-width:860px){.evgrid{grid-template-columns:minmax(0,1fr)}.olist{position:static;max-height:none}.ol{max-height:320px}.ep-head{grid-template-columns:1fr auto}.ep-res{grid-column:1/-1;display:flex;align-items:center;gap:10px}.epanel{padding:16px}}
+
+/* ===== resumo + ferramentas ===== */
+.summ{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.15fr);padding:20px 22px;gap:24px}
+.summ h3{font-family:var(--body);font-size:.95rem;font-weight:700;color:var(--green);margin-bottom:14px}
+.sm-r{border-left:1px solid var(--line);padding-left:24px;display:grid;align-content:start}
+.lvt{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.lvb{display:grid;justify-items:center;gap:4px;padding:16px 6px 14px;border-radius:12px;border:2px solid transparent;cursor:pointer;font:inherit;transition:transform .15s,border-color .15s}
+.lvb:hover{transform:translateY(-2px)}
+.lvb.on{border-color:currentColor}
+.lvb-ic svg{width:30px;height:30px}
+.lvb b{font-family:var(--body);font-size:1.6rem;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.lvb small{font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.lvb.Diamante{background:#E4F4F6;color:#0D5560} .lvb.Ouro{background:#FBF1D9;color:#A06A00} .lvb.Prata{background:#EEF0F2;color:#4A5357} .lvb.Bronze{background:#F9E4D7;color:#9A4A1C} .lvb.none{background:#EEEFF0;color:#4A5357}
+.stats4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.st4{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px}
+.st-ic{flex:none;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:var(--green);color:#fff}
+.st4.r .st-ic{background:var(--red)}
+.st-ic svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.st4 small{display:block;font-size:.7rem;color:var(--muted);font-weight:600;line-height:1.2}
+.st4 b{display:block;font-size:1.5rem;font-weight:700;color:var(--ink);margin-top:4px;font-variant-numeric:tabular-nums}
+.andam{margin-top:16px;display:grid;gap:6px}
+.an-t b{display:block;font-size:.85rem;color:var(--green)} .an-t small{font-size:.75rem;color:var(--muted)}
+.an-bar{display:flex;align-items:center;gap:12px}
+.an-bar .pbar{flex:1;height:10px}
+.an-bar span{font-weight:700;font-size:.85rem;color:var(--green);min-width:38px;text-align:right}
+.tools{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:14px 16px}
+.srch{flex:2 1 260px;display:flex;align-items:center;gap:8px;height:46px;padding:0 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.srch svg{width:18px;height:18px;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round}
+.srch input{flex:1;border:0;outline:0;font:inherit;background:transparent;color:var(--ink);min-width:0;height:100%}
+.srch:focus-within{border-color:var(--green);box-shadow:0 0 0 3px rgba(15,59,54,.12)}
+.fsel{flex:1 1 180px;display:grid;gap:0;height:46px;padding:4px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);align-content:center}
+.fsel small{font-size:.66rem;color:var(--muted);font-weight:600}
+.fsel select{border:0;outline:0;font:600 .9rem var(--body);color:var(--ink);background:transparent;padding:0;cursor:pointer}
+.fsel:focus-within{border-color:var(--green)}
+.exp{height:46px;display:inline-flex;align-items:center;gap:8px;border-color:var(--green)}
+.exp svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media (max-width:1100px){.summ{grid-template-columns:minmax(0,1fr)}.sm-r{border-left:0;padding-left:0;border-top:1px solid var(--line);padding-top:18px}}
+@media (max-width:640px){.lvt{grid-template-columns:repeat(3,minmax(0,1fr))}.stats4{grid-template-columns:repeat(2,minmax(0,1fr))}.summ{padding:16px}.exp{width:100%;justify-content:center}}
 </style>
 </head>
 <body>
@@ -430,32 +541,32 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
     <div class="content">
       <div id="banner" class="banner" hidden></div>
 
-  <section id="v-mes" style="display:grid;gap:16px">
-    <div class="levels" id="levels"></div>
-    <div class="card">
-      <div class="tbl-top">
-        <div><h2 id="tblTitle">Lançamento de notas</h2><p class="psub">Digite os pontos de cada critério. O total, o nível e a posição são calculados sozinhos.</p></div>
-        <div class="tbl-right">
-          <div class="prog"><div class="prog-txt"><b id="progN">0 de 0</b> oficinas com nota</div><div class="pbar"><i id="progBar"></i></div></div>
-          <button type="button" class="dcbtn" id="dcToggle" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>Descredenciadas <span id="dcCount">0</span></button>
+  <section id="v-mes" style="display:grid;gap:18px">
+    <div class="card summ">
+      <div class="sm-l"><h3>Classificação das oficinas</h3><div class="lvt" id="levels"></div></div>
+      <div class="sm-r"><h3>Resumo do mês</h3><div class="stats4" id="stats4"></div>
+        <div class="andam"><div class="an-t"><b>Andamento das avaliações</b><small id="anTxt">0 de 0 avaliações concluídas</small></div><div class="an-bar"><div class="pbar"><i id="progBar"></i></div><span id="anPct">0%</span></div></div>
+      </div>
+    </div>
+    <div class="card tools">
+      <label class="srch"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="search" id="fQ" placeholder="Buscar oficina..." aria-label="Buscar oficina"></label>
+      <label class="fsel"><small>Classificação</small><select id="fLv"><option value="">Todas</option><option>Diamante</option><option>Ouro</option><option>Prata</option><option>Bronze</option><option value="none">Sem nota</option></select></label>
+      <label class="fsel"><small>Ordenar por</small><select id="fOrd"><option value="cad">Ordem de cadastro</option><option value="desc">Pontuação (maior)</option><option value="asc">Pontuação (menor)</option><option value="nome">Nome (A–Z)</option></select></label>
+      <button type="button" class="btn ghost2 exp" id="expBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M4 19h16"/></svg>Exportar relatório</button>
+    </div>
+    <div class="evgrid">
+      <aside class="card olist">
+        <div class="ol-top">
+          <div class="ol-h"><h2 id="tblTitle">Oficinas</h2><button type="button" class="dcbtn" id="dcToggle" aria-expanded="false" title="Ver oficinas descredenciadas"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>Descredenciadas <span id="dcCount">0</span></button></div>
         </div>
-      </div>
-      <div class="dcpanel" id="dcPanel" hidden></div>
-      <div class="scroll">
-        <table class="eval">
-          <thead><tr>
-            <th class="name">Oficina</th>
-            <th>Qualidade<small>máx. 30</small></th><th>Prazo<small>máx. 20</small></th><th>Satisfação<small>máx. 20</small></th>
-            <th>Preço<small>máx. 15</small></th><th>Documentação<small>máx. 10</small></th><th>Estrutura<small>máx. 5</small></th>
-            <th class="tot">Total<small>de 100</small></th><th>Resultado</th><th><span class="sr">Detalhes</span></th>
-          </tr></thead>
-          <tbody id="rows"><tr><td colspan="10" class="empty">Carregando oficinas…</td></tr></tbody>
-        </table>
-      </div>
-      <form class="add" id="addForm">
-        <input type="text" id="newName" placeholder="Nome da nova oficina" aria-label="Nome da nova oficina" maxlength="60">
-        <button class="btn" type="submit"><span aria-hidden="true">+</span> Adicionar oficina</button>
-      </form>
+        <div class="dcpanel" id="dcPanel" hidden></div>
+        <ul class="ol" id="rows"><li class="empty">Carregando oficinas…</li></ul>
+        <form class="add" id="addForm">
+          <input type="text" id="newName" placeholder="Nova oficina" aria-label="Nome da nova oficina" maxlength="60">
+          <button class="btn" type="submit" aria-label="Adicionar oficina"><span aria-hidden="true">+</span> Adicionar</button>
+        </form>
+      </aside>
+      <div class="card epanel" id="evalPanel"></div>
     </div>
     <div class="status" id="status"></div>
   </section>
@@ -579,7 +690,7 @@ async function refresh(first){
   try{const j=await store.load();apply(j);ready=true;
     if(first)renderAll();else{syncInputs();renderHist();if(!$("finPanel").contains(document.activeElement))renderFin()}
     if(store.modo==="online")setStatus("Atualizado às "+hora());
-  }catch(e){ if(first){ $("rows").innerHTML='<tr><td colspan="11" class="empty">Não foi possível carregar os dados. Confira o link do Apps Script e a internet, depois recarregue a página.</td></tr>'} setStatus("Falha ao atualizar ("+e.message+").")}
+  }catch(e){ if(first){ $("rows").innerHTML='<li class="empty">Não foi possível carregar os dados. Confira a internet e recarregue a página.</li>'} setStatus("Falha ao atualizar ("+e.message+").")}
 }
 
 // ---------- utilidades ----------
@@ -595,61 +706,79 @@ function hora(){return new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",min
 function setStatus(t){$("status").textContent=t;const f=$("fstatus");if(f)f.textContent=t}
 
 // ---------- render: mês ----------
+const CRIT_TXT={q:["Qualidade do reparo","Sem retrabalho; sem reclamação de peças ou pintura"],p:["Prazo de entrega","Veículo entregue na data prometida ou antes"],s:["Satisfação do cliente","Notas e avaliações dos associados"],o:["Preço e orçamento","Orçamento final igual ao aprovado, sem extras"],d:["Documentação","Notas fiscais e fotos enviadas rápido"],e:["Estrutura da oficina","Ferramentas, alinhamento e organização"]};
+let selEval=null;
+function inis(n){return n.replace(/[^A-Z0-9 ]/gi,"").split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join("")}
+function stInfo(id){const r=rec(mes,id)||{};const f=PTS.filter(([k])=>num(r[k])!=null).length;return f===0?["Pendente",""]:f<PTS.length?["Em andamento · "+f+"/6","mid"]:["Avaliada","ok"]}
 function renderMonth(){
   syncPicker();
-  const tb=$("rows");
-  if(!oficinas.length){tb.innerHTML='<tr><td colspan="10" class="empty">'+(ready?'Nenhuma oficina cadastrada. Digite o nome abaixo e clique em “Adicionar oficina”.':'Carregando oficinas…')+'</td></tr>';renderComputed();return}
-  let h="";
-  for(const o of oficinas){
-    const a=rec(mes,o.id)||{};
-    const ini=o.nome.replace(/[^A-Z0-9 ]/gi,"").split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join("");
-    h+='<tr data-id="'+esc(o.id)+'"><td class="name"><div class="who"><span class="av" data-c="av">'+esc(ini)+'</span><span class="nm">'+esc(o.nome)+'<small data-c="st">Pendente</small></span></div></td>';
-    for(const [k,mx] of PTS) h+='<td><label class="pt"><input type="number" inputmode="decimal" min="0" max="'+mx+'" step="0.5" placeholder="–" data-f="'+k+'" id="i-'+esc(o.id)+'-'+k+'" aria-label="'+k+' '+esc(o.nome)+'" value="'+esc(a[k]??"")+'"><span>/'+mx+'</span></label></td>';
-    h+='<td class="tcell"><div class="total" data-c="total"></div><div class="tbar"><i data-c="tbar"></i></div></td><td class="res"><div data-c="nivel"></div><small class="pos" data-c="pos"></small></td><td class="acts"><button class="dcx" data-dc="'+esc(o.id)+'" title="Descredenciar oficina" aria-label="Descredenciar '+esc(o.nome)+'"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg></button><button class="more" data-more="'+esc(o.id)+'" aria-expanded="'+open.has(o.id)+'" aria-label="Detalhes de '+esc(o.nome)+'" title="Detalhes, indicadores e observações"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></td></tr>';
-    h+='<tr class="dcrow" data-dcrow="'+esc(o.id)+'" hidden><td colspan="10"><div class="dcform"><div class="dchead"><b>Descredenciar '+esc(o.nome)+'</b><span>A oficina sai da avaliação e do ranking. As notas e os valores antigos continuam salvos.</span></div><label>Motivo do descredenciamento<textarea id="dcm-'+esc(o.id)+'" placeholder="Ex.: atrasos recorrentes, reclamações de qualidade, nota Bronze por 3 meses…"></textarea></label><div class="dcacts"><button type="button" class="btn red" data-dcok="'+esc(o.id)+'">Confirmar descredenciamento</button><button type="button" class="btn ghost2" data-dcno="'+esc(o.id)+'">Cancelar</button></div></div></td></tr>';
-    h+='<tr class="det" data-det="'+esc(o.id)+'"'+(open.has(o.id)?"":" hidden")+'><td colspan="10"><div class="grid">';
-    for(const [k,l] of IND) h+='<label>'+l+'<input type="number" inputmode="decimal" min="0" '+(k==="notaCliente"?'max="10" step="0.1"':'step="1"')+' data-f="'+k+'" id="i-'+esc(o.id)+'-'+k+'" value="'+esc(a[k]??"")+'"></label>';
-    h+='<label class="grow">Observações<textarea data-f="obs" id="i-'+esc(o.id)+'-obs">'+esc(a.obs||"")+'</textarea></label>';
-    h+='<button type="button" class="btn ghost rm" data-rm="'+esc(o.id)+'">Remover oficina</button>';
-    h+='</div></td></tr>';
-  }
-  tb.innerHTML=h; renderComputed();
+  const ul=$("rows");
+  $("tblTitle").innerHTML="Oficinas<small>"+label(mes)+"</small>";
+  if(!oficinas.length){ul.innerHTML='<li class="empty">'+(ready?'Nenhuma oficina cadastrada. Digite o nome abaixo e clique em “Adicionar”.':'Carregando oficinas…')+'</li>';$("evalPanel").innerHTML='<div class="empty">'+(ready?'Cadastre uma oficina para começar.':'Carregando…')+'</div>';renderComputed();return}
+  if(!selEval||!oficinas.some(o=>o.id===selEval))selEval=oficinas[0].id;
+  let lst=oficinas.slice();const q=($("fQ").value||"").trim().toUpperCase(),fl=$("fLv").value,od=$("fOrd").value;
+  if(q)lst=lst.filter(o=>o.nome.toUpperCase().includes(q));
+  if(fl)lst=lst.filter(o=>{const n=nivel(total(rec(mes,o.id)));return fl==="none"?!n:n===fl});
+  const tt=o=>total(rec(mes,o.id));
+  if(od==="desc")lst.sort((a,b)=>(tt(b)??-1)-(tt(a)??-1));else if(od==="asc")lst.sort((a,b)=>(tt(a)??999)-(tt(b)??999));else if(od==="nome")lst.sort((a,b)=>a.nome.localeCompare(b.nome));
+  ul.innerHTML=(lst.length?"":'<li class="empty">Nenhuma oficina encontrada com esse filtro.</li>')+lst.map(o=>'<li><button type="button" class="oi'+(o.id===selEval?' on':'')+'" data-sel="'+esc(o.id)+'"><span class="av" data-av="'+esc(o.id)+'">'+esc(inis(o.nome))+'</span><span class="oi-n"><b>'+esc(o.nome)+'</b><small data-st="'+esc(o.id)+'"></small></span><span class="oi-t" data-tt="'+esc(o.id)+'"></span></button></li>').join("");
+  const o=oficinas.find(x=>x.id===selEval), a=rec(mes,o.id)||{}, id=esc(o.id), idx=oficinas.indexOf(o);
+  let h='<div class="ep-head"><div class="ep-who"><span class="av big" id="epAv">'+esc(inis(o.nome))+'</span><div><div class="ep-k">Avaliação de '+label(mes)+'</div><h2>'+esc(o.nome)+'</h2><small id="epSt"></small></div></div>'+
+    '<div class="ep-score"><svg viewBox="0 0 120 120" class="ring" aria-hidden="true"><circle cx="60" cy="60" r="50" class="rg-bg"/><circle cx="60" cy="60" r="50" class="rg-fg" id="rgFg" pathLength="100"/></svg><div class="ring-c"><b id="epTot">—</b><small>de 100</small></div></div>'+
+    '<div class="ep-res"><div id="epBadge"></div><div class="ep-pos" id="epPos"></div></div></div>';
+  h+='<div class="ep-sec"><h3>Critérios</h3><div class="crits">';
+  for(const [k,mx] of PTS){const v=a[k]??"";
+    h+='<div class="crit-row"><div class="cr-l"><b>'+CRIT_TXT[k][0]+'</b><small>'+CRIT_TXT[k][1]+'</small></div>'+
+      '<input type="range" class="sl" min="0" max="'+mx+'" step="0.5" value="'+(v===""?0:v)+'" data-sl="'+k+'" aria-label="'+CRIT_TXT[k][0]+' (barra)" style="--p:'+(v===""?0:v/mx*100)+'%">'+
+      '<label class="pt"><input type="number" inputmode="decimal" min="0" max="'+mx+'" step="0.5" placeholder="–" data-f="'+k+'" id="i-'+id+'-'+k+'" aria-label="'+CRIT_TXT[k][0]+'" value="'+esc(v)+'"><span>/'+mx+'</span></label></div>'}
+  h+='</div></div><div class="ep-sec"><h3>Indicadores do mês</h3><div class="inds">';
+  for(const [k,l] of IND) h+='<label>'+l+'<input type="number" inputmode="decimal" min="0" '+(k==="notaCliente"?'max="10" step="0.1"':'step="1"')+' placeholder="–" data-f="'+k+'" id="i-'+id+'-'+k+'" value="'+esc(a[k]??"")+'"></label>';
+  h+='<label class="obs">Observações<textarea data-f="obs" id="i-'+id+'-obs" placeholder="Anotações sobre a oficina neste mês">'+esc(a.obs||"")+'</textarea></label></div></div>';
+  h+='<div class="dcform" id="dcForm" hidden><div class="dchead"><b>Descredenciar '+esc(o.nome)+'</b><span>A oficina sai da avaliação e do ranking. As notas e os valores antigos continuam salvos.</span></div><label>Motivo do descredenciamento<textarea id="dcm-'+id+'" placeholder="Ex.: atrasos recorrentes, reclamações de qualidade, nota Bronze por 3 meses…"></textarea></label><div class="dcacts"><button type="button" class="btn red" data-dcok="'+id+'">Confirmar descredenciamento</button><button type="button" class="btn ghost2" data-dcno="1">Cancelar</button></div></div>';
+  h+='<div class="ep-foot"><button type="button" class="lnk red" data-dc="'+id+'"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>Descredenciar oficina</button>'+
+    '<div class="navb"><button type="button" class="btn ghost2" data-nav="-1"'+(idx===0?' disabled':'')+'>‹ Anterior</button><button type="button" class="btn" data-nav="1"'+(idx===oficinas.length-1?' disabled':'')+'>Próxima oficina ›</button></div></div>';
+  $("evalPanel").innerHTML=h; renderComputed();
 }
 function renderComputed(){
   const list=oficinas.map(o=>({id:o.id,t:total(rec(mes,o.id))}));
   const scored=list.filter(x=>x.t!=null).sort((a,b)=>b.t-a.t);
   const cnt={Diamante:0,Ouro:0,Prata:0,Bronze:0};
-  for(const x of list){
-    const n=nivel(x.t); if(n)cnt[n]++;
-    const tr=[...document.querySelectorAll('tr[data-id]')].find(r=>r.dataset.id===x.id); if(!tr)continue;
-    tr.querySelector('[data-c=total]').textContent=x.t==null?"—":x.t;
-    const tb=tr.querySelector('[data-c=tbar]');tb.style.width=(x.t==null?0:Math.min(100,x.t))+"%";tb.className=n||"";
-    tr.querySelector('[data-c=av]').className="av "+(n||"");
-    const st=tr.querySelector('[data-c=st]');const r=rec(mes,x.id)||{};const filled=PTS.filter(([k])=>num(r[k])!=null).length;
-    st.textContent=filled===0?"Pendente":filled<PTS.length?"Em andamento · "+filled+"/6":"Avaliada";st.className=filled===0?"":filled<PTS.length?"mid":"ok";
-    tr.querySelector('[data-c=nivel]').innerHTML=n?'<span class="badge '+n+'">'+n+'</span>':'<span class="dash">Sem nota</span>';
-    tr.querySelector('[data-c=pos]').textContent=x.t==null?"":(scored.findIndex(s=>s.t===x.t)+1)+"º lugar";
+  for(const x of list){const n=nivel(x.t); if(n)cnt[n]++;
+    const av=document.querySelector('[data-av="'+CSS.escape(x.id)+'"]'); if(!av)continue;
+    av.className="av "+(n||"");
+    const [st,cl]=stInfo(x.id);const se=document.querySelector('[data-st="'+CSS.escape(x.id)+'"]');se.textContent=st;se.className=cl;
+    document.querySelector('[data-tt="'+CSS.escape(x.id)+'"]').innerHTML=x.t==null?'<span class="nil">—</span>':'<b class="'+n+'">'+x.t+'</b>';
+    if(x.id===selEval&&$("epTot")){
+      $("epAv").className="av big "+(n||"");$("epTot").textContent=x.t==null?"—":x.t;
+      const fg=$("rgFg");fg.style.strokeDasharray=(x.t||0)+" 100";fg.style.opacity=x.t?1:0;fg.setAttribute("class","rg-fg "+(n||""));
+      $("epSt").textContent=st;$("epSt").className=cl;
+      $("epBadge").innerHTML=n?'<span class="badge '+n+'">'+n+'</span>':'<span class="dash">Sem nota</span>';
+      $("epPos").textContent=x.t==null?"":(scored.findIndex(s=>s.t===x.t)+1)+"º lugar de "+list.length;
+    }
   }
   const sem=list.length-scored.length;
-  $("progN").textContent=scored.length+" de "+list.length;$("progBar").style.width=(list.length?scored.length/list.length*100:0)+"%";
-  $("tblTitle").textContent="Lançamento de notas · "+label(mes);
-  $("levels").innerHTML=["Diamante","Ouro","Prata","Bronze"].map(n=>tile(n,cnt[n],n==="Diamante"?" featured":"")).join("")+tile("Sem nota",sem," none");
+  const done=list.filter(x=>stInfo(x.id)[1]==="ok").length, pct=list.length?Math.round(done/list.length*100):0;
+  const avg=scored.length?Math.round(scored.reduce((a,b)=>a+b.t,0)/scored.length*10)/10:null;
+  $("anTxt").textContent=done+" de "+list.length+" avaliações concluídas";$("anPct").textContent=pct+"%";$("progBar").style.width=pct+"%";
+  const fl=$("fLv").value;
+  $("levels").innerHTML=["Diamante","Ouro","Prata","Bronze"].map(n=>lvTile(n,cnt[n],fl===n)).join("")+lvTile("Sem nota",sem,fl==="none");
+  const st=(ic,l,v,c)=>'<div class="st4 '+c+'"><span class="st-ic">'+ic+'</span><div><small>'+l+'</small><b>'+v+'</b></div></div>';
+  $("stats4").innerHTML=st('<svg viewBox="0 0 24 24"><path d="M3 21V8l9-5 9 5v13"/><path d="M9 21v-6h6v6"/></svg>',"Oficinas cadastradas",String(list.length).padStart(2,"0"),"g")+
+    st('<svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>',"Avaliadas",String(done).padStart(2,"0"),"g")+
+    st('<svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.5 6 .9-4.4 4.2 1 6-5.3-2.8-5.3 2.8 1-6L3.3 9.4l6-.9z"/></svg>',"Pontuação média",avg==null?"—":avg.toLocaleString("pt-BR"),"g")+
+    st('<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/></svg>',"Descredenciadas",String(descreds.length).padStart(2,"0"),"r");
 }
 const COR={Diamante:"#2A9DB0",Ouro:"#D4A21C",Prata:"#9AA3A6",Bronze:"#B8642E","Sem nota":"#B9B2AB"};
 function medal(c,n){return n==="Diamante"?'<svg viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="1.8" stroke-linejoin="round"><path d="M6 3h12l3 6-9 12L3 9z" fill="'+c+'22"/><path d="M3 9h18M9 3l3 18 3-18"/></svg>'
  :'<svg viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="1.8" stroke-linejoin="round"><path d="M8 2l4 6 4-6"/><circle cx="12" cy="15" r="6" fill="'+c+'22"/><path d="M12 12.2l.9 1.8 2 .3-1.45 1.4.35 2-1.8-.95-1.8.95.35-2L9.1 14.3l2-.3z" fill="'+c+'" stroke="none"/></svg>'}
+function lvTile(n,v,on){const k=n==="Sem nota"?"none":n;const ic=n==="Sem nota"?'<svg viewBox="0 0 24 24" fill="none" stroke="#7C858A" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9" fill="#7C858A22"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17v.2"/></svg>':medal(COR[n],n);
+  return '<button type="button" class="lvb '+k+(on?' on':'')+'" data-lv="'+(n==="Sem nota"?"none":n)+'" title="Filtrar: '+n+'"><span class="lvb-ic">'+ic+'</span><b>'+v+'</b><small>'+n+'</small></button>'}
 function tile(n,v,cls){return '<div class="lv'+cls+' '+n.replace(" ","")+'"><div class="left"><span class="ic">'+medal(COR[n],n)+'</span><div class="lbls"><span>'+n+'</span><i></i></div></div><b>'+v+'</b></div>'}
 function syncInputs(){
-  const ids=[...document.querySelectorAll('tr[data-id]')].map(r=>r.dataset.id).join("|");
-  if(ids!==oficinas.map(o=>o.id).join("|")){renderMonth();return}
-  for(const o of oficinas){
-    if(pending[key(mes,o.id)])continue;
-    const a=rec(mes,o.id)||{};
-    for(const k of [...FIELDS,"obs"]){
-      const el=$("i-"+o.id+"-"+k); if(!el||el===document.activeElement)continue;
-      const v=a[k]??""; if(el.value!==String(v))el.value=v;
-    }
-  }
+  if(!$("evalPanel").contains(document.activeElement)&&!Object.keys(pending).length){renderMonth();return}
+  if(selEval&&!pending[key(mes,selEval)]){const a=rec(mes,selEval)||{};
+    for(const k of [...FIELDS,"obs"]){const el=$("i-"+selEval+"-"+k); if(!el||el===document.activeElement)continue;
+      const v=a[k]??""; if(el.value!==String(v)){el.value=v;const sl=document.querySelector('[data-sl="'+k+'"]');if(sl){sl.value=v||0;sl.style.setProperty("--p",(v||0)/sl.max*100+"%")}}}}
   renderComputed();
 }
 
@@ -785,31 +914,38 @@ $("v-fin").addEventListener("change",e=>{
 });
 
 // ---------- eventos ----------
-$("rows").addEventListener("input",e=>{
-  const el=e.target; if(!el.dataset.f)return;
-  if(el.type==="number"){const mx=el.max?Number(el.max):Infinity;const v=Number(el.value);const bad=el.value!==""&&(isNaN(v)||v<0||v>mx);el.classList.toggle("bad",bad);if(bad){setStatus("Valor fora do limite (0 a "+el.max+"). Corrija para salvar.");return}}
-  const tr=el.closest("tr"); queueSave(tr.dataset.id||tr.dataset.det);
+$("evalPanel").addEventListener("input",e=>{
+  let el=e.target;
+  if(el.dataset.sl){const k=el.dataset.sl;el.style.setProperty("--p",el.value/el.max*100+"%");const n=$("i-"+selEval+"-"+k);n.value=el.value;n.classList.remove("bad");queueSave(selEval);return}
+  if(!el.dataset.f)return;
+  if(el.type==="number"){const mx=el.max?Number(el.max):Infinity;const v=Number(el.value);const bad=el.value!==""&&(isNaN(v)||v<0||v>mx);el.classList.toggle("bad",bad);if(bad){setStatus("Valor fora do limite (0 a "+el.max+"). Corrija para salvar.");return}
+    const sl=document.querySelector('[data-sl="'+el.dataset.f+'"]');if(sl){sl.value=el.value||0;sl.style.setProperty("--p",(el.value||0)/sl.max*100+"%")}}
+  queueSave(selEval);
 });
-$("rows").addEventListener("click",e=>{
-  const dc=e.target.closest("[data-dc]");
-  if(dc){const r=[...document.querySelectorAll("[data-dcrow]")].find(x=>x.dataset.dcrow===dc.dataset.dc);r.hidden=!r.hidden;if(!r.hidden)r.querySelector("textarea").focus();return}
-  const no=e.target.closest("[data-dcno]");
-  if(no){[...document.querySelectorAll("[data-dcrow]")].find(x=>x.dataset.dcrow===no.dataset.dcno).hidden=true;return}
+$("v-mes").addEventListener("click",e=>{
+  const sel=e.target.closest("[data-sel]");if(sel){selEval=sel.dataset.sel;renderMonth();return}
+  const nv=e.target.closest("[data-nav]");if(nv){const i=oficinas.findIndex(o=>o.id===selEval)+Number(nv.dataset.nav);if(oficinas[i]){selEval=oficinas[i].id;renderMonth();$("evalPanel").scrollIntoView({block:"nearest"})}return}
+  const dc=e.target.closest("[data-dc]");if(dc){const f=$("dcForm");f.hidden=!f.hidden;if(!f.hidden)f.querySelector("textarea").focus();return}
+  if(e.target.closest("[data-dcno]")){$("dcForm").hidden=true;return}
   const ok=e.target.closest("[data-dcok]");
   if(ok){const o=oficinas.find(x=>x.id===ok.dataset.dcok);if(!o)return;const motivo=$("dcm-"+o.id).value.trim();
     if(!motivo){setStatus("Escreva o motivo do descredenciamento.");$("dcm-"+o.id).focus();return}
     const d=new Date();const hoje=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-    const nv=Object.assign({},o,{descredenciada:true,motivo,descredenciada_em:hoje});
-    store.saveOf(nv).then(()=>{oficinas=oficinas.filter(x=>x.id!==o.id);descreds.push(nv);renderAll();setStatus(o.nome+" descredenciada.")}).catch(er=>setStatus(colErr(er)));return}
-  const mo=e.target.closest("[data-more]");
-  if(mo){const id=mo.dataset.more;const r=[...document.querySelectorAll("[data-det]")].find(x=>x.dataset.det===id);r.hidden=!r.hidden;r.hidden?open.delete(id):open.add(id);mo.setAttribute("aria-expanded",!r.hidden);return}
-  const rm=e.target.closest("[data-rm]");
-  if(rm){
-    if(rm.dataset.armed!=="1"){rm.dataset.armed="1";rm.textContent="Clique de novo para confirmar";setTimeout(()=>{if(rm.isConnected){rm.dataset.armed="";rm.textContent="Remover oficina"}},4000);return}
-    const o=oficinas.find(x=>x.id===rm.dataset.rm); if(!o)return;
-    store.saveOf({id:o.id,nome:o.nome,ativa:false,ordem:o.ordem}).then(()=>{oficinas=oficinas.filter(x=>x.id!==o.id);renderAll();setStatus(o.nome+" removida. As notas antigas continuam salvas.")}).catch(e=>setStatus("Não foi possível remover ("+e.message+")."));
-  }
+    const nv2=Object.assign({},o,{descredenciada:true,motivo,descredenciada_em:hoje});
+    store.saveOf(nv2).then(()=>{oficinas=oficinas.filter(x=>x.id!==o.id);descreds.push(nv2);renderAll();setStatus(o.nome+" descredenciada.")}).catch(er=>setStatus(colErr(er)));}
 });
+["fQ","fLv","fOrd"].forEach(i=>$(i).addEventListener("input",()=>renderMonth()));
+$("levels").addEventListener("click",e=>{const b=e.target.closest("[data-lv]");if(!b)return;$("fLv").value=$("fLv").value===b.dataset.lv?"":b.dataset.lv;renderMonth()});
+$("expBtn").onclick=()=>{
+  const all=oficinas.map(o=>({o,t:total(rec(mes,o.id))}));const sc=all.filter(x=>x.t!=null).sort((a,b)=>b.t-a.t);
+  const H=["Oficina","Qualidade (30)","Prazo (20)","Satisfação (20)","Preço (15)","Documentação (10)","Estrutura (5)","Total","Nível","Posição","Carros atendidos","Carros refeitos","Entregas atrasadas","Nota clientes","Orçamentos com extra","Observações"];
+  const cell=v=>{v=v==null?"":String(v).replace(".",",");return /[;"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+  const rows=all.sort((a,b)=>(b.t??-1)-(a.t??-1)).map(({o,t})=>{const r=rec(mes,o.id)||{};return [o.nome,...PTS.map(([k])=>num(r[k])),t,nivel(t)||"Sem nota",t==null?"":(sc.findIndex(x=>x.t===t)+1)+"º",...IND.map(([k])=>num(r[k])),r.obs||""].map(cell).join(";")});
+  descreds.forEach(o=>rows.push([o.nome+" (descredenciada)","","","","","","","","Descredenciada","","","","","","",(o.motivo||"")].map(cell).join(";")));
+  const csv="\ufeff"+["Ranking de Oficinas — "+label(mes),"",H.join(";"),...rows].join("\r\n");
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));a.download="ranking-oficinas-"+mes+".csv";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);
+  setStatus("Relatório de "+label(mes)+" exportado (abre no Excel).");
+};
 $("dcToggle").onclick=()=>{const p=$("dcPanel");p.hidden=!p.hidden;$("dcToggle").setAttribute("aria-expanded",!p.hidden)};
 $("dcPanel").addEventListener("click",e=>{const b=e.target.closest("[data-rec]");if(!b)return;
   if(b.dataset.armed!=="1"){b.dataset.armed="1";b.textContent="Clique de novo para confirmar";setTimeout(()=>{if(b.isConnected){b.dataset.armed="";b.textContent="Recredenciar"}},4000);return}
