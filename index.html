@@ -341,8 +341,8 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .fstats b{font-family:var(--serif);font-size:1.25rem;color:var(--green);font-variant-numeric:tabular-nums}
 .fstats .big.pos{background:#E8F3EE;border-color:#BCD7CE} .fstats .big.pos b{color:#1D7A4A}
 .fstats .big.neg{background:#FBEDEA;border-color:#F1CFC9} .fstats .big.neg b{color:var(--red)}
-.veh th{background:#FAF8F6;font-size:.66rem;padding:11px 6px}
-.veh td{padding:8px 4px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.veh th{background:#FAF8F6;font-size:.64rem;padding:11px 3px}
+.veh td{padding:8px 3px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .veh td.name,.veh th.name{padding-left:8px}
 .veh th{white-space:normal;line-height:1.25}
 .veh td.name::before{display:none}
@@ -350,11 +350,11 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .veh tr.rneg td{background:#FDF4F2}
 .veh tr.rneg td:first-child{box-shadow:inset 4px 0 0 var(--red)}
 .veh input{font:inherit;color:var(--ink);background:var(--input);border:1px solid var(--line);height:36px;border-radius:8px;font-size:.88rem}
-.veh .tx{width:86px;padding:0 10px;text-transform:uppercase;font-weight:700}
-.veh .tx.wide{width:136px;text-transform:none;font-weight:500}
+.veh .tx{width:88px;padding:0 6px;text-transform:uppercase;font-weight:700}
+.veh .tx.wide{width:96px;text-transform:none;font-weight:500}
 .mo{position:relative;display:inline-block}
-.mo span{position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:.72rem;color:#A39A92;pointer-events:none}
-.mo input{width:98px;padding:0 10px 0 30px;text-align:right}
+.mo span{position:absolute;left:7px;top:50%;transform:translateY(-50%);font-size:.72rem;color:#A39A92;pointer-events:none}
+.mo input{width:88px;padding:0 8px 0 26px;text-align:right}
 .veh input:focus{background:#fff;border-color:var(--green);box-shadow:0 0 0 3px rgba(15,59,54,.12);outline:none}
 .comp{display:grid;justify-items:center;gap:1px;white-space:normal;max-width:130px;text-align:center}
 .comp span{font-weight:700;font-size:.85rem} .comp small{font-size:.66rem;color:var(--muted)}
@@ -708,9 +708,9 @@ const store = (SUPABASE_URL&&SUPABASE_KEY) ? {
   async load(){
     const [of,av,ve]=await Promise.all([this.get("oficinas"),this.get("avaliacoes"),this.get("veiculos").catch(()=>null)]);
     return {oficinas:of,avaliacoes:av.map(row=>{const a={};for(const [js,db] of AV_MAP)a[js]=row[db];return a}),
-      veiculos:ve&&ve.map(r=>({id:r.id,mes:r.mes,oficinaId:r.oficina_id,placa:r.placa,descricao:r.descricao,franquia:r.franquia,liquido:r.liquido,pecas:r.pecas,pago:r.pago,obs:r.obs,criadoEm:r.criado_em}))};
+      veiculos:ve&&ve.map(r=>({id:r.id,mes:r.mes,oficinaId:r.oficina_id,placa:r.placa,descricao:r.descricao,franquia:r.franquia,liquido:r.liquido,complemento:r.complemento,pecas:r.pecas,pago:r.pago,obs:r.obs,criadoEm:r.criado_em}))};
   },
-  saveVeh(v){return this.upsert("veiculos",{id:v.id,mes:v.mes,oficina_id:v.oficinaId,placa:v.placa||null,descricao:v.descricao||null,franquia:num(v.franquia),liquido:num(v.liquido),pecas:num(v.pecas),pago:num(v.pago),obs:v.obs||null,criado_em:v.criadoEm})},
+  saveVeh(v){return this.upsert("veiculos",{id:v.id,mes:v.mes,oficina_id:v.oficinaId,placa:v.placa||null,descricao:v.descricao||null,franquia:num(v.franquia),liquido:num(v.liquido),complemento:num(v.complemento),pecas:num(v.pecas),pago:num(v.pago),obs:v.obs||null,criado_em:v.criadoEm})},
   async delVeh(id){const r=await fetch(SB+"veiculos?id=eq."+encodeURIComponent(id),{method:"DELETE",headers:SB_H});if(!r.ok)throw await sbErr(r)},
   async upsert(t,body){const r=await fetch(SB+t,{method:"POST",headers:Object.assign({"Prefer":"resolution=merge-duplicates,return=minimal"},SB_H),body:JSON.stringify(body)});if(!r.ok)throw await sbErr(r)},
   saveAval(d){const row={};for(const [js,db] of AV_MAP)row[db]=(d[js]===undefined||d[js]==="")?null:d[js];return this.upsert("avaliacoes",row)},
@@ -919,11 +919,11 @@ function parseBRL(t){if(t==null)return null;t=String(t).replace(/R\$|\s/g,"");if
 function fmtIn(v){v=num(v);return v==null?"":v.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})}
 function vehList(m,of){return Object.values(veic).filter(v=>v.mes===m&&v.oficinaId===of).sort((a,b)=>String(a.criadoEm||"").localeCompare(String(b.criadoEm||""))||String(a.id).localeCompare(String(b.id)))}
 function calcMonth(list,carryIn){
-  const rows=list.map(v=>{const fr=num(v.franquia)||0,lq=num(v.liquido)||0,pc=num(v.pecas)||0,pg=num(v.pago)||0;return {v,fr,lq,pc,pg,saldo:Math.round((lq+fr-pg-pc)*100)/100,desc:0,pagar:0}});
+  const rows=list.map(v=>{const fr=num(v.franquia)||0,lq=num(v.liquido)||0,cp=num(v.complemento)||0,pc=num(v.pecas)||0,pg=num(v.pago)||0;return {v,fr,lq,cp,pc,pg,saldo:Math.round((lq+cp+fr-pg-pc)*100)/100,desc:0,pagar:0}});
   let debt=carryIn+rows.reduce((a,r)=>a+(r.saldo<0?-r.saldo:0),0);const debtTotal=debt;
   for(const r of rows){if(r.saldo>0){r.desc=Math.min(r.saldo,debt);debt=Math.round((debt-r.desc)*100)/100;r.pagar=Math.round((r.saldo-r.desc)*100)/100}}
   const sum=k=>rows.reduce((a,r)=>a+r[k],0);
-  return {rows,carryIn,debtTotal,restante:Math.round(debt*100)/100,fr:sum("fr"),lq:sum("lq"),pc:sum("pc"),pg:sum("pg"),pagar:Math.round(sum("pagar")*100)/100};
+  return {rows,carryIn,debtTotal,restante:Math.round(debt*100)/100,fr:sum("fr"),lq:sum("lq"),cp:sum("cp"),pc:sum("pc"),pg:sum("pg"),pagar:Math.round(sum("pagar")*100)/100};
 }
 function fin(m,of){
   const ms=[...new Set(Object.values(veic).filter(v=>v.oficinaId===of&&v.mes<m).map(v=>v.mes))].sort();
@@ -940,34 +940,34 @@ function renderFin(){
     if(r.restante>0)st='<span class="fneg">Devendo '+money(r.restante)+'</span>';else if(n||r.carryIn)st='<span class="fpos">A pagar '+money(r.pagar)+'</span>';
     return '<button class="fo'+(o.id===selOf?' on':'')+(r.restante>0?' neg':'')+'" data-of="'+esc(o.id)+'"><b>'+esc(o.nome)+'</b><small>'+n+' veículo'+(n===1?'':'s')+(o.descredenciada?' · descredenciada':'')+'</small>'+st+'</button>'}).join("");
   const o=fOfs.find(x=>x.id===selOf), r=fin(mes,selOf);
-  let h='<div class="phead"><div><h2>'+esc(o.nome)+'</h2><p class="psub">Veículos de '+label(mes)+'. Saldo = líquido do reparo + franquia − já pago − peças compradas.</p></div></div>';
+  let h='<div class="phead"><div><h2>'+esc(o.nome)+'</h2><p class="psub">Veículos de '+label(mes)+'. Saldo = líquido do reparo + complemento + franquia − já pago − peças compradas.</p></div></div>';
   if(!veicOk)h+='<div class="banner">A tabela de veículos ainda não existe no Supabase. Rode o arquivo <b>supabase-financeiro.sql</b> no SQL Editor (veja o LEIA-ME) e recarregue a página.</div>';
-  h+='<div class="fstats"><div><small>Líquido dos reparos</small><b>'+money(r.lq)+'</b></div><div><small>Franquias</small><b>'+money(r.fr)+'</b></div><div><small>Já pago</small><b class="tneg">− '+money(r.pg)+'</b></div><div><small>Peças compradas</small><b class="tneg">− '+money(r.pc)+'</b></div>'+
+  h+='<div class="fstats"><div><small>Líquido dos reparos</small><b>'+money(r.lq)+'</b></div><div><small>Complementos</small><b>'+money(r.cp)+'</b></div><div><small>Franquias</small><b>'+money(r.fr)+'</b></div><div><small>Já pago</small><b class="tneg">− '+money(r.pg)+'</b></div><div><small>Peças compradas</small><b class="tneg">− '+money(r.pc)+'</b></div>'+
      (r.carryIn?'<div><small>Débito do mês anterior</small><b class="tneg">− '+money(r.carryIn)+'</b></div>':'')+
      '<div class="'+(r.restante>0?'big neg':'big pos')+'"><small>'+(r.restante>0?'Devendo':'Total a pagar')+'</small><b>'+money(r.restante>0?r.restante:r.pagar)+'</b></div></div>';
-  h+='<div class="scroll"><table class="veh"><thead><tr><th class="name">Placa</th><th class="name">Veículo / sinistro</th><th>Líquido do reparo</th><th>Franquia</th><th>Já pago</th><th>Peças compradas</th><th>Saldo do veículo</th><th>Compensação</th><th>A pagar</th><th><span class="sr">Excluir</span></th></tr></thead><tbody>';
-  if(!r.rows.length)h+='<tr><td colspan="10" class="empty">Nenhum veículo lançado para esta oficina em '+label(mes)+'. Use a linha abaixo para adicionar.</td></tr>';
+  h+='<div class="scroll"><table class="veh"><thead><tr><th class="name">Placa</th><th class="name">Veículo / sinistro</th><th>Líquido do reparo</th><th>Complemento</th><th>Franquia</th><th>Já pago</th><th>Peças compradas</th><th>Saldo do veículo</th><th>Compensação</th><th>A pagar</th><th><span class="sr">Excluir</span></th></tr></thead><tbody>';
+  if(!r.rows.length)h+='<tr><td colspan="11" class="empty">Nenhum veículo lançado para esta oficina em '+label(mes)+'. Use a linha abaixo para adicionar.</td></tr>';
   for(const x of r.rows){const v=x.v,id=esc(v.id),neg=x.saldo<0;
     const comp=neg?'<span class="tneg">Faltou '+money(-x.saldo)+'</span><small>descontado de outros veículos</small>':(x.desc>0?'<span class="tneg">− '+money(x.desc)+'</span><small>cobre débito de outro veículo</small>':'<span class="fz">—</span>');
     h+='<tr class="'+(neg?'rneg':'rpos')+'" data-v="'+id+'">'+
       '<td class="name"><input class="tx" data-vf="placa" value="'+esc(v.placa||"")+'" placeholder="Placa" aria-label="Placa"></td>'+
       '<td class="name"><input class="tx wide" data-vf="descricao" value="'+esc(v.descricao||"")+'" placeholder="Modelo, nº do sinistro…" aria-label="Veículo"></td>'+
-      ['liquido','franquia','pago','pecas'].map(k=>'<td><label class="mo"><span>R$</span><input inputmode="decimal" data-vf="'+k+'" value="'+fmtIn(v[k])+'" placeholder="0,00" aria-label="'+k+'"></label></td>').join("")+
+      ['liquido','complemento','franquia','pago','pecas'].map(k=>'<td><label class="mo"><span>R$</span><input inputmode="decimal" data-vf="'+k+'" value="'+fmtIn(v[k])+'" placeholder="0,00" aria-label="'+k+'"></label></td>').join("")+
       '<td><b class="'+(neg?'tneg':'tpos')+'">'+money(x.saldo)+'</b></td><td class="comp">'+comp+'</td><td><b class="'+(x.pagar>0?'tpos':'fz')+'">'+money(x.pagar)+'</b></td>'+
       '<td><button class="del" data-del="'+id+'" title="Excluir veículo" aria-label="Excluir veículo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 13h12l1-13M9 7V4h6v3"/></svg></button></td></tr>';
   }
   h+='</tbody><tfoot><tr class="addrow"><td class="name"><input class="tx" id="nvPlaca" placeholder="Placa" aria-label="Placa do novo veículo"></td><td class="name"><input class="tx wide" id="nvDesc" placeholder="Modelo, nº do sinistro…" aria-label="Descrição do novo veículo"></td>'+
-     '<td><label class="mo"><span>R$</span><input inputmode="decimal" id="nvLq" placeholder="0,00" aria-label="Líquido do reparo"></label></td><td><label class="mo"><span>R$</span><input inputmode="decimal" id="nvFr" placeholder="0,00" aria-label="Franquia"></label></td><td><label class="mo"><span>R$</span><input inputmode="decimal" id="nvPg" placeholder="0,00" aria-label="Já pago"></label></td><td><label class="mo"><span>R$</span><input inputmode="decimal" id="nvPc" placeholder="0,00" aria-label="Peças compradas"></label></td>'+
+     '<td><label class="mo"><span>R$</span><input inputmode="decimal" id="nvLq" placeholder="0,00" aria-label="Líquido do reparo"></label></td><td><label class="mo"><span>R$</span><input inputmode="decimal" id="nvCp" placeholder="0,00" aria-label="Complemento"></label></td><td><label class="mo"><span>R$</span><input inputmode="decimal" id="nvFr" placeholder="0,00" aria-label="Franquia"></label></td><td><label class="mo"><span>R$</span><input inputmode="decimal" id="nvPg" placeholder="0,00" aria-label="Já pago"></label></td><td><label class="mo"><span>R$</span><input inputmode="decimal" id="nvPc" placeholder="0,00" aria-label="Peças compradas"></label></td>'+
      '<td colspan="4"><button class="btn" id="nvAdd"><span aria-hidden="true">+</span> Adicionar veículo</button></td></tr></tfoot></table></div>';
-  if(r.restante>0)h+='<div class="fmsg neg"><b>A oficina ficou devendo '+money(r.restante)+'.</b> Os valores já pagos e as peças compradas passaram do valor dos reparos e franquias deste mês. Esse valor será descontado automaticamente dos veículos do próximo mês.</div>';
+  if(r.restante>0)h+='<div class="fmsg neg"><b>A oficina ficou devendo '+money(r.restante)+'.</b> Os valores já pagos e as peças compradas passaram do valor dos reparos, complementos e franquias deste mês. Esse valor será descontado automaticamente dos veículos do próximo mês.</div>';
   else if(r.debtTotal>0)h+='<div class="fmsg pos"><b>Débito de '+money(r.debtTotal)+' compensado.</b> O valor que faltou'+(r.carryIn?' (incluindo o débito do mês anterior)':'')+' foi descontado de outros veículos desta oficina.</div>';
   else if(r.rows.length)h+='<div class="fmsg pos"><b>Tudo certo.</b> Nenhum veículo ficou com saldo negativo.</div>';
   $("finPanel").innerHTML=h;
 }
 function addVeh(){
-  const pl=$("nvPlaca").value.trim(),ds=$("nvDesc").value.trim(),fr=parseBRL($("nvFr").value),lq=parseBRL($("nvLq").value),pc=parseBRL($("nvPc").value),pg=parseBRL($("nvPg").value);
+  const pl=$("nvPlaca").value.trim(),ds=$("nvDesc").value.trim(),fr=parseBRL($("nvFr").value),lq=parseBRL($("nvLq").value),pc=parseBRL($("nvPc").value),pg=parseBRL($("nvPg").value),cp=parseBRL($("nvCp").value);
   if(!pl&&!ds){setStatus("Digite a placa ou a descrição do veículo.");$("nvPlaca").focus();return}
-  const v={id:"v"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),mes,oficinaId:selOf,placa:pl.toUpperCase(),descricao:ds,franquia:fr,liquido:lq,pecas:pc,pago:pg,criadoEm:new Date().toISOString()};
+  const v={id:"v"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),mes,oficinaId:selOf,placa:pl.toUpperCase(),descricao:ds,franquia:fr,liquido:lq,complemento:cp,pecas:pc,pago:pg,criadoEm:new Date().toISOString()};
   veic[v.id]=v;vPending[v.id]=v;renderFin();$("nvPlaca").focus();setStatus("Salvando…");
   store.saveVeh(v).then(()=>{delete vPending[v.id];setStatus("Veículo salvo às "+hora())}).catch(e=>{setStatus("Não foi possível salvar o veículo ("+e.message+").")});
 }
