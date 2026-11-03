@@ -142,6 +142,11 @@ function hora() {
   });
 }
 
+// Nota com vírgula (ex.: 71,7).
+function fmtNota(t) {
+  return t == null ? "—" : Number(t).toLocaleString("pt-BR");
+}
+
 // Mensagem de status (aparece embaixo da aba aberta).
 function setStatus(t) {
   for (const id of ["status", "fstatus", "accStatus"]) {

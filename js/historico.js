@@ -40,7 +40,7 @@ function renderHist() {
         '" style="width:' +
         Math.max(2, Math.min(100, r.t)) +
         '%"></i></span><span class="rval">' +
-        r.t +
+        fmtNota(r.t) +
         '</span><span class="badge ' +
         n +
         '">' +
@@ -95,11 +95,11 @@ function renderHist() {
           : '<span class="badge none">Sem nota</span>') +
         "</header>" +
         '<div class="ostats"><div><b>' +
-        (last ?? "—") +
+        fmtNota(last) +
         "</b><small>Última nota</small></div><div><b>" +
-        (avg ?? "—") +
+        fmtNota(avg) +
         "</b><small>Média 12 meses</small></div><div><b>" +
-        (best ?? "—") +
+        fmtNota(best) +
         "</b><small>Melhor nota</small></div></div>" +
         '<div class="chart">' +
         bars +

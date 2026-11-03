@@ -80,7 +80,10 @@ renderAll();
 
 if (store.modo === "online") {
   loadSess();
-  if (sess) {
+  const link = lerLinkRecuperacao();
+  if (link && link.recuperar) mostrarNovaSenha();
+  else if (link && link.erro) showLogin(link.erro);
+  else if (sess) {
     SB_H.Authorization = "Bearer " + sess.access_token;
     afterAuth();
   } else showLogin();

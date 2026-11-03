@@ -1,44 +1,15 @@
 /* Aba "Avaliação do mês": lista de oficinas, critérios, veículos enviados, resumo e exportação. */
 
 let selEval = null; // oficina aberta no painel
-let selVeh = 0; // veículo sendo avaliado (posição na lista)
-
-const CRIT_IC = {
-  q: '<svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg>',
-  p: '<svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg>',
-  s: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9.5h.01M15 9.5h.01"/></svg>',
-  o: '<svg viewBox="0 0 24 24"><path d="M6 2h12v20l-3-2-3 2-3-2-3 2z"/><path d="M9 7h6M9 11h6M9 15h4"/></svg>',
-  d: '<svg viewBox="0 0 24 24"><path d="M14 3H6v18h12V7z"/><path d="M14 3v4h4M9 13h6M9 17h6"/></svg>',
-  e: '<svg viewBox="0 0 24 24"><path d="M3 21V9l9-6 9 6v12"/><path d="M8 21v-7h8v7"/></svg>',
-};
 
 const CRIT_TXT = {
-  q: [
-    "Qualidade do reparo",
-    "Sem retrabalho; sem reclamação de peças ou pintura",
-  ],
+  q: ["Qualidade do reparo", "Sem retrabalho; sem reclamação de peças ou pintura"],
   p: ["Prazo de entrega", "Veículo entregue na data prometida ou antes"],
   s: ["Satisfação do cliente", "Notas e avaliações dos associados"],
   o: ["Preço e orçamento", "Orçamento final igual ao aprovado, sem extras"],
   d: ["Documentação", "Notas fiscais e fotos enviadas rápido"],
   e: ["Estrutura da oficina", "Ferramentas, alinhamento e organização"],
 };
-
-function updCards() {
-  for (const [k, mx] of PTS) {
-    const el = $("vc-" + k);
-    const b = document.querySelector('[data-ccb="' + k + '"]');
-    if (!el || !b) continue;
-    const v = num(el.value);
-    const pc = v == null ? 0 : Math.max(0, Math.min(100, (v / mx) * 100));
-    b.style.width = pc + "%";
-    b.className = pc >= 90 ? "hi" : pc >= 65 ? "md" : pc > 0 ? "lo" : "";
-    const c = document.querySelector('[data-cc="' + k + '"]');
-    c.classList.toggle("filled", v != null);
-    document.querySelector('[data-ccp="' + k + '"]').textContent =
-      v == null ? "Sem nota" : Math.round(pc) + "% do máximo";
-  }
-}
 
 function envList(m, id) {
   return parseEnviados((rec(m, id) || {}).enviados);
@@ -49,148 +20,125 @@ function carCount(m, id) {
   return n || num((rec(m, id) || {}).carros) || 0;
 }
 
-// Seção "Veículos do mês": cadastro dos veículos enviados e avaliação de cada um.
+const CRIT_CURTO = {
+  q: "Qualidade",
+  p: "Prazo",
+  s: "Satisfação",
+  o: "Preço",
+  d: "Documentos",
+  e: "Estrutura",
+};
+
+// Seção "Veículos do mês": tabela com uma linha por veículo e os 6 critérios lado a lado.
 function envHtml(o) {
-  const L = envList(mes, o.id),
-    id = esc(o.id);
-  if (selVeh >= L.length) selVeh = Math.max(0, L.length - 1);
+  const L = envList(mes, o.id);
   let h =
     '<div class="ep-sec env"><div class="env-h"><h3>Veículos do mês · <span class="h3o">' +
     esc(o.nome) +
-    '</span></h3><span class="env-n" id="envN">' +
-    L.length +
-    " veículo" +
-    (L.length === 1 ? "" : "s") +
-    " em " +
-    label(mes) +
-    "</span></div>" +
-    '<div class="env-add"><input type="text" id="envPl" maxlength="10" placeholder="Placa" aria-label="Placa"><input type="text" id="envDs" maxlength="80" placeholder="Modelo, nº do sinistro (opcional)" aria-label="Modelo ou sinistro"><input type="date" id="envDt" aria-label="Data de entrada" title="Data de entrada na oficina"><button type="button" class="btn" data-envadd="' +
-    id +
-    '"><span aria-hidden="true">+</span> Adicionar veículo</button></div>';
+    '</span></h3><span class="env-n">Nota da oficina = média dos veículos</span></div>' +
+    '<div class="env-add"><input type="text" id="envPl" maxlength="10" placeholder="Placa" aria-label="Placa">' +
+    '<input type="text" id="envDs" maxlength="80" placeholder="Modelo, nº do sinistro (opcional)" aria-label="Modelo ou sinistro">' +
+    '<input type="date" id="envDt" aria-label="Data de entrada" title="Data de entrada na oficina">' +
+    '<button type="button" class="btn" data-envadd="1"><span aria-hidden="true">+</span> Adicionar</button></div>';
   if (!L.length)
     return (
       h +
       '<p class="env-empty">Nenhum veículo lançado para esta oficina neste mês. Adicione a placa acima para avaliar o serviço feito nele.</p></div>'
     );
   h +=
-    '<ul class="env-l">' +
-    L.map((v, i) => {
-      const t = somaCriterios(v),
-        n = nivel(t);
-      return (
-        '<li class="' +
-        (i === selVeh ? "on " : "") +
-        (n || "") +
-        '"><button type="button" class="env-sel" data-vsel="' +
-        i +
-        '"><span class="env-i">' +
-        (i + 1) +
-        '</span><span class="env-t"><b>' +
-        esc(v.placa || "Sem placa") +
-        "</b><small>" +
-        esc(v.descricao || "") +
-        (v.data
-          ? (v.descricao ? " · " : "") + "entrada " + fdate(v.data)
-          : "") +
-        '</small></span><span class="env-s" data-vs="' +
-        i +
-        '">' +
-        (t == null ? "Avaliar" : t) +
-        '</span></button><button type="button" class="ico red" data-envdel="' +
-        i +
-        '" title="Remover veículo" aria-label="Remover veículo">' +
-        ICO_TR +
-        "</button></li>"
-      );
-    }).join("") +
-    "</ul></div>";
-  return h + vehEvalHtml(L[selVeh], L.length);
-}
-
-// Critérios do veículo selecionado.
-function vehEvalHtml(v, qtd) {
-  let h =
-    '<div class="ep-sec veh-eval"><div class="env-h"><h3>Avaliação do veículo · <span class="h3o">' +
-    esc(v.placa || v.descricao || "Sem placa") +
-    '</span></h3><span class="veh-tot" id="vehTot"></span></div><div class="crits">';
-  for (const [k, mx] of PTS) {
+    '<div class="scroll"><table class="vg"><thead><tr><th class="l">Veículo</th>' +
+    PTS.map(
+      ([k, mx]) =>
+        '<th title="' + CRIT_TXT[k][0] + '">' + CRIT_CURTO[k] + "<small>de " + mx + "</small></th>",
+    ).join("") +
+    '<th>Nota</th><th><span class="sr">Remover</span></th></tr></thead><tbody>';
+  L.forEach((v, i) => {
     h +=
-      '<div class="ccrit" data-cc="' +
-      k +
-      '"><div class="cc-top"><span class="cc-ic">' +
-      CRIT_IC[k] +
-      '</span><div class="cc-t"><b>' +
-      CRIT_TXT[k][0] +
+      '<tr data-vrow="' +
+      i +
+      '"><td class="l"><div class="vg-id"><span class="vg-n">' +
+      (i + 1) +
+      "</span><div><b>" +
+      esc(v.placa || "Sem placa") +
       "</b><small>" +
-      CRIT_TXT[k][1] +
-      "</small></div></div>" +
-      '<div class="cc-in"><button type="button" class="stp" data-step="' +
-      k +
-      '" data-d="-1" aria-label="Diminuir">−</button>' +
-      '<label class="cc-val"><input type="number" inputmode="decimal" min="0" max="' +
-      mx +
-      '" step="0.5" placeholder="–" data-vc="' +
-      k +
-      '" id="vc-' +
-      k +
-      '" aria-label="' +
-      CRIT_TXT[k][0] +
-      '" value="' +
-      esc(v[k] ?? "") +
-      '"><span>de ' +
-      mx +
-      "</span></label>" +
-      '<button type="button" class="stp" data-step="' +
-      k +
-      '" data-d="1" aria-label="Aumentar">+</button></div>' +
-      '<div class="cc-bar"><i data-ccb="' +
-      k +
-      '"></i></div><div class="cc-ft"><span data-ccp="' +
-      k +
-      '">Sem nota</span><button type="button" class="cc-max" data-step="' +
-      k +
-      '" data-d="max">Nota máxima</button></div></div>';
-  }
+      esc(v.descricao || "") +
+      (v.data ? (v.descricao ? " · " : "") + fdate(v.data) : "") +
+      "</small></div></div></td>" +
+      PTS.map(
+        ([k, mx]) =>
+          '<td><input type="number" inputmode="decimal" min="0" max="' +
+          mx +
+          '" step="0.5" placeholder="–" data-vi="' +
+          i +
+          '" data-vc="' +
+          k +
+          '" aria-label="' +
+          CRIT_TXT[k][0] +
+          " – " +
+          esc(v.placa || "") +
+          '" value="' +
+          esc(v[k] ?? "") +
+          '"></td>',
+      ).join("") +
+      '<td class="vg-tot" data-vt="' +
+      i +
+      '"></td><td><button type="button" class="ico red" data-envdel="' +
+      i +
+      '" title="Remover veículo" aria-label="Remover veículo">' +
+      ICO_TR +
+      "</button></td></tr>";
+  });
   h +=
-    '</div><div class="veh-nav"><button type="button" class="btn ghost2" data-vnav="-1"' +
-    (selVeh === 0 ? " disabled" : "") +
-    '>‹ Veículo anterior</button><button type="button" class="btn ghost2" data-vnav="1"' +
-    (selVeh >= qtd - 1 ? " disabled" : "") +
-    ">Próximo veículo ›</button></div></div>";
+    '</tbody><tfoot><tr><td class="l"><b>Média da oficina</b><small id="vgCount"></small></td>' +
+    PTS.map(([k]) => '<td data-vavg="' + k + '"></td>').join("") +
+    '<td class="vg-tot" id="vgAvg"></td><td></td></tr></tfoot></table></div></div>';
   return h;
 }
 
-// Atualiza a nota do veículo selecionado na tela (sem redesenhar o painel).
-function updVehUI() {
-  const v = envList(mes, selEval)[selVeh];
-  if (!v) return;
-  const t = somaCriterios(v),
-    n = nivel(t);
-  const s = document.querySelector('[data-vs="' + selVeh + '"]');
-  if (s) s.textContent = t == null ? "Avaliar" : t;
-  const li = s && s.closest("li");
-  if (li) li.className = "on " + (n || "");
-  if ($("vehTot"))
-    $("vehTot").innerHTML =
-      t == null
-        ? "Sem nota"
-        : "Nota do veículo: <b>" +
-          t +
-          "</b>" +
-          (n ? ' <span class="badge ' + n + '">' + n + "</span>" : "");
+// Atualiza a nota de cada veículo e as médias da tabela (sem redesenhar).
+function updVehTable() {
+  const L = envList(mes, selEval);
+  const pill = (t) => {
+    const n = nivel(t);
+    return t == null
+      ? '<span class="vg-p">—</span>'
+      : '<span class="vg-p ' + n + '">' + fmtNota(t) + "<em>" + n + "</em></span>";
+  };
+  L.forEach((v, i) => {
+    const td = document.querySelector('[data-vt="' + i + '"]');
+    if (!td) return;
+    const t = somaCriterios(v);
+    td.innerHTML = pill(t);
+    td.closest("tr").className = nivel(t) || "";
+  });
+  for (const [k] of PTS) {
+    const td = document.querySelector('[data-vavg="' + k + '"]');
+    if (td) td.textContent = fmtNota(mediaCriterio(selEval, k));
+  }
+  if ($("vgAvg")) $("vgAvg").innerHTML = pill(total(rec(mes, selEval)));
+  if ($("vgCount")) {
+    const av = L.filter((v) => somaCriterios(v) != null).length;
+    $("vgCount").textContent = av + " de " + L.length + " avaliado" + (L.length === 1 ? "" : "s");
+  }
 }
 
-// Grava a nota de um critério no veículo selecionado.
-function setVehScore(k, val) {
+// Média de um critério entre os veículos avaliados da oficina no mês.
+function mediaCriterio(id, k) {
+  const vals = envList(mes, id)
+    .map((v) => num(v[k]))
+    .filter((x) => x != null);
+  return vals.length ? Math.round((vals.reduce((a, b) => a + b, 0) / vals.length) * 10) / 10 : null;
+}
+
+// Grava a nota de um critério de um veículo (i = posição na lista).
+function setVehScore(i, k, val) {
   const L = envList(mes, selEval).slice();
-  if (!L[selVeh]) return;
-  L[selVeh] = Object.assign({}, L[selVeh], { [k]: val });
+  if (!L[i]) return;
+  L[i] = Object.assign({}, L[i], { [k]: val });
   const kk = key(mes, selEval);
-  pending[kk] = Object.assign({}, aval[kk] || {}, pending[kk] || {}, {
-    enviados: L,
-  });
+  pending[kk] = Object.assign({}, aval[kk] || {}, pending[kk] || {}, { enviados: L });
   queueSave(selEval);
-  updVehUI();
+  updVehTable();
 }
 
 function addEnv() {
@@ -206,11 +154,7 @@ function addEnv() {
     setStatus("A placa " + pl + " já está na lista deste mês.");
     return;
   }
-  const L = envList(mes, selEval).concat([
-    { placa: pl, descricao: ds, data: dt || null },
-  ]);
-  selVeh = L.length - 1;
-  setEnv(selEval, L);
+  setEnv(selEval, envList(mes, selEval).concat([{ placa: pl, descricao: ds, data: dt || null }]));
   setStatus("Veículo " + (pl || ds) + " adicionado.");
   setTimeout(() => {
     const x = $("envPl");
@@ -234,13 +178,8 @@ function setEnv(id, arr) {
 function stInfo(id) {
   const r = rec(mes, id) || {};
   const L = envList(mes, id);
-  if (!L.length)
-    return somaCriterios(r) != null
-      ? ["Avaliada (geral)", "ok"]
-      : ["Sem veículos", ""];
-  const completos = L.filter((v) =>
-    PTS.every(([k]) => num(v[k]) != null),
-  ).length;
+  if (!L.length) return somaCriterios(r) != null ? ["Avaliada (geral)", "ok"] : ["Sem veículos", ""];
+  const completos = L.filter((v) => PTS.every(([k]) => num(v[k]) != null)).length;
   const iniciados = L.filter((v) => somaCriterios(v) != null).length;
   if (completos === L.length) return ["Avaliada", "ok"];
   if (iniciados) return ["Em andamento · " + completos + "/" + L.length, "mid"];
@@ -259,14 +198,11 @@ function renderMonth() {
         : "Carregando oficinas…") +
       "</li>";
     $("evalPanel").innerHTML =
-      '<div class="empty">' +
-      (ready ? "Cadastre uma oficina para começar." : "Carregando…") +
-      "</div>";
+      '<div class="empty">' + (ready ? "Cadastre uma oficina para começar." : "Carregando…") + "</div>";
     renderComputed();
     return;
   }
-  if (!selEval || !oficinas.some((o) => o.id === selEval))
-    selEval = oficinas[0].id;
+  if (!selEval || !oficinas.some((o) => o.id === selEval)) selEval = oficinas[0].id;
   let lst = oficinas.slice();
   const q = ($("fQ").value || "").trim().toUpperCase(),
     fl = $("fLv").value,
@@ -282,9 +218,7 @@ function renderMonth() {
   else if (od === "asc") lst.sort((a, b) => (tt(a) ?? 999) - (tt(b) ?? 999));
   else if (od === "nome") lst.sort((a, b) => a.nome.localeCompare(b.nome));
   ul.innerHTML =
-    (lst.length
-      ? ""
-      : '<li class="empty">Nenhuma oficina encontrada com esse filtro.</li>') +
+    (lst.length ? "" : '<li class="empty">Nenhuma oficina encontrada com esse filtro.</li>') +
     lst
       .map(
         (o) =>
@@ -374,8 +308,7 @@ function renderMonth() {
     (idx === oficinas.length - 1 ? " disabled" : "") +
     ">Próxima oficina ›</button></div></div>";
   $("evalPanel").innerHTML = h;
-  updCards();
-  updVehUI();
+  updVehTable();
   renderComputed();
 }
 
@@ -394,12 +327,10 @@ function renderComputed() {
     se.textContent = st;
     se.className = cl;
     document.querySelector('[data-tt="' + CSS.escape(x.id) + '"]').innerHTML =
-      x.t == null
-        ? '<span class="nil">—</span>'
-        : '<b class="' + n + '">' + x.t + "</b>";
+      x.t == null ? '<span class="nil">—</span>' : '<b class="' + n + '">' + fmtNota(x.t) + "</b>";
     if (x.id === selEval && $("epTot")) {
       $("epAv").className = "av big " + (n || "");
-      $("epTot").textContent = x.t == null ? "—" : x.t;
+      $("epTot").textContent = fmtNota(x.t);
       const fg = $("rgFg");
       fg.style.strokeDasharray = (x.t || 0) + " 100";
       fg.style.opacity = x.t ? 1 : 0;
@@ -413,30 +344,22 @@ function renderComputed() {
       $("epCars").textContent = qv;
       $("epCarsL").textContent = qv === 1 ? "veículo" : "veículos";
       $("epPos").textContent =
-        x.t == null
-          ? ""
-          : scored.findIndex((s) => s.t === x.t) +
-            1 +
-            "º lugar de " +
-            list.length;
+        x.t == null ? "" : scored.findIndex((s) => s.t === x.t) + 1 + "º lugar de " + list.length;
     }
   }
   const sem = list.length - scored.length;
   const done = list.filter((x) => stInfo(x.id)[1] === "ok").length,
     pct = list.length ? Math.round((done / list.length) * 100) : 0;
   const avg = scored.length
-    ? Math.round((scored.reduce((a, b) => a + b.t, 0) / scored.length) * 10) /
-      10
+    ? Math.round((scored.reduce((a, b) => a + b.t, 0) / scored.length) * 10) / 10
     : null;
-  $("anTxt").textContent =
-    done + " de " + list.length + " avaliações concluídas";
+  $("anTxt").textContent = done + " de " + list.length + " avaliações concluídas";
   $("anPct").textContent = pct + "%";
   $("progBar").style.width = pct + "%";
   const fl = $("fLv").value;
   $("levels").innerHTML =
-    ["Diamante", "Ouro", "Prata", "Bronze"]
-      .map((n) => lvTile(n, cnt[n], fl === n))
-      .join("") + lvTile("Sem nota", sem, fl === "none");
+    ["Diamante", "Ouro", "Prata", "Bronze"].map((n) => lvTile(n, cnt[n], fl === n)).join("") +
+    lvTile("Sem nota", sem, fl === "none");
   const st = (ic, l, v, c) =>
     '<div class="st4 ' +
     c +
@@ -499,10 +422,7 @@ function lvTile(n, v, on) {
 }
 
 function syncInputs() {
-  if (
-    !$("evalPanel").contains(document.activeElement) &&
-    !Object.keys(pending).length
-  ) {
+  if (!$("evalPanel").contains(document.activeElement) && !Object.keys(pending).length) {
     renderMonth();
     return;
   }
@@ -514,18 +434,12 @@ function syncInputs() {
       const v = a[k] ?? "";
       if (el.value !== String(v)) el.value = v;
     }
-    const veh = envList(mes, selEval)[selVeh] || {};
-    for (const [k] of PTS) {
-      const el = $("vc-" + k);
-      if (
-        el &&
-        el !== document.activeElement &&
-        el.value !== String(veh[k] ?? "")
-      )
-        el.value = veh[k] ?? "";
-    }
-    updCards();
-    updVehUI();
+    const L = envList(mes, selEval);
+    document.querySelectorAll("[data-vi]").forEach((el) => {
+      const v = (L[el.dataset.vi] || {})[el.dataset.vc] ?? "";
+      if (el !== document.activeElement && el.value !== String(v)) el.value = v;
+    });
+    updVehTable();
   }
   renderComputed();
 }
@@ -537,8 +451,7 @@ function queueSave(id) {
   for (const f of FIELDS) {
     const el = $("i-" + id + "-" + f);
     if (el) {
-      const v =
-        el.value.trim() === "" ? null : Number(el.value.replace(",", "."));
+      const v = el.value.trim() === "" ? null : Number(el.value.replace(",", "."));
       base[f] = v == null || isNaN(v) ? null : v;
     }
   }
@@ -566,9 +479,7 @@ function queueSave(id) {
       })
       .catch((e) =>
         setStatus(
-          "Não foi possível salvar (" +
-            e.message +
-            "). Confira a internet e altere o campo de novo.",
+          "Não foi possível salvar (" + e.message + "). Confira a internet e altere o campo de novo.",
         ),
       );
   }, 700);
@@ -588,12 +499,8 @@ $("evalPanel").addEventListener("input", (e) => {
       v = el.value.trim() === "" ? null : Number(el.value.replace(",", "."));
     const bad = v != null && (isNaN(v) || v < 0 || v > mx);
     el.classList.toggle("bad", bad);
-    if (bad)
-      return setStatus(
-        "Valor fora do limite (0 a " + mx + "). Corrija para salvar.",
-      );
-    updCards();
-    setVehScore(el.dataset.vc, v);
+    if (bad) return setStatus("Valor fora do limite (0 a " + mx + "). Corrija para salvar.");
+    setVehScore(Number(el.dataset.vi), el.dataset.vc, v);
     return;
   }
   if (!el.dataset.f) return;
@@ -603,13 +510,10 @@ $("evalPanel").addEventListener("input", (e) => {
     const bad = el.value !== "" && (isNaN(v) || v < 0 || v > mx);
     el.classList.toggle("bad", bad);
     if (bad) {
-      setStatus(
-        "Valor fora do limite (0 a " + el.max + "). Corrija para salvar.",
-      );
+      setStatus("Valor fora do limite (0 a " + el.max + "). Corrija para salvar.");
       return;
     }
   }
-  updCards();
   queueSave(selEval);
 });
 
@@ -617,22 +521,7 @@ $("v-mes").addEventListener("click", (e) => {
   const sel = e.target.closest("[data-sel]");
   if (sel) {
     selEval = sel.dataset.sel;
-    selVeh = 0;
     renderMonth();
-    return;
-  }
-  const vs = e.target.closest("[data-vsel]");
-  if (vs) {
-    selVeh = Number(vs.dataset.vsel);
-    renderMonth();
-    return;
-  }
-  const vn = e.target.closest("[data-vnav]");
-  if (vn) {
-    selVeh += Number(vn.dataset.vnav);
-    renderMonth();
-    $("vc-q") &&
-      $("vc-q").closest(".veh-eval").scrollIntoView({ block: "nearest" });
     return;
   }
   const ea = e.target.closest("[data-envadd]");
@@ -657,7 +546,6 @@ $("v-mes").addEventListener("click", (e) => {
       return;
     }
     L.splice(i, 1);
-    if (selVeh >= i && selVeh > 0) selVeh--;
     setEnv(selEval, L);
     setStatus("Veículo removido da lista.");
     return;
@@ -685,27 +573,11 @@ $("v-mes").addEventListener("click", (e) => {
     delOf(dl, dl.dataset.delof);
     return;
   }
-  const sp = e.target.closest("[data-step]");
-  if (sp) {
-    const k = sp.dataset.step,
-      mx = PTS.find((x) => x[0] === k)[1],
-      el = $("vc-" + k);
-    let v = num(el.value) || 0;
-    v =
-      sp.dataset.d === "max"
-        ? mx
-        : Math.max(0, Math.min(mx, v + Number(sp.dataset.d)));
-    el.value = v;
-    el.dispatchEvent(new Event("input", { bubbles: true }));
-    return;
-  }
   const nv = e.target.closest("[data-nav]");
   if (nv) {
-    const i =
-      oficinas.findIndex((o) => o.id === selEval) + Number(nv.dataset.nav);
+    const i = oficinas.findIndex((o) => o.id === selEval) + Number(nv.dataset.nav);
     if (oficinas[i]) {
       selEval = oficinas[i].id;
-      selVeh = 0;
       renderMonth();
       $("evalPanel").scrollIntoView({ block: "nearest" });
     }
@@ -756,9 +628,7 @@ $("v-mes").addEventListener("click", (e) => {
   }
 });
 
-["fQ", "fLv", "fOrd"].forEach((i) =>
-  $(i).addEventListener("input", () => renderMonth()),
-);
+["fQ", "fLv", "fOrd"].forEach((i) => $(i).addEventListener("input", () => renderMonth()));
 
 $("levels").addEventListener("click", (e) => {
   const b = e.target.closest("[data-lv]");
@@ -799,7 +669,7 @@ $("expBtn").onclick = () => {
       const r = rec(mes, o.id) || {};
       return [
         o.nome,
-        ...PTS.map(([k]) => num(r[k])),
+        ...PTS.map(([k]) => mediaCriterio(o.id, k) ?? num(r[k])),
         t,
         nivel(t) || "Sem nota",
         t == null ? "" : sc.findIndex((x) => x.t === t) + 1 + "º",
@@ -877,9 +747,7 @@ $("expBtn").onclick = () => {
       ...vrows,
     ].join("\r\n");
   const a = document.createElement("a");
-  a.href = URL.createObjectURL(
-    new Blob([csv], { type: "text/csv;charset=utf-8" }),
-  );
+  a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
   a.download = "ranking-oficinas-" + mes + ".csv";
   document.body.appendChild(a);
   a.click();
@@ -899,26 +767,17 @@ $("addForm").addEventListener("submit", (e) => {
     return;
   }
   if (descreds.some((o) => o.nome === nome)) {
-    setStatus(
-      nome +
-        " está descredenciada. Use “Recredenciar” na lista de descredenciadas.",
-    );
+    setStatus(nome + " está descredenciada. Use “Recredenciar” na lista de descredenciadas.");
     return;
   }
   let nid = slug(nome);
-  while (
-    knownIds.has(nid) ||
-    oficinas.concat(descreds).some((x) => x.id === nid)
-  )
-    nid += "-2";
+  while (knownIds.has(nid) || oficinas.concat(descreds).some((x) => x.id === nid)) nid += "-2";
   knownIds.add(nid);
   const o = {
     id: nid,
     nome,
     ativa: true,
-    ordem: oficinas.length
-      ? Math.max(...oficinas.map((o) => Number(o.ordem) || 0)) + 1
-      : 1,
+    ordem: oficinas.length ? Math.max(...oficinas.map((o) => Number(o.ordem) || 0)) + 1 : 1,
   };
   store
     .saveOf(o)

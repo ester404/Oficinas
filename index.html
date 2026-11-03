@@ -33,8 +33,11 @@
             <div class="lg-k">Acesso ao Ranking de Oficinas</div>
             <h2>Bem-vindo de volta</h2>
             <p class="lg-sub">Entre com seu e-mail para continuar.</p>
-            <label>E-mail<input type="email" id="lgEmail" autocomplete="username" /></label>
-            <label>Senha<input type="password" id="lgPass" autocomplete="current-password" /></label>
+            <label>E-mail<input type="email" id="lgEmail" name="email" autocomplete="username" /></label>
+            <label
+              >Senha<input type="password" id="lgPass" name="password" autocomplete="current-password"
+            /></label>
+            <button type="button" class="lg-link" id="lgForgot">Esqueci minha senha</button>
             <p class="lg-err" id="lgErr" hidden></p>
             <button class="btn" id="lgBtn" type="submit">Entrar</button>
             <p class="lg-foot">Ainda não tem acesso? Clique em “Criar conta”.</p>
@@ -46,7 +49,7 @@
               Depois de criar, seu acesso fica aguardando a aprovação do Departamento de Notas.
             </p>
             <label>Nome<input type="text" id="upNome" autocomplete="name" maxlength="60" /></label>
-            <label>E-mail<input type="email" id="upEmail" autocomplete="username" /></label>
+            <label>E-mail<input type="email" id="upEmail" name="email" autocomplete="username" /></label>
             <label
               >Senha<input
                 type="password"
@@ -57,6 +60,32 @@
             <label>Confirmar senha<input type="password" id="upPass2" autocomplete="new-password" /></label>
             <p class="lg-err" id="upErr" hidden></p>
             <button class="btn" id="upBtn" type="submit">Criar conta</button>
+          </form>
+          <form id="recForm" novalidate hidden>
+            <div class="lg-k">Recuperar acesso</div>
+            <h2>Esqueci minha senha</h2>
+            <p class="lg-sub">Digite seu e-mail. Vamos enviar um link para você criar uma senha nova.</p>
+            <label>E-mail<input type="email" id="recEmail" name="email" autocomplete="username" /></label>
+            <p class="lg-err" id="recMsg" hidden></p>
+            <button class="btn" id="recBtn" type="submit">Enviar link</button>
+            <button type="button" class="lg-link" data-lgt="in">‹ Voltar para o login</button>
+          </form>
+          <form id="newForm" novalidate hidden>
+            <div class="lg-k">Recuperar acesso</div>
+            <h2>Criar nova senha</h2>
+            <p class="lg-sub">Escolha uma senha nova para entrar no Ranking de Oficinas.</p>
+            <input type="email" id="newUser" name="email" autocomplete="username" hidden />
+            <label
+              >Nova senha<input
+                type="password"
+                id="newPass"
+                name="new-password"
+                autocomplete="new-password"
+                placeholder="Mínimo de 6 caracteres"
+            /></label>
+            <label>Confirmar nova senha<input type="password" id="newPass2" autocomplete="new-password" /></label>
+            <p class="lg-err" id="newErr" hidden></p>
+            <button class="btn" id="newBtn" type="submit">Salvar nova senha</button>
           </form>
           <div class="lg-wait" id="lgWait" hidden>
             <div class="lw-ic" id="lwIc">⏳</div>
@@ -73,6 +102,27 @@
         </div>
       </section>
     </div>
+    <dialog id="pwDlg" class="pw-dlg">
+      <form id="pwForm" novalidate>
+        <h2>Alterar senha</h2>
+        <p class="lg-sub">A senha nova vale a partir do próximo login, em qualquer computador.</p>
+        <input type="email" id="pwUser" name="email" autocomplete="username" hidden />
+        <label
+          >Nova senha<input
+            type="password"
+            id="pwNew"
+            name="new-password"
+            autocomplete="new-password"
+            placeholder="Mínimo de 6 caracteres"
+        /></label>
+        <label>Confirmar nova senha<input type="password" id="pwNew2" autocomplete="new-password" /></label>
+        <p class="lg-err" id="pwErr" hidden></p>
+        <div class="pw-acts">
+          <button class="btn" id="pwSave" type="submit">Salvar senha</button
+          ><button type="button" class="btn ghost2" id="pwCancel">Cancelar</button>
+        </div>
+      </form>
+    </dialog>
     <div class="app">
       <aside class="side">
         <div class="side-brand"><img src="assets/logo-mega.png" alt="Mega Seguros" /></div>
@@ -116,6 +166,7 @@
                 <path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h11" /></svg
               >Sair
             </button>
+            <button type="button" id="pwBtn" class="who-pw">Alterar senha</button>
           </div>
           Setor de Sinistros<br />Departamento de Notas<span>Uso interno</span>
         </div>
