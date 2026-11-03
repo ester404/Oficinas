@@ -22,6 +22,7 @@ js/acessos.js         aba Acessos (só administradora)
 js/main.js            inicialização (mês, abas, arranque)
 supabase/1-banco.sql  cria as tabelas
 supabase/2-acessos.sql cadastro com aprovação + veículos enviados
+supabase/3-excluir-acessos.sql permite excluir contas pela aba Acessos
 ```
 
 Os scripts são carregados em ordem no fim do `index.html` (main.js por último).

@@ -83,18 +83,42 @@ function num(v) {
   return isNaN(n) ? null : n;
 }
 
-function total(a) {
-  if (!a) return null;
+// Soma dos 6 critérios de uma avaliação (de um veículo). null se nada foi preenchido.
+function somaCriterios(x) {
+  if (!x) return null;
   let any = false,
     s = 0;
   for (const [k] of PTS) {
-    const v = num(a[k]);
+    const v = num(x[k]);
     if (v != null) {
       any = true;
       s += v;
     }
   }
   return any ? Math.round(s * 10) / 10 : null;
+}
+
+// Lista de veículos enviados guardada na avaliação do mês.
+function parseEnviados(e) {
+  if (typeof e === "string") {
+    try {
+      e = JSON.parse(e);
+    } catch (_) {
+      e = [];
+    }
+  }
+  return Array.isArray(e) ? e : [];
+}
+
+// Nota da oficina no mês = média das notas dos veículos avaliados.
+// Meses antigos, avaliados no geral (sem veículos), continuam usando a nota geral.
+function total(a) {
+  if (!a) return null;
+  const notas = parseEnviados(a.enviados)
+    .map(somaCriterios)
+    .filter((v) => v != null);
+  if (notas.length) return Math.round((notas.reduce((s, v) => s + v, 0) / notas.length) * 10) / 10;
+  return somaCriterios(a);
 }
 
 function key(m, id) {
@@ -112,13 +136,18 @@ function esc(s) {
 }
 
 function hora() {
-  return new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+  return new Date().toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
+// Mensagem de status (aparece embaixo da aba aberta).
 function setStatus(t) {
-  $("status").textContent = t;
-  const f = $("fstatus");
-  if (f) f.textContent = t;
+  for (const id of ["status", "fstatus", "accStatus"]) {
+    const el = $(id);
+    if (el) el.textContent = t;
+  }
 }
 
 function fdate(d) {
@@ -148,7 +177,10 @@ function inis(n) {
     .join("");
 }
 
-const BRL = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+const BRL = new Intl.NumberFormat("pt-BR", {
+  style: "currency",
+  currency: "BRL",
+});
 
 function money(v) {
   return BRL.format(v || 0);
@@ -166,7 +198,12 @@ function parseBRL(t) {
 
 function fmtIn(v) {
   v = num(v);
-  return v == null ? "" : v.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return v == null
+    ? ""
+    : v.toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
 }
 
 const ICO_ED =

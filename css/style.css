@@ -586,8 +586,7 @@ td.name::before {
     flex-wrap: wrap;
     align-items: center;
     gap: 10px;
-    padding: 12px max(16px, env(safe-area-inset-right, 0)) 12px
-      max(16px, env(safe-area-inset-left, 0));
+    padding: 12px max(16px, env(safe-area-inset-right, 0)) 12px max(16px, env(safe-area-inset-left, 0));
   }
   .side-foot,
   .side-label {
@@ -2565,13 +2564,8 @@ body.locked .app {
   gap: 56px;
   padding: 48px clamp(28px, 6.5vw, 92px);
   background:
-    radial-gradient(
-      circle at 22% 30%,
-      rgba(64, 140, 130, 0.35) 0,
-      rgba(64, 140, 130, 0) 45%
-    ),
-    radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1.4px) 0 0/22px
-      22px,
+    radial-gradient(circle at 22% 30%, rgba(64, 140, 130, 0.35) 0, rgba(64, 140, 130, 0) 45%),
+    radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1.4px) 0 0/22px 22px,
     linear-gradient(160deg, #123f3a 0, #0b2a26 100%);
   border-right: 4px solid #4fb3a6;
 }
@@ -2614,8 +2608,7 @@ body.locked .app {
 .lg-form {
   display: grid;
   place-items: center;
-  padding: 40px max(24px, env(safe-area-inset-right, 0)) 40px
-    max(24px, env(safe-area-inset-left, 0));
+  padding: 40px max(24px, env(safe-area-inset-right, 0)) 40px max(24px, env(safe-area-inset-left, 0));
   background: #fff;
 }
 #lgForm {
@@ -3183,33 +3176,6 @@ body.locked .app {
   padding: 14px;
   text-align: center;
 }
-.lvb em {
-  font-style: normal;
-  font-size: 0.66rem;
-  color: inherit;
-  opacity: 0.75;
-  margin-top: -2px;
-}
-.lvb-car {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  margin-top: 6px;
-  padding: 3px 8px;
-  border-radius: 99px;
-  background: rgba(255, 255, 255, 0.7);
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: var(--ink);
-}
-.lvb-car svg {
-  width: 14px;
-  height: 14px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.8;
-  stroke-linejoin: round;
-}
 @media (max-width: 700px) {
   .env-add {
     grid-template-columns: 1fr 1fr;
@@ -3389,4 +3355,210 @@ body.locked .app {
   background: #eef5f2;
   border-radius: 99px;
   padding: 4px 10px;
+}
+
+/* ===== avaliação por veículo ===== */
+.ep-head {
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
+}
+.ep-cars {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  min-width: 84px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--green);
+}
+.ep-cars svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+}
+.ep-cars b {
+  font-family: var(--serif);
+  font-size: 1.6rem;
+  line-height: 1;
+}
+.ep-cars small {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.env-l li {
+  padding: 0 8px 0 0;
+  border-left: 4px solid var(--line);
+}
+.env-l li.on {
+  border-color: var(--green);
+  box-shadow: 0 0 0 2px rgba(15, 59, 54, 0.15);
+  background: #f6faf8;
+}
+.env-l li.Diamante {
+  border-left-color: #2a9db0;
+}
+.env-l li.Ouro {
+  border-left-color: #d4a21c;
+}
+.env-l li.Prata {
+  border-left-color: #9aa3a6;
+}
+.env-l li.Bronze {
+  border-left-color: #b8642e;
+}
+.env-sel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 4px 8px 10px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
+.env-s {
+  flex: none;
+  min-width: 52px;
+  text-align: center;
+  padding: 3px 8px;
+  border-radius: 99px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: var(--icon-bg);
+  color: var(--muted);
+}
+.env-l li.Diamante .env-s {
+  background: var(--dia);
+  color: var(--dia-ink);
+}
+.env-l li.Ouro .env-s {
+  background: var(--ouro);
+  color: var(--ouro-ink);
+}
+.env-l li.Prata .env-s {
+  background: var(--prata);
+  color: var(--prata-ink);
+}
+.env-l li.Bronze .env-s {
+  background: var(--bronze);
+  color: var(--bronze-ink);
+}
+.env-l .ico.armed {
+  background: var(--red);
+  color: #fff;
+  border-color: var(--red);
+}
+.veh-eval {
+  border: 1px solid #cfe0d9;
+  background: #f6faf8;
+  border-radius: 14px;
+  padding: 16px;
+}
+.veh-tot {
+  font-size: 0.85rem;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.veh-tot b {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  color: var(--green);
+}
+.veh-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 14px;
+}
+.veh-nav .btn {
+  height: 38px;
+}
+@media (max-width: 860px) {
+  .ep-head {
+    grid-template-columns: 1fr auto;
+  }
+  .ep-cars {
+    grid-column: auto;
+  }
+}
+
+/* ===== acessos: editar / excluir ===== */
+.acc-a .ico {
+  width: 36px;
+  height: 36px;
+}
+.acc-a .ico.armed {
+  background: var(--red);
+  color: #fff;
+  border-color: var(--red);
+}
+.acc-adm {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--green);
+  color: #fff;
+  border-radius: 99px;
+  padding: 2px 7px;
+  vertical-align: middle;
+}
+.acc-l li.editing {
+  background: #f6faf8;
+  border-color: #cfe0d9;
+}
+.acc-edit {
+  flex-basis: 100%;
+  display: grid;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed #cfe0d9;
+}
+.acc-edit label {
+  display: grid;
+  gap: 5px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--green);
+}
+.acc-edit input[type="text"] {
+  height: 40px;
+  max-width: 360px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 12px;
+  font: 600 0.95rem var(--body);
+  color: var(--ink);
+  background: #fff;
+}
+.acc-edit input[type="text"]:focus {
+  outline: none;
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(15, 59, 54, 0.12);
+}
+.acc-edit .acc-chk {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+}
+.acc-chk input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--green);
 }

@@ -42,11 +42,17 @@
           <form id="upForm" novalidate hidden>
             <div class="lg-k">Novo acesso</div>
             <h2>Criar conta</h2>
-            <p class="lg-sub">Depois de criar, seu acesso fica aguardando a aprovação do Departamento de Notas.</p>
+            <p class="lg-sub">
+              Depois de criar, seu acesso fica aguardando a aprovação do Departamento de Notas.
+            </p>
             <label>Nome<input type="text" id="upNome" autocomplete="name" maxlength="60" /></label>
             <label>E-mail<input type="email" id="upEmail" autocomplete="username" /></label>
             <label
-              >Senha<input type="password" id="upPass" autocomplete="new-password" placeholder="Mínimo de 6 caracteres"
+              >Senha<input
+                type="password"
+                id="upPass"
+                autocomplete="new-password"
+                placeholder="Mínimo de 6 caracteres"
             /></label>
             <label>Confirmar senha<input type="password" id="upPass2" autocomplete="new-password" /></label>
             <p class="lg-err" id="upErr" hidden></p>
@@ -56,8 +62,8 @@
             <div class="lw-ic" id="lwIc">⏳</div>
             <h2 id="lwT">Aguardando aprovação</h2>
             <p id="lwP">
-              Seu acesso foi criado e está aguardando a aprovação do Departamento de Notas. Assim que for aprovado, é só
-              entrar de novo.
+              Seu acesso foi criado e está aguardando a aprovação do Departamento de Notas. Assim que for
+              aprovado, é só entrar de novo.
             </p>
             <div class="lw-acts">
               <button type="button" class="btn" id="lwRetry">Verificar de novo</button
@@ -79,7 +85,8 @@
             >Avaliação do mês
           </button>
           <button role="tab" id="t-hist" aria-selected="false">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" /></svg>Histórico
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" /></svg
+            >Histórico
           </button>
           <button role="tab" id="t-fin" aria-selected="false">
             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -105,7 +112,9 @@
           <div class="who" id="whoBox" hidden>
             <small>Conectada como</small><b id="whoMail"></b
             ><button type="button" id="logoutBtn">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h11" /></svg>Sair
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h11" /></svg
+              >Sair
             </button>
           </div>
           Setor de Sinistros<br />Departamento de Notas<span>Uso interno</span>
@@ -176,8 +185,8 @@
                 </select></label
               >
               <button type="button" class="btn ghost2 exp" id="expBtn">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M4 19h16" /></svg>Exportar
-                relatório
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M4 19h16" /></svg
+                >Exportar relatório
               </button>
             </div>
             <div class="evgrid">
@@ -256,7 +265,9 @@
                   <button type="button" class="vf-x" data-vfclose="1" aria-label="Fechar">×</button>
                 </div>
                 <div class="vf-grid">
-                  <label class="c1">Placa<input type="text" id="vfPlaca" maxlength="10" placeholder="ABC1D23" /></label>
+                  <label class="c1"
+                    >Placa<input type="text" id="vfPlaca" maxlength="10" placeholder="ABC1D23"
+                  /></label>
                   <label class="c3"
                     >Veículo / sinistro<input
                       type="text"
@@ -302,13 +313,14 @@
                 <div>
                   <h2>Acessos da equipe</h2>
                   <p class="psub">
-                    Quem cria conta na tela de login aparece aqui como pendente. Só quem você aprovar consegue ver e
-                    mexer nos dados.
+                    Quem cria conta na tela de login aparece aqui como pendente. Só quem você aprovar consegue
+                    ver e mexer nos dados.
                   </p>
                 </div>
                 <button type="button" class="btn ghost2" id="accReload">Atualizar lista</button>
               </div>
               <div id="accList"><p class="dcl-empty">Carregando…</p></div>
+              <div class="status" id="accStatus"></div>
             </div>
           </section>
 
@@ -317,7 +329,10 @@
               <div class="phead">
                 <div>
                   <h2>Como a nota é formada</h2>
-                  <p class="psub">Seis critérios somam até 100 pontos por oficina, a cada mês.</p>
+                  <p class="psub">
+                    Cada veículo enviado recebe até 100 pontos nos seis critérios. A nota da oficina no mês é
+                    a média dos veículos avaliados.
+                  </p>
                 </div>
               </div>
               <div class="stack">
@@ -400,8 +415,9 @@
                   <div class="b Diamante" style="flex: 10">Diam.</div>
                 </div>
                 <div class="ticks">
-                  <span style="left: 0">0</span><span style="left: 65%">65</span><span style="left: 80%">80</span
-                  ><span style="left: 90%">90</span><span style="left: 100%">100</span>
+                  <span style="left: 0">0</span><span style="left: 65%">65</span
+                  ><span style="left: 80%">80</span><span style="left: 90%">90</span
+                  ><span style="left: 100%">100</span>
                 </div>
               </div>
               <div class="lcards">
