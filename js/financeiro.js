@@ -22,7 +22,7 @@ function vehList(m, of) {
 }
 
 // Calcula o mês de uma oficina:
-// saldo do veículo = líquido + complemento + franquia − já pago − peças.
+// saldo do veículo = líquido + complemento − já pago − peças (a franquia é só informativa, não entra na conta).
 // Veículos com saldo negativo viram débito, que é descontado dos próximos
 // veículos positivos. O que sobrar de débito ("restante") passa para o mês seguinte.
 function calcMonth(list, carryIn) {
@@ -39,7 +39,7 @@ function calcMonth(list, carryIn) {
       cp,
       pc,
       pg,
-      saldo: Math.round((lq + cp + fr - pg - pc) * 100) / 100,
+      saldo: Math.round((lq + cp - pg - pc) * 100) / 100,
       desc: 0,
       pagar: 0,
     };
@@ -128,7 +128,7 @@ function renderFin() {
     esc(o.nome) +
     '</h2><p class="psub">Veículos de ' +
     label(mes) +
-    ' · Saldo = líquido + complemento + franquia − já pago − peças.</p></div><button type="button" class="btn" id="vNew"><span aria-hidden="true">+</span> Novo veículo</button></div>';
+    ' · Saldo = líquido + complemento − já pago − peças (franquia não entra na conta).</p></div><button type="button" class="btn" id="vNew"><span aria-hidden="true">+</span> Novo veículo</button></div>';
   if (!veicOk)
     h +=
       '<div class="banner">A tabela de veículos ainda não existe no Supabase. Rode o SQL do financeiro (veja o LEIA-ME) e recarregue a página.</div>';
@@ -240,7 +240,7 @@ function renderFin() {
     t +=
       '<div class="fmsg neg"><b>A oficina ficou devendo ' +
       money(r.restante) +
-      ".</b> Os valores já pagos e as peças compradas passaram do valor dos reparos, complementos e franquias deste mês. Esse valor será descontado automaticamente dos veículos do próximo mês.</div>";
+      ".</b> Os valores já pagos e as peças compradas passaram do valor dos reparos e complementos deste mês. Esse valor será descontado automaticamente dos veículos do próximo mês.</div>";
   else if (r.debtTotal > 0)
     t +=
       '<div class="fmsg pos"><b>Débito de ' +
@@ -278,7 +278,7 @@ function closeVForm() {
 
 function updPrev() {
   const g = (k) => parseBRL($(k).value) || 0;
-  const sd = Math.round((g("vfLq") + g("vfCp") + g("vfFr") - g("vfPg") - g("vfPc")) * 100) / 100;
+  const sd = Math.round((g("vfLq") + g("vfCp") - g("vfPg") - g("vfPc")) * 100) / 100;
   $("vfPrev").className = "vf-prev " + (sd < 0 ? "neg" : "pos");
   $("vfPrev").innerHTML =
     "<small>Saldo deste veículo</small><b>" +
