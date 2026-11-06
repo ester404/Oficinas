@@ -17,12 +17,14 @@ js/avaliacao.js       aba Avaliação do mês (critérios, veículos enviados, r
 js/oficinas.js        editar, excluir, descredenciar e recredenciar oficinas
 js/historico.js       aba Histórico
 js/financeiro.js      aba Financeiro (saldos e compensação)
+js/devedores.js       aba Devedores (dívidas e descontos por placa)
 js/login.js           login, criar conta e espera de aprovação
 js/acessos.js         aba Acessos (só administradora)
 js/main.js            inicialização (mês, abas, arranque)
 supabase/1-banco.sql  cria as tabelas
 supabase/2-acessos.sql cadastro com aprovação + veículos enviados
 supabase/3-excluir-acessos.sql permite excluir contas pela aba Acessos
+supabase/4-devedores.sql  aba Devedores + dados da planilha de devedores
 ```
 
 Os scripts são carregados em ordem no fim do `index.html` (main.js por último).

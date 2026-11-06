@@ -137,12 +137,14 @@ const store =
           return r.json();
         },
         async load() {
-          const [of, av, ve] = await Promise.all([
+          const [of, av, ve, dv] = await Promise.all([
             this.get("oficinas"),
             this.get("avaliacoes"),
             this.get("veiculos").catch(() => null),
+            this.get("dividas").catch(() => null),
           ]);
           return {
+            dividas: dv,
             oficinas: of,
             avaliacoes: av.map((row) => {
               const a = {};
@@ -185,6 +187,21 @@ const store =
         },
         async delVeh(id) {
           const r = await sbFetch(SB + "veiculos?id=eq." + encodeURIComponent(id), { method: "DELETE" });
+          if (!r.ok) throw await sbErr(r);
+        },
+        saveDiv(d) {
+          return this.upsert("dividas", {
+            id: d.id,
+            devedor: d.devedor,
+            referente: d.referente || null,
+            valor_total: num(d.valor_total),
+            descontos: d.descontos || [],
+            obs: d.obs || null,
+            criado_em: d.criado_em,
+          });
+        },
+        async delDiv(id) {
+          const r = await sbFetch(SB + "dividas?id=eq." + encodeURIComponent(id), { method: "DELETE" });
           if (!r.ok) throw await sbErr(r);
         },
         async upsert(t, body) {
@@ -255,6 +272,17 @@ const store =
           j.veiculos.push(v);
           this.write(j);
         },
+        async saveDiv(d) {
+          const j = this.read();
+          j.dividas = (j.dividas || []).filter((x) => x.id !== d.id);
+          j.dividas.push(d);
+          this.write(j);
+        },
+        async delDiv(id) {
+          const j = this.read();
+          j.dividas = (j.dividas || []).filter((x) => x.id !== id);
+          this.write(j);
+        },
         async delVeh(id) {
           const j = this.read();
           j.veiculos = (j.veiculos || []).filter((x) => x.id !== id);
@@ -278,6 +306,8 @@ function apply(j) {
   for (const v of j.veiculos || []) if (v && v.id) nv[v.id] = Object.assign({}, v, vPending[v.id] || {});
   for (const id in vPending) if (!nv[id]) nv[id] = vPending[id];
   veic = nv;
+  divOk = (j.dividas !== null && j.dividas !== undefined) || store.modo === "local";
+  dividas = (j.dividas || []).map((d) => ({ ...d, descontos: parseEnviados(d.descontos) }));
 }
 
 async function refresh(first) {
@@ -290,6 +320,7 @@ async function refresh(first) {
       syncInputs();
       renderHist();
       if (!$("finPanel").contains(document.activeElement)) renderFin();
+      if (!$("v-dev").contains(document.activeElement)) renderDev();
     }
     if (store.modo === "online") setStatus("Atualizado às " + hora());
   } catch (e) {

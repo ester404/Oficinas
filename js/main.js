@@ -7,6 +7,7 @@ function renderAll() {
   renderHist();
   renderFin();
   renderDc();
+  renderDev();
 }
 
 (function () {
@@ -34,7 +35,7 @@ $("selMes").onchange = $("selAno").onchange = () => {
 
 function tab(n) {
   if (n === "acc") loadAcc();
-  for (const t of ["mes", "hist", "fin", "acc", "crit"]) {
+  for (const t of ["mes", "hist", "fin", "dev", "acc", "crit"]) {
     $("t-" + t).setAttribute("aria-selected", t === n);
     $("v-" + t).hidden = t !== n;
   }
@@ -42,12 +43,13 @@ function tab(n) {
     mes: "Avaliação do mês",
     hist: "Histórico",
     fin: "Financeiro",
+    dev: "Devedores",
     acc: "Acessos",
     crit: "Critérios",
   }[n];
 }
 
-["mes", "hist", "fin", "acc", "crit"].forEach((t) => ($("t-" + t).onclick = () => tab(t)));
+["mes", "hist", "fin", "dev", "acc", "crit"].forEach((t) => ($("t-" + t).onclick = () => tab(t)));
 
 function startApp() {
   if (started) {

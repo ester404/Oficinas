@@ -18,4 +18,7 @@ let selOf = null; // oficina aberta no financeiro
 const vPending = {}; // veículos alterados que ainda estão sendo salvos
 const vTimers = {};
 
+let dividas = []; // dívidas das oficinas (aba Devedores)
+let divOk = true; // false se a tabela de dívidas não existir no Supabase
+
 let perfil = null; // perfil de acesso de quem está logado (status, admin)

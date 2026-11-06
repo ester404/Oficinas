@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Ranking de Oficinas</title>
-    <link rel="icon" href="assets/icon-mega.png" />
+    <link rel="icon" href="assets/logo-mega.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       rel="stylesheet"
@@ -143,6 +143,10 @@
               <rect x="2" y="6" width="20" height="13" rx="2" />
               <path d="M2 10h20M6 15h4" /></svg
             >Financeiro
+          </button>
+          <button role="tab" id="t-dev" aria-selected="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18v12H3z" /><path d="M3 11h18M7 15h3" /></svg
+            >Devedores
           </button>
           <button role="tab" id="t-acc" aria-selected="false" hidden>
             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -356,6 +360,40 @@
               <div id="finBody"></div>
             </div>
             <div class="status" id="fstatus"></div>
+          </section>
+
+          <section id="v-dev" hidden>
+            <div class="panel">
+              <div class="phead">
+                <div>
+                  <h2>Devedores</h2>
+                  <p class="psub">
+                    Dívidas das oficinas e os descontos feitos por placa até quitar. O saldo diminui sozinho.
+                  </p>
+                </div>
+                <button type="button" class="btn" id="dvNew"><span aria-hidden="true">+</span> Nova dívida</button>
+              </div>
+              <div class="banner" id="devBanner" hidden>
+                A tabela de dívidas ainda não existe no Supabase. Rode o SQL de devedores e recarregue a página.
+              </div>
+              <div class="fstats" id="devStats"></div>
+              <div class="dv-tools">
+                <label class="srch"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg
+                  ><input type="search" id="dvQ" placeholder="Buscar oficina, veículo ou placa..." aria-label="Buscar dívida"
+                /></label>
+                <label class="fsel"
+                  ><small>Situação</small
+                  ><select id="dvF">
+                    <option value="">Todas</option>
+                    <option value="a">Em pagamento</option>
+                    <option value="q">Quitadas</option>
+                  </select></label
+                >
+              </div>
+              <div id="devList"></div>
+              <div class="status" id="devStatus"></div>
+            </div>
           </section>
 
           <section id="v-acc" hidden>
@@ -579,6 +617,7 @@
     <script src="js/oficinas.js"></script>
     <script src="js/historico.js"></script>
     <script src="js/financeiro.js"></script>
+    <script src="js/devedores.js"></script>
     <script src="js/login.js"></script>
     <script src="js/acessos.js"></script>
     <script src="js/main.js"></script>
