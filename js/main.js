@@ -47,6 +47,9 @@ syncPicker();
 $("selMes").onchange = $("selAno").onchange = () => {
   mes = $("selAno").value + "-" + $("selMes").value;
   mesPorAba[abaAtual] = mes;
+  try {
+    localStorage.setItem("ranking-oficinas-meses", JSON.stringify(mesPorAba));
+  } catch (e) {}
   RENDER_ABA[abaAtual]();
 };
 

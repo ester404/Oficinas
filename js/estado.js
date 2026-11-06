@@ -3,6 +3,10 @@
 let mes = CUR; // mês da aba aberta, no formato "AAAA-MM"
 let abaAtual = "mes"; // aba aberta
 const mesPorAba = { mes: CUR, hist: CUR, fin: CUR }; // cada aba guarda o seu próprio mês
+try {
+  Object.assign(mesPorAba, JSON.parse(localStorage.getItem("ranking-oficinas-meses")) || {});
+} catch (e) {}
+mes = mesPorAba.mes;
 let ready = false; // true depois que os dados foram carregados
 
 let oficinas = []; // oficinas credenciadas (aparecem na avaliação)
