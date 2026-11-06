@@ -1,6 +1,8 @@
 /* Estado compartilhado do site (dados carregados e mês selecionado). */
 
-let mes = CUR; // mês selecionado no topo, no formato "AAAA-MM"
+let mes = CUR; // mês da aba aberta, no formato "AAAA-MM"
+let abaAtual = "mes"; // aba aberta
+const mesPorAba = { mes: CUR, hist: CUR, fin: CUR }; // cada aba guarda o seu próprio mês
 let ready = false; // true depois que os dados foram carregados
 
 let oficinas = []; // oficinas credenciadas (aparecem na avaliação)

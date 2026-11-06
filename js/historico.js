@@ -90,9 +90,7 @@ function renderHist() {
         '<article class="ocard"><header><h3>' +
         esc(o.nome) +
         "</h3>" +
-        (n
-          ? '<span class="badge ' + n + '">' + n + "</span>"
-          : '<span class="badge none">Sem nota</span>') +
+        (n ? '<span class="badge ' + n + '">' + n + "</span>" : '<span class="badge none">Sem nota</span>') +
         "</header>" +
         '<div class="ostats"><div><b>' +
         fmtNota(last) +
@@ -112,8 +110,7 @@ function renderHist() {
 $("v-hist").addEventListener("click", (e) => {
   const b = e.target.closest("[data-go]");
   if (b) {
-    mes = b.dataset.go;
-    renderAll();
+    mesPorAba.mes = b.dataset.go;
     tab("mes");
   }
 });

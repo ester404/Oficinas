@@ -20,6 +20,60 @@ function carCount(m, id) {
   return n || num((rec(m, id) || {}).carros) || 0;
 }
 
+const PRAZO_DIAS = 60; // tempo máximo do veículo na oficina
+
+// Dias que o veículo está (ou ficou) na oficina e se passou do prazo.
+function diasNaOficina(v) {
+  if (!v || !v.data) return null;
+  const ini = new Date(v.data + "T00:00:00");
+  const fim = v.saida ? new Date(v.saida + "T00:00:00") : new Date(new Date().toDateString());
+  const dias = Math.max(0, Math.round((fim - ini) / 86400000));
+  return { dias, entregue: !!v.saida, atrasado: dias > PRAZO_DIAS };
+}
+
+function diasBadge(v) {
+  const d = diasNaOficina(v);
+  if (!d) return '<span class="dd z">Sem data de entrada</span>';
+  if (d.entregue)
+    return (
+      '<span class="dd ' +
+      (d.atrasado ? "late" : "done") +
+      '">Entregue em ' +
+      d.dias +
+      " dia" +
+      (d.dias === 1 ? "" : "s") +
+      (d.atrasado ? " · atrasou " + (d.dias - PRAZO_DIAS) : "") +
+      "</span>"
+    );
+  if (d.atrasado)
+    return (
+      '<span class="dd late">Atrasado · ' +
+      d.dias +
+      " dias (" +
+      (d.dias - PRAZO_DIAS) +
+      " além do prazo)</span>"
+    );
+  const faltam = PRAZO_DIAS - d.dias;
+  return (
+    '<span class="dd ' +
+    (faltam <= 10 ? "warn" : "ok") +
+    '">' +
+    d.dias +
+    " dia" +
+    (d.dias === 1 ? "" : "s") +
+    " · faltam " +
+    faltam +
+    "</span>"
+  );
+}
+
+function atrasados(id) {
+  return envList(mes, id).filter((v) => {
+    const d = diasNaOficina(v);
+    return d && d.atrasado && !d.entregue;
+  }).length;
+}
+
 const CRIT_CURTO = {
   q: "Qualidade",
   p: "Prazo",
@@ -46,7 +100,9 @@ function envHtml(o) {
       '<p class="env-empty">Nenhum veículo lançado para esta oficina neste mês. Adicione a placa acima para avaliar o serviço feito nele.</p></div>'
     );
   h +=
-    '<div class="scroll"><table class="vg"><thead><tr><th class="l">Veículo</th>' +
+    '<div class="scroll"><table class="vg"><thead><tr><th class="l">Veículo</th><th class="l">Na oficina<small>prazo ' +
+    PRAZO_DIAS +
+    " dias</small></th>" +
     PTS.map(
       ([k, mx]) =>
         '<th title="' + CRIT_TXT[k][0] + '">' + CRIT_CURTO[k] + "<small>de " + mx + "</small></th>",
@@ -62,8 +118,18 @@ function envHtml(o) {
       esc(v.placa || "Sem placa") +
       "</b><small>" +
       esc(v.descricao || "") +
-      (v.data ? (v.descricao ? " · " : "") + fdate(v.data) : "") +
       "</small></div></div></td>" +
+      '<td class="l vg-dias"><div class="vg-datas"><label>Entrada<input type="date" data-vi="' +
+      i +
+      '" data-vf="data" value="' +
+      esc(v.data || "") +
+      '"></label><label>Saída<input type="date" data-vi="' +
+      i +
+      '" data-vf="saida" value="' +
+      esc(v.saida || "") +
+      '"></label></div><span class="vg-d" data-vd="' +
+      i +
+      '"></span></td>' +
       PTS.map(
         ([k, mx]) =>
           '<td><input type="number" inputmode="decimal" min="0" max="' +
@@ -89,7 +155,7 @@ function envHtml(o) {
       "</button></td></tr>";
   });
   h +=
-    '</tbody><tfoot><tr><td class="l"><b>Média da oficina</b><small id="vgCount"></small></td>' +
+    '</tbody><tfoot><tr><td class="l"><b>Média da oficina</b><small id="vgCount"></small></td><td class="l" id="vgAtraso"></td>' +
     PTS.map(([k]) => '<td data-vavg="' + k + '"></td>').join("") +
     '<td class="vg-tot" id="vgAvg"></td><td></td></tr></tfoot></table></div></div>';
   return h;
@@ -98,6 +164,18 @@ function envHtml(o) {
 // Atualiza a nota de cada veículo e as médias da tabela (sem redesenhar).
 function updVehTable() {
   const L = envList(mes, selEval);
+  L.forEach((v, i) => {
+    const el = document.querySelector('[data-vd="' + i + '"]');
+    if (el) el.innerHTML = diasBadge(v);
+    const d = diasNaOficina(v);
+    const tr = el && el.closest("tr");
+    if (tr) tr.classList.toggle("late", !!(d && d.atrasado && !d.entregue));
+  });
+  const at = atrasados(selEval);
+  if ($("vgAtraso"))
+    $("vgAtraso").innerHTML = at
+      ? '<span class="dd late">' + at + " atrasado" + (at === 1 ? "" : "s") + "</span>"
+      : "";
   const pill = (t) => {
     const n = nivel(t);
     return t == null
@@ -109,7 +187,8 @@ function updVehTable() {
     if (!td) return;
     const t = somaCriterios(v);
     td.innerHTML = pill(t);
-    td.closest("tr").className = nivel(t) || "";
+    const tr = td.closest("tr");
+    tr.className = (nivel(t) || "") + (tr.classList.contains("late") ? " late" : "");
   });
   for (const [k] of PTS) {
     const td = document.querySelector('[data-vavg="' + k + '"]');
@@ -171,7 +250,7 @@ function setEnv(id, arr) {
   if (c) c.value = arr.length || "";
   queueSave(id);
   renderMonth();
-  renderHist();
+  emMes("hist", renderHist);
 }
 
 // Situação da oficina no mês, contando os veículos avaliados.
@@ -187,7 +266,6 @@ function stInfo(id) {
 }
 
 function renderMonth() {
-  syncPicker();
   const ul = $("rows");
   $("tblTitle").innerHTML = "Oficinas<small>" + label(mes) + "</small>";
   if (!oficinas.length) {
@@ -253,7 +331,7 @@ function renderMonth() {
     '</h2><small id="epSt"></small></div></div>' +
     '<div class="ep-score"><svg viewBox="0 0 120 120" class="ring" aria-hidden="true"><circle cx="60" cy="60" r="50" class="rg-bg"/><circle cx="60" cy="60" r="50" class="rg-fg" id="rgFg" pathLength="100"/></svg><div class="ring-c"><b id="epTot">—</b><small>de 100</small></div></div>' +
     '<div class="ep-res"><div id="epBadge"></div><div class="ep-pos" id="epPos"></div></div>' +
-    '<div class="ep-cars"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17h14v-5l-2-5H7l-2 5z"/><circle cx="8" cy="17" r="1.6"/><circle cx="16" cy="17" r="1.6"/></svg><b id="epCars">0</b><small id="epCarsL">veículos</small></div></div>';
+    '<div class="ep-cars"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17h14v-5l-2-5H7l-2 5z"/><circle cx="8" cy="17" r="1.6"/><circle cx="16" cy="17" r="1.6"/></svg><b id="epCars">0</b><small id="epCarsL">veículos</small><em id="epLate" hidden></em></div></div>';
   h += envHtml(o);
   h +=
     '<div class="ep-sec"><h3>Indicadores do mês · <span class="h3o">' +
@@ -343,6 +421,9 @@ function renderComputed() {
       const qv = carCount(mes, x.id);
       $("epCars").textContent = qv;
       $("epCarsL").textContent = qv === 1 ? "veículo" : "veículos";
+      const at = atrasados(x.id);
+      $("epLate").hidden = !at;
+      $("epLate").textContent = at + " atrasado" + (at === 1 ? "" : "s");
       $("epPos").textContent =
         x.t == null ? "" : scored.findIndex((s) => s.t === x.t) + 1 + "º lugar de " + list.length;
     }
@@ -436,7 +517,7 @@ function syncInputs() {
     }
     const L = envList(mes, selEval);
     document.querySelectorAll("[data-vi]").forEach((el) => {
-      const v = (L[el.dataset.vi] || {})[el.dataset.vc] ?? "";
+      const v = (L[el.dataset.vi] || {})[el.dataset.vc || el.dataset.vf] ?? "";
       if (el !== document.activeElement && el.value !== String(v)) el.value = v;
     });
     updVehTable();
@@ -462,7 +543,7 @@ function queueSave(id) {
   base.oficinaId = id;
   pending[k] = base;
   renderComputed();
-  renderHist();
+  emMes("hist", renderHist);
   clearTimeout(timers[k]);
   setStatus("Salvando…");
   timers[k] = setTimeout(() => {
@@ -494,6 +575,10 @@ $("evalPanel").addEventListener("keydown", (e) => {
 
 $("evalPanel").addEventListener("input", (e) => {
   const el = e.target;
+  if (el.dataset.vf) {
+    setVehScore(Number(el.dataset.vi), el.dataset.vf, el.value || null);
+    return;
+  }
   if (el.dataset.vc) {
     const mx = Number(el.max),
       v = el.value.trim() === "" ? null : Number(el.value.replace(",", "."));

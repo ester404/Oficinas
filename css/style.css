@@ -3912,3 +3912,82 @@ body.locked .app {
     grid-template-columns: 1fr;
   }
 }
+
+/* ===== prazo do veículo na oficina ===== */
+.vg-dias {
+  min-width: 190px;
+}
+.vg-datas {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.vg-datas label {
+  display: grid;
+  gap: 2px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.vg-datas input {
+  width: 118px;
+  height: 30px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0 6px;
+  font: 500 0.78rem var(--body);
+  color: var(--ink);
+  background: var(--input);
+}
+.vg-datas input:focus {
+  outline: none;
+  border-color: var(--green);
+  background: #fff;
+}
+.dd {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+.dd.ok {
+  background: #e8f3ee;
+  color: #155c38;
+}
+.dd.warn {
+  background: #fbf1d9;
+  color: #8a5a00;
+}
+.dd.late {
+  background: var(--red);
+  color: #fff;
+}
+.dd.done {
+  background: var(--icon-bg);
+  color: var(--green);
+}
+.dd.z {
+  color: #b5ada5;
+  font-weight: 500;
+  padding-left: 0;
+}
+.vg tbody tr.late td {
+  background: #fdf1ef;
+}
+.vg tbody tr.late td:first-child {
+  box-shadow: inset 3px 0 0 var(--red);
+}
+.ep-cars em {
+  font-style: normal;
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--red);
+  border-radius: 99px;
+  padding: 1px 8px;
+  margin-top: 2px;
+}

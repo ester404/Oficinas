@@ -2,10 +2,21 @@
 
 let started = false;
 
+// Roda uma função com o mês de uma aba (cada aba tem o seu próprio mês).
+function emMes(aba, fn) {
+  const atual = mes;
+  mes = mesPorAba[aba];
+  try {
+    fn();
+  } finally {
+    mes = atual;
+  }
+}
+
 function renderAll() {
-  renderMonth();
-  renderHist();
-  renderFin();
+  emMes("mes", renderMonth);
+  emMes("hist", renderHist);
+  emMes("fin", renderFin);
   renderDc();
   renderDev();
 }
@@ -28,13 +39,27 @@ function syncPicker() {
   $("selAno").value = y;
 }
 
+// Desenha só a aba aberta (cada aba tem o seu próprio mês).
+const RENDER_ABA = { mes: renderMonth, hist: renderHist, fin: renderFin };
+
+syncPicker();
+
 $("selMes").onchange = $("selAno").onchange = () => {
   mes = $("selAno").value + "-" + $("selMes").value;
-  renderAll();
+  mesPorAba[abaAtual] = mes;
+  RENDER_ABA[abaAtual]();
 };
 
 function tab(n) {
   if (n === "acc") loadAcc();
+  abaAtual = n;
+  const temMes = n in mesPorAba;
+  $("mpick").hidden = !temMes;
+  if (temMes) {
+    mes = mesPorAba[n];
+    syncPicker();
+    RENDER_ABA[n]();
+  }
   for (const t of ["mes", "hist", "fin", "dev", "acc", "crit"]) {
     $("t-" + t).setAttribute("aria-selected", t === n);
     $("v-" + t).hidden = t !== n;

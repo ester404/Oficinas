@@ -317,9 +317,9 @@ async function refresh(first) {
     ready = true;
     if (first) renderAll();
     else {
-      syncInputs();
-      renderHist();
-      if (!$("finPanel").contains(document.activeElement)) renderFin();
+      emMes("mes", syncInputs);
+      emMes("hist", renderHist);
+      if (!$("finPanel").contains(document.activeElement)) emMes("fin", renderFin);
       if (!$("v-dev").contains(document.activeElement)) renderDev();
     }
     if (store.modo === "online") setStatus("Atualizado às " + hora());
