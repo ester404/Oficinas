@@ -3991,3 +3991,44 @@ body.locked .app {
   padding: 1px 8px;
   margin-top: 2px;
 }
+
+/* ===== editar veículo ===== */
+.vg-acts {
+  white-space: nowrap;
+}
+.vg-acts .ico {
+  display: inline-grid;
+  margin-left: 4px;
+}
+.vg-edit {
+  display: grid;
+  gap: 6px;
+  min-width: 170px;
+}
+.vg-edit input {
+  height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0 8px;
+  font: 600 0.84rem var(--body);
+  color: var(--ink);
+  background: #fff;
+}
+#vgEdPl {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.vg-edit input:focus {
+  outline: none;
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(15, 59, 54, 0.12);
+}
+.vg-edit-a {
+  display: flex;
+  gap: 6px;
+}
+.vg-edit-a .btn {
+  height: 30px;
+  padding: 0 10px;
+  font-size: 0.78rem;
+}

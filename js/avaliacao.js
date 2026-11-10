@@ -1,6 +1,7 @@
 /* Aba "Avaliação do mês": lista de oficinas, critérios, veículos enviados, resumo e exportação. */
 
 let selEval = null; // oficina aberta no painel
+let vgEdit = null; // veículo sendo editado (posição na lista)
 
 const CRIT_TXT = {
   q: ["Qualidade do reparo", "Sem retrabalho; sem reclamação de peças ou pintura"],
@@ -112,13 +113,23 @@ function envHtml(o) {
     h +=
       '<tr data-vrow="' +
       i +
-      '"><td class="l"><div class="vg-id"><span class="vg-n">' +
-      (i + 1) +
-      "</span><div><b>" +
-      esc(v.placa || "Sem placa") +
-      "</b><small>" +
-      esc(v.descricao || "") +
-      "</small></div></div></td>" +
+      '"><td class="l">' +
+      (vgEdit === i
+        ? '<div class="vg-edit"><input type="text" id="vgEdPl" maxlength="10" placeholder="Placa" aria-label="Placa" value="' +
+          esc(v.placa || "") +
+          '"><input type="text" id="vgEdDs" maxlength="80" placeholder="Modelo, nº do sinistro" aria-label="Modelo ou sinistro" value="' +
+          esc(v.descricao || "") +
+          '"><div class="vg-edit-a"><button type="button" class="btn" data-vgsave="' +
+          i +
+          '">Salvar</button><button type="button" class="btn ghost2" data-vgcancel="1">Cancelar</button></div></div>'
+        : '<div class="vg-id"><span class="vg-n">' +
+          (i + 1) +
+          "</span><div><b>" +
+          esc(v.placa || "Sem placa") +
+          "</b><small>" +
+          esc(v.descricao || "") +
+          "</small></div></div>") +
+      "</td>" +
       '<td class="l vg-dias"><div class="vg-datas"><label>Entrada<input type="date" data-vi="' +
       i +
       '" data-vf="data" value="' +
@@ -148,7 +159,11 @@ function envHtml(o) {
       ).join("") +
       '<td class="vg-tot" data-vt="' +
       i +
-      '"></td><td><button type="button" class="ico red" data-envdel="' +
+      '"></td><td class="vg-acts"><button type="button" class="ico" data-vged="' +
+      i +
+      '" title="Editar placa e modelo" aria-label="Editar veículo">' +
+      ICO_ED +
+      '</button><button type="button" class="ico red" data-envdel="' +
       i +
       '" title="Remover veículo" aria-label="Remover veículo">' +
       ICO_TR +
@@ -218,6 +233,21 @@ function setVehScore(i, k, val) {
   pending[kk] = Object.assign({}, aval[kk] || {}, pending[kk] || {}, { enviados: L });
   queueSave(selEval);
   updVehTable();
+}
+
+// Salva placa e modelo do veículo em edição.
+function salvarEdicaoVeiculo() {
+  const i = vgEdit,
+    pl = $("vgEdPl").value.trim().toUpperCase(),
+    ds = $("vgEdDs").value.trim();
+  if (!pl && !ds) return setStatus("Digite a placa ou o modelo do veículo.");
+  const L = envList(mes, selEval).slice();
+  if (pl && L.some((v, j) => j !== i && v.placa === pl))
+    return setStatus("A placa " + pl + " já está na lista deste mês.");
+  L[i] = Object.assign({}, L[i], { placa: pl, descricao: ds });
+  vgEdit = null;
+  setEnv(selEval, L);
+  setStatus("Veículo " + (pl || ds) + " atualizado.");
 }
 
 function addEnv() {
@@ -567,6 +597,16 @@ function queueSave(id) {
 }
 
 $("evalPanel").addEventListener("keydown", (e) => {
+  if (e.target.closest(".vg-edit")) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      salvarEdicaoVeiculo();
+    } else if (e.key === "Escape") {
+      vgEdit = null;
+      renderMonth();
+    }
+    return;
+  }
   if (e.key === "Enter" && e.target.closest(".env-add")) {
     e.preventDefault();
     addEnv();
@@ -606,12 +646,29 @@ $("v-mes").addEventListener("click", (e) => {
   const sel = e.target.closest("[data-sel]");
   if (sel) {
     selEval = sel.dataset.sel;
+    vgEdit = null;
     renderMonth();
     return;
   }
   const ea = e.target.closest("[data-envadd]");
   if (ea) {
     addEnv();
+    return;
+  }
+  const vge = e.target.closest("[data-vged]");
+  if (vge) {
+    vgEdit = Number(vge.dataset.vged);
+    renderMonth();
+    $("vgEdPl").focus();
+    return;
+  }
+  if (e.target.closest("[data-vgcancel]")) {
+    vgEdit = null;
+    renderMonth();
+    return;
+  }
+  if (e.target.closest("[data-vgsave]")) {
+    salvarEdicaoVeiculo();
     return;
   }
   const ed2 = e.target.closest("[data-envdel]");
