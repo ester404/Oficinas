@@ -563,7 +563,7 @@ td.name::before {
 }
 .content {
   width: 100%;
-  max-width: 1180px;
+  max-width: none;
   display: grid;
   gap: 20px;
   padding-block: 24px 48px;
