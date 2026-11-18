@@ -10,7 +10,7 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap"
     />
-    <link rel="stylesheet" href="css/style.css?v=20261118a" />
+    <link rel="stylesheet" href="css/style.css?v=20261118b" />
   </head>
   <body>
     <div class="login" id="login" hidden>
@@ -442,6 +442,7 @@
                   ><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg
                   ><input type="search" id="frQ" placeholder="Buscar placa, veículo ou quem está usando..." aria-label="Buscar veículo"
                 /></label>
+                <label class="fsel"><small>Mês</small><select id="frMes"></select></label>
               </div>
               <div id="frList"></div>
               <div class="status" id="frStatus"></div>
@@ -454,8 +455,8 @@
                 <div>
                   <h2>Acessos da equipe</h2>
                   <p class="psub">
-                    Quem cria conta aparece aqui como pendente. Escolha a equipe de cada pessoa: ela só vê as abas
-                    liberadas para a equipe dela.
+                    Quem cria conta aparece aqui como pendente. Marque as equipes de cada pessoa (pode ser mais de
+                    uma): ela vê as abas de todas as equipes marcadas.
                   </p>
                 </div>
                 <button type="button" class="btn ghost2" id="accReload">Atualizar lista</button>
@@ -674,18 +675,18 @@
     </div>
 
     <!-- Scripts: a ordem importa (config e utilidades primeiro, main por último) -->
-    <script src="js/config.js?v=20261118a"></script>
-    <script src="js/util.js?v=20261118a"></script>
-    <script src="js/estado.js?v=20261118a"></script>
-    <script src="js/dados.js?v=20261118a"></script>
-    <script src="js/avaliacao.js?v=20261118a"></script>
-    <script src="js/oficinas.js?v=20261118a"></script>
-    <script src="js/historico.js?v=20261118a"></script>
-    <script src="js/financeiro.js?v=20261118a"></script>
-    <script src="js/devedores.js?v=20261118a"></script>
-    <script src="js/frota.js?v=20261118a"></script>
-    <script src="js/login.js?v=20261118a"></script>
-    <script src="js/acessos.js?v=20261118a"></script>
-    <script src="js/main.js?v=20261118a"></script>
+    <script src="js/config.js?v=20261118b"></script>
+    <script src="js/util.js?v=20261118b"></script>
+    <script src="js/estado.js?v=20261118b"></script>
+    <script src="js/dados.js?v=20261118b"></script>
+    <script src="js/avaliacao.js?v=20261118b"></script>
+    <script src="js/oficinas.js?v=20261118b"></script>
+    <script src="js/historico.js?v=20261118b"></script>
+    <script src="js/financeiro.js?v=20261118b"></script>
+    <script src="js/devedores.js?v=20261118b"></script>
+    <script src="js/frota.js?v=20261118b"></script>
+    <script src="js/login.js?v=20261118b"></script>
+    <script src="js/acessos.js?v=20261118b"></script>
+    <script src="js/main.js?v=20261118b"></script>
   </body>
 </html>

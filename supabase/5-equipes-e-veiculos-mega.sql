@@ -20,16 +20,23 @@ insert into equipes (id, nome, abas, ordem) values
   ('atendimento',         'Atendimento',            '{}',                            5)
 on conflict (id) do nothing;
 
--- 2) Cada pessoa pertence a uma equipe
-alter table perfis add column if not exists equipe text references equipes(id) on delete set null;
+-- 2) Cada pessoa pode estar em uma ou mais equipes (soma as abas de todas)
+alter table perfis add column if not exists equipes text[] not null default '{}';
+-- Se já rodou a versão antiga deste SQL (uma equipe só), aproveita o que estava marcado
+do $$ begin
+  if exists (select 1 from information_schema.columns
+             where table_schema = 'public' and table_name = 'perfis' and column_name = 'equipe') then
+    execute 'update perfis set equipes = array[equipe] where equipe is not null and cardinality(equipes) = 0';
+  end if;
+end $$;
 -- Quem já tinha acesso continua vendo tudo (equipe Notas)
-update perfis set equipe = 'notas' where equipe is null and status = 'aprovado';
+update perfis set equipes = array['notas'] where cardinality(equipes) = 0 and status = 'aprovado' and not admin;
 
 -- 3) Checagem: a pessoa pode usar esta aba? (administradora pode tudo)
 create or replace function public.pode(aba text) returns boolean
 language sql stable security definer set search_path = public as $$
   select exists (
-    select 1 from perfis p left join equipes e on e.id = p.equipe
+    select 1 from perfis p left join equipes e on e.id = any(p.equipes)
     where p.user_id = auth.uid() and p.status = 'aprovado'
       and (p.admin or aba = any(e.abas))
   )

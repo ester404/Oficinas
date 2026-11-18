@@ -41,8 +41,8 @@ let equipes = []; // [{id, nome, abas, ordem}]
 
 function abasLiberadas() {
   if (store.modo === "local" || !perfil || perfil.semTabela || perfil.admin) return ABAS.slice();
-  const eq = equipes.find((e) => e.id === perfil.equipe);
-  return eq ? ABAS.filter((a) => (eq.abas || []).includes(a)) : [];
+  const minhas = equipes.filter((e) => (perfil.equipes || []).includes(e.id));
+  return ABAS.filter((a) => minhas.some((e) => (e.abas || []).includes(a)));
 }
 function podeAba(a) {
   return abasLiberadas().includes(a);

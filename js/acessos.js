@@ -67,21 +67,30 @@ function accEditForm(u) {
   );
 }
 
-// Seletor de equipe de cada pessoa.
+// Equipes de cada pessoa (pode marcar mais de uma; as abas somam).
 function accEquipe(u) {
   if (u.admin) return '<span class="acc-eq-adm">Vê tudo (administradora)</span>';
   if (!equipes.length) return "";
+  const minhas = u.equipes || [];
   return (
-    '<label class="acc-eq"><small>Equipe</small><select data-acceq="' +
-    esc(u.user_id) +
-    '"><option value="">— escolher —</option>' +
+    '<div class="acc-eq"><small>Equipes</small><div class="acc-chips">' +
     equipes
       .map(
         (e) =>
-          '<option value="' + esc(e.id) + '"' + (u.equipe === e.id ? " selected" : "") + ">" + esc(e.nome) + "</option>",
+          '<label class="acc-chip' +
+          (minhas.includes(e.id) ? " on" : "") +
+          '"><input type="checkbox" data-acceq="' +
+          esc(u.user_id) +
+          '" value="' +
+          esc(e.id) +
+          '"' +
+          (minhas.includes(e.id) ? " checked" : "") +
+          ">" +
+          esc(e.nome) +
+          "</label>",
       )
       .join("") +
-    "</select></label>"
+    "</div></div>"
   );
 }
 
@@ -100,7 +109,7 @@ function renderEq() {
     "<th>Pessoas</th><th></th></tr></thead><tbody>" +
     equipes
       .map((e) => {
-        const n = accRows.filter((u) => u.equipe === e.id && !u.admin).length;
+        const n = accRows.filter((u) => (u.equipes || []).includes(e.id) && !u.admin).length;
         return (
           "<tr><td><b>" +
           esc(e.nome) +
@@ -256,11 +265,15 @@ $("accList").addEventListener("change", async (ev) => {
   const s = ev.target.closest("[data-acceq]");
   if (!s) return;
   s.disabled = true;
+  const u0 = accRows.find((x) => x.user_id === s.dataset.acceq) || {};
+  const lista = equipes
+    .map((e) => e.id)
+    .filter((id) => (id === s.value ? s.checked : (u0.equipes || []).includes(id)));
   try {
-    const u = await patchPerfil(s.dataset.acceq, { equipe: s.value || null });
+    const u = await patchPerfil(s.dataset.acceq, { equipes: lista });
     renderAcc();
-    const e = equipes.find((x) => x.id === s.value);
-    setStatus((u && (u.nome || u.email)) + (e ? " agora está na equipe " + e.nome + "." : " sem equipe."));
+    const nomes = equipes.filter((e) => lista.includes(e.id)).map((e) => e.nome);
+    setStatus((u && (u.nome || u.email)) + (nomes.length ? ": " + nomes.join(", ") + "." : " sem equipe."));
   } catch (er) {
     s.disabled = false;
     setStatus("Não foi possível alterar (" + er.message + ").");

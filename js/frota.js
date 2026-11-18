@@ -12,6 +12,36 @@ function frTotal(v) {
   return Math.round((v.reparos || []).reduce((s, r) => s + (num(r.valor) || 0), 0) * 100) / 100;
 }
 
+// Mês escolhido no filtro ("" = todos os meses).
+function frPer() {
+  return ($("frMes") && $("frMes").value) || "";
+}
+// Reparos do veículo dentro do mês escolhido (guarda a posição original para excluir).
+function frReps(v) {
+  const per = frPer();
+  return (v.reparos || []).map((r, i) => ({ r, i })).filter((x) => !per || (x.r.data || "").slice(0, 7) === per);
+}
+function frTotalP(v) {
+  return Math.round(frReps(v).reduce((s, x) => s + (num(x.r.valor) || 0), 0) * 100) / 100;
+}
+function nomeMes(k) {
+  return MESES[Number(k.slice(5)) - 1] + "/" + k.slice(0, 4);
+}
+// Opções do filtro de mês: todos + meses que têm reparo + mês atual.
+function frMesesOpcoes() {
+  const s = new Set([CUR]);
+  for (const v of frota) for (const r of v.reparos || []) if (r.data) s.add(r.data.slice(0, 7));
+  const atual = frPer();
+  if (atual) s.add(atual);
+  $("frMes").innerHTML =
+    '<option value="">Todos os meses</option>' +
+    [...s]
+      .sort()
+      .reverse()
+      .map((k) => '<option value="' + k + '"' + (k === atual ? " selected" : "") + ">" + nomeMes(k) + "</option>")
+      .join("");
+}
+
 // Data do último reparo (para ordenar e mostrar).
 function frUltimo(v) {
   return (v.reparos || []).reduce((m, r) => (r.data && r.data > m ? r.data : m), "");
@@ -19,7 +49,9 @@ function frUltimo(v) {
 
 function frOrdenados() {
   const q = ($("frQ").value || "").trim().toUpperCase();
+  const per = frPer();
   return frota
+    .filter((v) => !per || frReps(v).length || frOpen === v.id)
     .filter((v) => !q || (v.placa + " " + (v.veiculo || "") + " " + (v.em_uso_com || "")).toUpperCase().includes(q))
     .sort((a, b) => frUltimo(b).localeCompare(frUltimo(a)) || a.placa.localeCompare(b.placa));
 }
@@ -28,22 +60,29 @@ function frOrdenados() {
 
 function renderFrota() {
   if (!$("frList")) return;
-  const mesAtual = CUR;
+  frMesesOpcoes();
+  const per = frPer();
   const tot = frota.reduce(
     (a, v) => {
+      const n = frReps(v).length;
+      a.veic += n || !per ? 1 : 0;
+      a.rep += n;
+      a.per += frTotalP(v);
       a.total += frTotal(v);
-      a.rep += (v.reparos || []).length;
-      for (const r of v.reparos || []) if (r.data && r.data.slice(0, 7) === mesAtual) a.mes += num(r.valor) || 0;
       return a;
     },
-    { total: 0, rep: 0, mes: 0 },
+    { veic: 0, rep: 0, per: 0, total: 0 },
   );
   const box = (l, v, c) => '<div class="' + (c || "") + '"><small>' + l + "</small><b>" + v + "</b></div>";
-  $("frStats").innerHTML =
-    box("Veículos", frota.length) +
-    box("Reparos lançados", tot.rep) +
-    box("Gasto neste mês", money(tot.mes)) +
-    box("Gasto total", money(tot.total), "big neg");
+  $("frStats").innerHTML = per
+    ? box("Veículos com reparo", tot.veic) +
+      box("Reparos no mês", tot.rep) +
+      box("Gasto em " + nomeMes(per), money(tot.per), "big neg") +
+      box("Gasto total (todos os meses)", money(tot.total))
+    : box("Veículos", frota.length) +
+      box("Reparos lançados", tot.rep) +
+      box("Gasto em " + nomeMes(CUR), money(frota.reduce((s, v) => s + (v.reparos || []).filter((r) => (r.data || "").slice(0, 7) === CUR).reduce((t, r) => t + (num(r.valor) || 0), 0), 0))) +
+      box("Gasto total", money(tot.total), "big neg");
 
   renderFrDash();
   $("frBanner").hidden = frotaOk;
@@ -53,7 +92,7 @@ function renderFrota() {
     h +=
       '<div class="vempty"><b>Nenhum veículo cadastrado</b><span>Clique em “Novo veículo” para lançar o primeiro.</span></div>';
   else if (!L.length && frEdit !== "novo")
-    h += '<div class="vempty"><b>Nada encontrado</b><span>Mude a busca.</span></div>';
+    h += '<div class="vempty"><b>Nada encontrado</b><span>Mude a busca ou o mês.</span></div>';
   h += L.map(frCard).join("");
   $("frList").innerHTML = h;
 }
@@ -90,11 +129,16 @@ function frBarras(L) {
 }
 
 function renderFrDash() {
-  const todos = [];
-  for (const v of frota) for (const r of v.reparos || []) todos.push(Object.assign({ v }, r));
-  // Gasto por mês (últimos 6 meses)
+  const per = frPer();
+  const todos = [],
+    doPer = [];
+  for (const v of frota) {
+    for (const r of v.reparos || []) todos.push(Object.assign({ v }, r));
+    for (const x of frReps(v)) doPer.push(Object.assign({ v }, x.r));
+  }
+  // Gasto por mês (6 meses até o mês escolhido)
   const meses = [];
-  let [y, m] = CUR.split("-").map(Number);
+  let [y, m] = (per || CUR).split("-").map(Number);
   for (let i = 0; i < 6; i++) {
     meses.unshift(y + "-" + String(m).padStart(2, "0"));
     if (--m === 0) (m = 12), y--;
@@ -104,7 +148,13 @@ function renderFrDash() {
   $("frMeses").innerHTML = meses
     .map(
       (k, i) =>
-        '<div class="frm"><b>' +
+        '<div class="frm' +
+        (k === per ? " on" : "") +
+        '" data-frm="' +
+        k +
+        '" title="Ver ' +
+        nomeMes(k) +
+        '"><b>' +
         (porMes[i] ? money(porMes[i]).replace(",00", "") : "") +
         '</b><span class="frm-t"><i style="height:' +
         Math.round((porMes[i] / maxM) * 100) +
@@ -115,7 +165,7 @@ function renderFrDash() {
     .join("");
   // Onde foi feito
   const onde = {};
-  for (const r of todos) {
+  for (const r of doPer) {
     const o = frOnde(r.descricao);
     onde[o] = onde[o] || [0, 0];
     onde[o][0] += num(r.valor) || 0;
@@ -129,7 +179,8 @@ function renderFrDash() {
   // Veículos que mais gastaram
   $("frTop").innerHTML = frBarras(
     frota
-      .map((v) => [v.placa + " · " + (v.veiculo || ""), frTotal(v), (v.reparos || []).length + " reparo(s)"])
+      .map((v) => [v.placa + " · " + (v.veiculo || ""), frTotalP(v), frReps(v).length + " reparo(s)"])
+      .filter((x) => x[1] > 0)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 6),
   );
@@ -157,11 +208,13 @@ function frCard(v) {
     "</b><small>" +
     (v.em_uso_com ? "Em uso com: " + esc(v.em_uso_com) : "Sem responsável") +
     '</small></span><span class="dv-num"><small>Reparos</small>' +
-    (v.reparos || []).length +
+    frReps(v).length +
     '</span><span class="dv-num"><small>Último</small>' +
     (ult ? fdate(ult) : "—") +
-    '</span><span class="dv-num saldo"><small>Total gasto</small>' +
-    money(frTotal(v)) +
+    '</span><span class="dv-num saldo"><small>' +
+    (frPer() ? "Gasto no mês" : "Total gasto") +
+    "</small>" +
+    money(frTotalP(v)) +
     '</span><span></span><svg class="dv-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>';
   if (aberto) h += frEdit === v.id ? frForm(v) : frDetail(v);
   return h + "</article>";
@@ -169,8 +222,7 @@ function frCard(v) {
 
 function frDetail(v) {
   const id = esc(v.id);
-  const lin = (v.reparos || [])
-    .map((r, i) => ({ r, i }))
+  const lin = frReps(v)
     .sort((a, b) => (a.r.data || "").localeCompare(b.r.data || ""))
     .map(
       ({ r, i }) =>
@@ -191,7 +243,10 @@ function frDetail(v) {
     '<div class="dv-body">' +
     (v.obs ? '<p class="dv-obs">' + esc(v.obs) + "</p>" : "") +
     '<div class="scroll"><table class="dvt"><thead><tr><th>Data</th><th>Reparo / peças / onde foi feito</th><th class="r">Valor</th><th></th></tr></thead><tbody>' +
-    (lin || '<tr><td colspan="4" class="z">Nenhum reparo lançado ainda.</td></tr>') +
+    (lin ||
+      '<tr><td colspan="4" class="z">' +
+        (frPer() ? "Nenhum reparo neste mês." : "Nenhum reparo lançado ainda.") +
+        "</td></tr>") +
     "</tbody><tfoot>" +
     '<tr class="dv-add"><td><input type="date" id="rpData" aria-label="Data" value="' +
     hojeISO() +
@@ -200,8 +255,10 @@ function frDetail(v) {
     '<td><button type="button" class="btn" data-rpadd="' +
     id +
     '">+ Lançar</button></td></tr>' +
-    '<tr class="dv-sum"><td colspan="2">Total gasto com este veículo</td><td class="r"><b class="tneg">' +
-    money(frTotal(v)) +
+    '<tr class="dv-sum"><td colspan="2">' +
+    (frPer() ? "Gasto em " + nomeMes(frPer()) : "Total gasto com este veículo") +
+    '</td><td class="r"><b class="tneg">' +
+    money(frTotalP(v)) +
     "</b></td><td></td></tr></tfoot></table></div>" +
     '<div class="dv-acts"><button type="button" class="lnk" data-fred="' +
     id +
@@ -273,6 +330,17 @@ $("frNew").onclick = () => {
   $("ffPlaca").focus();
 };
 $("frQ").addEventListener("input", renderFrota);
+$("frMes").addEventListener("change", renderFrota);
+$("frMeses").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-frm]");
+  if (!b) return;
+  const k = b.dataset.frm,
+    novo = frPer() === k ? "" : k;
+  if (novo && !$("frMes").querySelector('option[value="' + k + '"]'))
+    $("frMes").insertAdjacentHTML("beforeend", '<option value="' + k + '">' + nomeMes(k) + "</option>");
+  $("frMes").value = novo;
+  renderFrota();
+});
 
 $("frList").addEventListener("click", (e) => {
   const op = e.target.closest("[data-fropen]");

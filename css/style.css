@@ -4217,3 +4217,53 @@ body.locked .app {
   display: grid;
   gap: 18px;
 }
+.acc-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.acc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--muted);
+  cursor: pointer;
+}
+.acc-chip.on {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+}
+.acc-chip input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: #fff;
+}
+.acc-eq {
+  flex-basis: 100%;
+}
+.frm {
+  cursor: pointer;
+}
+.frm:hover .frm-t i {
+  background: var(--green-2);
+}
+.frm.on .frm-t i {
+  background: var(--red);
+}
+.frm.on small {
+  color: var(--red);
+  font-weight: 700;
+}
+.dv-tools .fsel select#frMes {
+  min-width: 170px;
+}
