@@ -4267,3 +4267,278 @@ body.locked .app {
 .dv-tools .fsel select#frMes {
   min-width: 170px;
 }
+
+/* ===== relatório para impressão (papel timbrado) ===== */
+.fr-acts {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.fr-acts svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  margin-right: 6px;
+  vertical-align: -3px;
+}
+#printArea {
+  display: none;
+}
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+  html,
+  body {
+    background: #fff !important;
+    margin: 0;
+  }
+  body > *:not(#printArea) {
+    display: none !important;
+  }
+  #printArea {
+    display: block;
+    font-family: "DM Sans", Arial, sans-serif;
+    color: #1e2624;
+    font-size: 9.5pt;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .rp-bg {
+    position: fixed;
+    inset: 0;
+    width: 210mm;
+    height: 297mm;
+    z-index: 0;
+  }
+  .rp-frame {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    border-collapse: collapse;
+  }
+  #printArea td,
+  #printArea th {
+    text-align: left;
+  }
+  #printArea h1,
+  #printArea h2 {
+    text-align: left;
+  }
+  .rp-frame > thead td,
+  .rp-frame > tfoot td,
+  .rp-frame > tbody > tr > td {
+    padding: 0 15mm;
+  }
+  .rp-top {
+    height: 34mm;
+  }
+  .rp-bot {
+    height: 35mm;
+  }
+  .rp-locs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(30mm, 1fr));
+    gap: 8px;
+  }
+  .rp-t .rp-cap td {
+    padding: 0 0 6px;
+    border: 0;
+    background: #fff;
+  }
+  .rp-loc {
+    border: 1px solid #e6dfd8;
+    border-radius: 8px;
+    padding: 7px 9px;
+    background: rgba(255, 255, 255, 0.92);
+  }
+  .rp-loc b {
+    display: block;
+    font-size: 8pt;
+    color: #0f3b36;
+  }
+  .rp-loc strong {
+    display: block;
+    font-size: 11pt;
+    margin-top: 1px;
+  }
+  .rp-loc small {
+    display: block;
+    margin-top: 3px;
+    font-size: 7pt;
+    color: #5e6966;
+  }
+  .rp-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 2px solid #b3141c;
+    padding-bottom: 8px;
+    margin-bottom: 14px;
+  }
+  .rp-k {
+    font-size: 7.5pt;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #b3141c;
+    font-weight: 700;
+  }
+  .rp-head h1 {
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 21pt;
+    color: #0f3b36;
+    margin: 2px 0 0;
+  }
+  .rp-per {
+    margin: 2px 0 0;
+    font-size: 12pt;
+    font-weight: 700;
+    color: #0f3b36;
+  }
+  .rp-meta {
+    text-align: right;
+    font-size: 8pt;
+    color: #5e6966;
+  }
+  .rp-kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .rp-kpi {
+    border: 1px solid #e6dfd8;
+    border-radius: 8px;
+    padding: 8px 10px;
+    background: rgba(247, 243, 239, 0.85);
+  }
+  .rp-kpi small {
+    display: block;
+    font-size: 6.8pt;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #5e6966;
+    font-weight: 700;
+  }
+  .rp-kpi b {
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 14pt;
+    color: #0f3b36;
+  }
+  .rp-kpi.tot {
+    background: #0f3b36;
+    border-color: #0f3b36;
+  }
+  .rp-kpi.tot small,
+  .rp-kpi.tot b {
+    color: #fff;
+  }
+  #printArea h2 {
+    font-size: 8pt;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #0f3b36;
+    margin: 0 0 6px;
+  }
+  #printArea section {
+    margin-bottom: 16px;
+  }
+  .rp-duo {
+    display: grid;
+    grid-template-columns: 1.7fr 1fr;
+    gap: 14px;
+    align-items: start;
+  }
+  .rp-t {
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+    background: rgba(255, 255, 255, 0.9);
+  }
+  .rp-t th {
+    background: #0f3b36;
+    color: #fff;
+    font-size: 6.8pt;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: left;
+    padding: 5px 6px;
+  }
+  .rp-t td {
+    padding: 5px 6px;
+    border-bottom: 1px solid #e6dfd8;
+    vertical-align: top;
+  }
+  .rp-t tbody tr:nth-child(even) td {
+    background: rgba(247, 243, 239, 0.7);
+  }
+  .rp-t tr {
+    break-inside: avoid;
+  }
+  .rp-t .r {
+    text-align: right;
+  }
+  .rp-t .c {
+    text-align: center;
+  }
+  .rp-t .nw {
+    white-space: nowrap;
+  }
+  .rp-t td small {
+    display: block;
+    font-size: 7pt;
+    color: #5e6966;
+  }
+  .rp-t td small.rp-pc {
+    display: block;
+  }
+  .rp-det td:nth-child(3) {
+    font-size: 8.5pt;
+  }
+  .rp-bar {
+    display: block;
+    height: 4px;
+    background: #eff1ef;
+    border-radius: 2px;
+    margin-top: 4px;
+  }
+  .rp-bar i {
+    display: block;
+    height: 100%;
+    background: #b3141c;
+    border-radius: 2px;
+  }
+  .rp-sum td {
+    font-weight: 800;
+    color: #fff;
+    background: #b3141c;
+    padding: 7px 6px;
+    font-size: 10pt;
+  }
+  .rp-vazio {
+    padding: 24px;
+    text-align: center;
+    color: #5e6966;
+    border: 1px dashed #e6dfd8;
+  }
+  .rp-ass {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 34px;
+    break-inside: avoid;
+  }
+  .rp-ass div {
+    text-align: center;
+    font-size: 8pt;
+    color: #5e6966;
+  }
+  .rp-ass span {
+    display: block;
+    border-top: 1px solid #1e2624;
+    margin-bottom: 4px;
+  }
+}

@@ -10,7 +10,7 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap"
     />
-    <link rel="stylesheet" href="css/style.css?v=20261118c" />
+    <link rel="stylesheet" href="css/style.css?v=20261118d" />
   </head>
   <body>
     <div class="login" id="login" hidden>
@@ -432,7 +432,13 @@
                   <h2>Histórico de reparos</h2>
                   <p class="psub">Clique num veículo para ver e lançar reparos.</p>
                 </div>
-                <button type="button" class="btn" id="frNew"><span aria-hidden="true">+</span> Novo veículo</button>
+                <div class="fr-acts">
+                  <button type="button" class="btn ghost2" id="frPrint">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M7 14h10v7H7z" /></svg
+                    >Imprimir relatório
+                  </button>
+                  <button type="button" class="btn" id="frNew"><span aria-hidden="true">+</span> Novo veículo</button>
+                </div>
               </div>
               <div class="banner" id="frBanner" hidden>
                 A tabela de Veículos Mega ainda não existe no Supabase. Rode o SQL 5 e recarregue a página.
@@ -674,19 +680,22 @@
       </main>
     </div>
 
+    <div id="printArea" aria-hidden="true"></div>
+
     <!-- Scripts: a ordem importa (config e utilidades primeiro, main por último) -->
-    <script src="js/config.js?v=20261118c"></script>
-    <script src="js/util.js?v=20261118c"></script>
-    <script src="js/estado.js?v=20261118c"></script>
-    <script src="js/dados.js?v=20261118c"></script>
-    <script src="js/avaliacao.js?v=20261118c"></script>
-    <script src="js/oficinas.js?v=20261118c"></script>
-    <script src="js/historico.js?v=20261118c"></script>
-    <script src="js/financeiro.js?v=20261118c"></script>
-    <script src="js/devedores.js?v=20261118c"></script>
-    <script src="js/frota.js?v=20261118c"></script>
-    <script src="js/login.js?v=20261118c"></script>
-    <script src="js/acessos.js?v=20261118c"></script>
-    <script src="js/main.js?v=20261118c"></script>
+    <script src="js/config.js?v=20261118d"></script>
+    <script src="js/util.js?v=20261118d"></script>
+    <script src="js/estado.js?v=20261118d"></script>
+    <script src="js/dados.js?v=20261118d"></script>
+    <script src="js/avaliacao.js?v=20261118d"></script>
+    <script src="js/oficinas.js?v=20261118d"></script>
+    <script src="js/historico.js?v=20261118d"></script>
+    <script src="js/financeiro.js?v=20261118d"></script>
+    <script src="js/devedores.js?v=20261118d"></script>
+    <script src="js/frota.js?v=20261118d"></script>
+    <script src="js/relatorio.js?v=20261118d"></script>
+    <script src="js/login.js?v=20261118d"></script>
+    <script src="js/acessos.js?v=20261118d"></script>
+    <script src="js/main.js?v=20261118d"></script>
   </body>
 </html>
