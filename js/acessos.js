@@ -9,6 +9,9 @@ async function loadAcc(silent) {
     const r = await sbFetch(SB + "perfis?select=*&order=criado_em.desc", { cache: "no-store" });
     if (!r.ok) throw await sbErr(r);
     accRows = await r.json();
+    try {
+      await loadEquipes();
+    } catch (e) {}
     renderAcc();
   } catch (e) {
     if (!silent)
@@ -64,6 +67,136 @@ function accEditForm(u) {
   );
 }
 
+// Seletor de equipe de cada pessoa.
+function accEquipe(u) {
+  if (u.admin) return '<span class="acc-eq-adm">Vê tudo (administradora)</span>';
+  if (!equipes.length) return "";
+  return (
+    '<label class="acc-eq"><small>Equipe</small><select data-acceq="' +
+    esc(u.user_id) +
+    '"><option value="">— escolher —</option>' +
+    equipes
+      .map(
+        (e) =>
+          '<option value="' + esc(e.id) + '"' + (u.equipe === e.id ? " selected" : "") + ">" + esc(e.nome) + "</option>",
+      )
+      .join("") +
+    "</select></label>"
+  );
+}
+
+// ---------- equipes e abas ----------
+
+function renderEq() {
+  if (!$("eqList")) return;
+  if (!equipes.length) {
+    $("eqList").innerHTML =
+      '<p class="dcl-empty">As equipes ainda não existem no Supabase. Rode o SQL 5 e clique em “Atualizar lista”.</p>';
+    return;
+  }
+  $("eqList").innerHTML =
+    '<div class="scroll"><table class="eqt"><thead><tr><th>Equipe</th>' +
+    ABAS.map((a) => "<th>" + ABA_NOME[a] + "</th>").join("") +
+    "<th>Pessoas</th><th></th></tr></thead><tbody>" +
+    equipes
+      .map((e) => {
+        const n = accRows.filter((u) => u.equipe === e.id && !u.admin).length;
+        return (
+          "<tr><td><b>" +
+          esc(e.nome) +
+          "</b></td>" +
+          ABAS.map(
+            (a) =>
+              '<td class="c"><input type="checkbox" aria-label="' +
+              esc(e.nome) +
+              ": " +
+              ABA_NOME[a] +
+              '" data-eqaba="' +
+              a +
+              '" data-eq="' +
+              esc(e.id) +
+              '"' +
+              ((e.abas || []).includes(a) ? " checked" : "") +
+              "></td>",
+          ).join("") +
+          '<td class="c">' +
+          n +
+          '</td><td class="c">' +
+          (n
+            ? ""
+            : '<button type="button" class="ico red" data-eqdel="' +
+              esc(e.id) +
+              '" title="Excluir equipe" aria-label="Excluir equipe">' +
+              ICO_TR +
+              "</button>") +
+          "</td></tr>"
+        );
+      })
+      .join("") +
+    "</tbody></table></div>";
+}
+
+async function salvarEquipe(e) {
+  const r = await sbFetch(SB + "equipes", {
+    method: "POST",
+    headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
+    body: JSON.stringify({ id: e.id, nome: e.nome, abas: e.abas || [], ordem: e.ordem || null }),
+  });
+  if (!r.ok) throw await sbErr(r);
+}
+
+$("eqList").addEventListener("change", async (ev) => {
+  const c = ev.target.closest("[data-eqaba]");
+  if (!c) return;
+  const e = equipes.find((x) => x.id === c.dataset.eq);
+  const antes = (e.abas || []).slice();
+  e.abas = ABAS.filter((a) => (a === c.dataset.eqaba ? c.checked : antes.includes(a)));
+  c.disabled = true;
+  try {
+    await salvarEquipe(e);
+    setStatus("Equipe " + e.nome + ": " + (e.abas.map((a) => ABA_NOME[a]).join(", ") || "nenhuma aba") + ".");
+  } catch (er) {
+    e.abas = antes;
+    renderEq();
+    setStatus("Não foi possível salvar (" + er.message + ").");
+  }
+  c.disabled = false;
+});
+
+$("eqList").addEventListener("click", async (ev) => {
+  const b = ev.target.closest("[data-eqdel]");
+  if (!b) return;
+  if (!confirmar(b)) return setStatus("Clique de novo na lixeira para excluir a equipe.");
+  const id = b.dataset.eqdel;
+  try {
+    const r = await sbFetch(SB + "equipes?id=eq." + encodeURIComponent(id), { method: "DELETE" });
+    if (!r.ok) throw await sbErr(r);
+    equipes = equipes.filter((x) => x.id !== id);
+    renderAcc();
+    setStatus("Equipe excluída.");
+  } catch (er) {
+    setStatus("Não foi possível excluir (" + er.message + ").");
+  }
+});
+
+$("eqForm").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const nome = $("eqNome").value.trim();
+  if (!nome) return;
+  const id = slug(nome);
+  if (equipes.some((x) => x.id === id)) return setStatus("Essa equipe já existe.");
+  const e = { id, nome, abas: [], ordem: equipes.length + 1 };
+  try {
+    await salvarEquipe(e);
+    equipes.push(e);
+    $("eqNome").value = "";
+    renderAcc();
+    setStatus("Equipe " + nome + " criada. Marque as abas dela.");
+  } catch (er) {
+    setStatus("Não foi possível criar (" + er.message + ").");
+  }
+});
+
 function accItem(u, cls) {
   const editing = accEdit === u.user_id;
   return (
@@ -79,7 +212,9 @@ function accItem(u, cls) {
     esc(u.email || "") +
     " · desde " +
     fdate(u.criado_em) +
-    '</small></div><div class="acc-a">' +
+    "</small></div>" +
+    accEquipe(u) +
+    '<div class="acc-a">' +
     accButtons(u) +
     "</div>" +
     (editing ? accEditForm(u) : "") +
@@ -114,7 +249,23 @@ function renderAcc() {
       "r",
     );
   $("accList").innerHTML = h || '<p class="dcl-empty">Ninguém pediu acesso ainda.</p>';
+  renderEq();
 }
+
+$("accList").addEventListener("change", async (ev) => {
+  const s = ev.target.closest("[data-acceq]");
+  if (!s) return;
+  s.disabled = true;
+  try {
+    const u = await patchPerfil(s.dataset.acceq, { equipe: s.value || null });
+    renderAcc();
+    const e = equipes.find((x) => x.id === s.value);
+    setStatus((u && (u.nome || u.email)) + (e ? " agora está na equipe " + e.nome + "." : " sem equipe."));
+  } catch (er) {
+    s.disabled = false;
+    setStatus("Não foi possível alterar (" + er.message + ").");
+  }
+});
 
 // ---------- ações ----------
 

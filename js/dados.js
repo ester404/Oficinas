@@ -137,13 +137,17 @@ const store =
           return r.json();
         },
         async load() {
-          const [of, av, ve, dv] = await Promise.all([
-            this.get("oficinas"),
-            this.get("avaliacoes"),
-            this.get("veiculos").catch(() => null),
-            this.get("dividas").catch(() => null),
+          const p = podeAba,
+            vazio = Promise.resolve([]);
+          const [of, av, ve, dv, fr] = await Promise.all([
+            p("mes") || p("hist") || p("fin") || p("dev") ? this.get("oficinas") : vazio,
+            p("mes") || p("hist") ? this.get("avaliacoes") : vazio,
+            p("fin") ? this.get("veiculos").catch(() => null) : vazio,
+            p("dev") ? this.get("dividas").catch(() => null) : vazio,
+            p("frota") ? this.get("frota_veiculos").catch(() => null) : vazio,
           ]);
           return {
+            frota: fr,
             dividas: dv,
             oficinas: of,
             avaliacoes: av.map((row) => {
@@ -199,6 +203,21 @@ const store =
             obs: d.obs || null,
             criado_em: d.criado_em,
           });
+        },
+        saveFrota(v) {
+          return this.upsert("frota_veiculos", {
+            id: v.id,
+            placa: v.placa,
+            veiculo: v.veiculo || null,
+            em_uso_com: v.em_uso_com || null,
+            reparos: v.reparos || [],
+            obs: v.obs || null,
+            criado_em: v.criado_em,
+          });
+        },
+        async delFrota(id) {
+          const r = await sbFetch(SB + "frota_veiculos?id=eq." + encodeURIComponent(id), { method: "DELETE" });
+          if (!r.ok) throw await sbErr(r);
         },
         async delDiv(id) {
           const r = await sbFetch(SB + "dividas?id=eq." + encodeURIComponent(id), { method: "DELETE" });
@@ -278,6 +297,17 @@ const store =
           j.dividas.push(d);
           this.write(j);
         },
+        async saveFrota(v) {
+          const j = this.read();
+          j.frota = (j.frota || []).filter((x) => x.id !== v.id);
+          j.frota.push(v);
+          this.write(j);
+        },
+        async delFrota(id) {
+          const j = this.read();
+          j.frota = (j.frota || []).filter((x) => x.id !== id);
+          this.write(j);
+        },
         async delDiv(id) {
           const j = this.read();
           j.dividas = (j.dividas || []).filter((x) => x.id !== id);
@@ -308,6 +338,8 @@ function apply(j) {
   veic = nv;
   divOk = (j.dividas !== null && j.dividas !== undefined) || store.modo === "local";
   dividas = (j.dividas || []).map((d) => ({ ...d, descontos: parseEnviados(d.descontos) }));
+  frotaOk = (j.frota !== null && j.frota !== undefined) || store.modo === "local";
+  frota = (j.frota || []).map((v) => ({ ...v, reparos: parseEnviados(v.reparos) }));
 }
 
 async function refresh(first) {
@@ -321,6 +353,7 @@ async function refresh(first) {
       emMes("hist", renderHist);
       if (!$("finPanel").contains(document.activeElement)) emMes("fin", renderFin);
       if (!$("v-dev").contains(document.activeElement)) renderDev();
+      if (!$("v-frota").contains(document.activeElement)) renderFrota();
     }
     if (store.modo === "online") setStatus("Atualizado às " + hora());
   } catch (e) {

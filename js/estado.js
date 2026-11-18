@@ -27,4 +27,25 @@ const vTimers = {};
 let dividas = []; // dívidas das oficinas (aba Devedores)
 let divOk = true; // false se a tabela de dívidas não existir no Supabase
 
+// Abas do site e quem pode ver cada uma (definido pela equipe da pessoa).
+const ABAS = ["mes", "hist", "fin", "dev", "frota", "crit"];
+const ABA_NOME = {
+  mes: "Avaliação do mês",
+  hist: "Histórico",
+  fin: "Financeiro",
+  dev: "Devedores",
+  frota: "Veículos Mega",
+  crit: "Critérios",
+};
+let equipes = []; // [{id, nome, abas, ordem}]
+
+function abasLiberadas() {
+  if (store.modo === "local" || !perfil || perfil.semTabela || perfil.admin) return ABAS.slice();
+  const eq = equipes.find((e) => e.id === perfil.equipe);
+  return eq ? ABAS.filter((a) => (eq.abas || []).includes(a)) : [];
+}
+function podeAba(a) {
+  return abasLiberadas().includes(a);
+}
+
 let perfil = null; // perfil de acesso de quem está logado (status, admin)

@@ -149,7 +149,7 @@ function fmtNota(t) {
 
 // Mensagem de status (aparece embaixo da aba aberta).
 function setStatus(t) {
-  for (const id of ["status", "fstatus", "accStatus", "devStatus"]) {
+  for (const id of ["status", "fstatus", "accStatus", "devStatus", "frStatus"]) {
     const el = $(id);
     if (el) el.textContent = t;
   }

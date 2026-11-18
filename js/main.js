@@ -19,6 +19,18 @@ function renderAll() {
   emMes("fin", renderFin);
   renderDc();
   renderDev();
+  renderFrota();
+}
+
+// Mostra só as abas liberadas para a equipe e abre a primeira delas.
+function aplicarAbas() {
+  const L = abasLiberadas();
+  for (const a of ABAS) $("t-" + a).hidden = !L.includes(a);
+  const ok = abaAtual === "acc" ? perfil && perfil.admin : L.includes(abaAtual);
+  if (!ok) {
+    if (L.length) tab(L[0]);
+    else if (perfil && perfil.admin) tab("acc");
+  } else tab(abaAtual);
 }
 
 (function () {
@@ -54,6 +66,7 @@ $("selMes").onchange = $("selAno").onchange = () => {
 };
 
 function tab(n) {
+  if (n === "acc" ? !(perfil && perfil.admin) : !podeAba(n)) return;
   if (n === "acc") loadAcc();
   abaAtual = n;
   const temMes = n in mesPorAba;
@@ -63,21 +76,14 @@ function tab(n) {
     syncPicker();
     RENDER_ABA[n]();
   }
-  for (const t of ["mes", "hist", "fin", "dev", "acc", "crit"]) {
+  for (const t of ABAS.concat("acc")) {
     $("t-" + t).setAttribute("aria-selected", t === n);
     $("v-" + t).hidden = t !== n;
   }
-  $("pageTitle").textContent = {
-    mes: "Avaliação do mês",
-    hist: "Histórico",
-    fin: "Financeiro",
-    dev: "Devedores",
-    acc: "Acessos",
-    crit: "Critérios",
-  }[n];
+  $("pageTitle").textContent = n === "acc" ? "Acessos" : ABA_NOME[n];
 }
 
-["mes", "hist", "fin", "dev", "acc", "crit"].forEach((t) => ($("t-" + t).onclick = () => tab(t)));
+ABAS.concat("acc").forEach((t) => ($("t-" + t).onclick = () => tab(t)));
 
 function startApp() {
   if (started) {
@@ -120,5 +126,6 @@ if (store.modo === "online") {
 } else {
   hideLogin();
   $("whoBox").hidden = true;
+  aplicarAbas();
   startApp();
 }

@@ -18,6 +18,7 @@ js/oficinas.js        editar, excluir, descredenciar e recredenciar oficinas
 js/historico.js       aba Histórico
 js/financeiro.js      aba Financeiro (saldos e compensação)
 js/devedores.js       aba Devedores (dívidas e descontos por placa)
+js/frota.js           aba Veículos Mega (painel + histórico de reparos por placa)
 js/login.js           login, criar conta e espera de aprovação
 js/acessos.js         aba Acessos (só administradora)
 js/main.js            inicialização (mês, abas, arranque)
@@ -25,6 +26,7 @@ supabase/1-banco.sql  cria as tabelas
 supabase/2-acessos.sql cadastro com aprovação + veículos enviados
 supabase/3-excluir-acessos.sql permite excluir contas pela aba Acessos
 supabase/4-devedores.sql  aba Devedores + dados da planilha de devedores
+supabase/5-equipes-e-veiculos-mega.sql  equipes/abas + aba Veículos Mega
 ```
 
 Os scripts são carregados em ordem no fim do `index.html` (main.js por último).
@@ -51,3 +53,14 @@ Esperar 1–2 min e abrir o site com **Ctrl+F5**.
 - Novos usuários criam conta na tela de login e aparecem na aba **Acessos** para aprovação.
 - Ver ou corrigir dados direto: Supabase → Table Editor.
 - Plano grátis: o projeto pausa após 7 dias sem uso → entrar no Supabase e clicar em **Restore**.
+
+## Equipes e abas (SQL 5)
+
+Rodar `supabase/5-equipes-e-veiculos-mega.sql` no SQL Editor (uma vez). Ele:
+- cria as equipes (Notas, Despachante, Autorização de reparos, Vidro, Atendimento);
+- coloca quem já tinha acesso na equipe **Notas** (continua vendo tudo);
+- cria a aba **Veículos Mega** com os dados da planilha de histórico de reparos;
+- bloqueia no banco cada aba conforme a equipe (não é só esconder na tela).
+
+Na aba **Acessos**: escolher a equipe de cada pessoa e marcar as abas de cada equipe.
+A administradora sempre vê tudo.

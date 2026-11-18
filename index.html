@@ -10,7 +10,7 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap"
     />
-    <link rel="stylesheet" href="css/style.css?v=20261110a" />
+    <link rel="stylesheet" href="css/style.css?v=20261118a" />
   </head>
   <body>
     <div class="login" id="login" hidden>
@@ -147,6 +147,12 @@
           <button role="tab" id="t-dev" aria-selected="false">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18v12H3z" /><path d="M3 11h18M7 15h3" /></svg
             >Devedores
+          </button>
+          <button role="tab" id="t-frota" aria-selected="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 13l2-5h14l2 5v5H3z" /><path d="M3 13h18" />
+              <circle cx="7.5" cy="16" r="1.2" /><circle cx="16.5" cy="16" r="1.2" /></svg
+            >Veículos Mega
           </button>
           <button role="tab" id="t-acc" aria-selected="false" hidden>
             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -396,19 +402,78 @@
             </div>
           </section>
 
+          <section id="v-frota" hidden>
+            <div class="panel">
+              <div class="phead">
+                <div>
+                  <h2>Painel dos veículos Mega</h2>
+                  <p class="psub">Resumo dos gastos com reparos dos veículos da Mega.</p>
+                </div>
+              </div>
+              <div class="fstats" id="frStats"></div>
+              <div class="fr-dash">
+                <div class="fr-box">
+                  <h3>Gasto por mês</h3>
+                  <div class="fr-meses" id="frMeses"></div>
+                </div>
+                <div class="fr-box">
+                  <h3>Onde foi feito</h3>
+                  <div id="frOnde"></div>
+                </div>
+                <div class="fr-box">
+                  <h3>Veículos que mais gastaram</h3>
+                  <div id="frTop"></div>
+                </div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="phead">
+                <div>
+                  <h2>Histórico de reparos</h2>
+                  <p class="psub">Clique num veículo para ver e lançar reparos.</p>
+                </div>
+                <button type="button" class="btn" id="frNew"><span aria-hidden="true">+</span> Novo veículo</button>
+              </div>
+              <div class="banner" id="frBanner" hidden>
+                A tabela de Veículos Mega ainda não existe no Supabase. Rode o SQL 5 e recarregue a página.
+              </div>
+              <div class="dv-tools">
+                <label class="srch"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg
+                  ><input type="search" id="frQ" placeholder="Buscar placa, veículo ou quem está usando..." aria-label="Buscar veículo"
+                /></label>
+              </div>
+              <div id="frList"></div>
+              <div class="status" id="frStatus"></div>
+            </div>
+          </section>
+
           <section id="v-acc" hidden>
             <div class="panel">
               <div class="phead">
                 <div>
                   <h2>Acessos da equipe</h2>
                   <p class="psub">
-                    Quem cria conta na tela de login aparece aqui como pendente. Só quem você aprovar consegue
-                    ver e mexer nos dados.
+                    Quem cria conta aparece aqui como pendente. Escolha a equipe de cada pessoa: ela só vê as abas
+                    liberadas para a equipe dela.
                   </p>
                 </div>
                 <button type="button" class="btn ghost2" id="accReload">Atualizar lista</button>
               </div>
               <div id="accList"><p class="dcl-empty">Carregando…</p></div>
+            </div>
+            <div class="panel">
+              <div class="phead">
+                <div>
+                  <h2>Equipes e abas</h2>
+                  <p class="psub">Marque as abas que cada equipe pode ver e lançar. Vale na hora para todos da equipe.</p>
+                </div>
+              </div>
+              <div id="eqList"></div>
+              <form class="add eq-add" id="eqForm">
+                <input type="text" id="eqNome" placeholder="Nova equipe" aria-label="Nome da nova equipe" maxlength="40" />
+                <button class="btn" type="submit"><span aria-hidden="true">+</span> Adicionar equipe</button>
+              </form>
               <div class="status" id="accStatus"></div>
             </div>
           </section>
@@ -609,17 +674,18 @@
     </div>
 
     <!-- Scripts: a ordem importa (config e utilidades primeiro, main por último) -->
-    <script src="js/config.js?v=20261110a"></script>
-    <script src="js/util.js?v=20261110a"></script>
-    <script src="js/estado.js?v=20261110a"></script>
-    <script src="js/dados.js?v=20261110a"></script>
-    <script src="js/avaliacao.js?v=20261110a"></script>
-    <script src="js/oficinas.js?v=20261110a"></script>
-    <script src="js/historico.js?v=20261110a"></script>
-    <script src="js/financeiro.js?v=20261110a"></script>
-    <script src="js/devedores.js?v=20261110a"></script>
-    <script src="js/login.js?v=20261110a"></script>
-    <script src="js/acessos.js?v=20261110a"></script>
-    <script src="js/main.js?v=20261110a"></script>
+    <script src="js/config.js?v=20261118a"></script>
+    <script src="js/util.js?v=20261118a"></script>
+    <script src="js/estado.js?v=20261118a"></script>
+    <script src="js/dados.js?v=20261118a"></script>
+    <script src="js/avaliacao.js?v=20261118a"></script>
+    <script src="js/oficinas.js?v=20261118a"></script>
+    <script src="js/historico.js?v=20261118a"></script>
+    <script src="js/financeiro.js?v=20261118a"></script>
+    <script src="js/devedores.js?v=20261118a"></script>
+    <script src="js/frota.js?v=20261118a"></script>
+    <script src="js/login.js?v=20261118a"></script>
+    <script src="js/acessos.js?v=20261118a"></script>
+    <script src="js/main.js?v=20261118a"></script>
   </body>
 </html>

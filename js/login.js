@@ -37,6 +37,12 @@ function showWait(st) {
     $("lwP").textContent =
       "Seu pedido de acesso foi recusado. Se achar que é um engano, fale com o Departamento de Notas.";
     $("lwRetry").hidden = true;
+  } else if (st === "sem-abas") {
+    $("lwIc").textContent = "🔒";
+    $("lwT").textContent = "Sem abas liberadas";
+    $("lwP").textContent =
+      "Seu acesso foi aprovado, mas a sua equipe ainda não tem nenhuma aba liberada. Fale com o Departamento de Notas e depois clique em “Verificar de novo”.";
+    $("lwRetry").hidden = false;
   } else {
     $("lwIc").textContent = "⏳";
     $("lwT").textContent = "Aguardando aprovação";
@@ -84,10 +90,23 @@ async function loadPerfil() {
   return a[0] || { status: "pendente" };
 }
 
+// Equipes e as abas de cada uma (se a tabela ainda não existe, todos veem tudo).
+async function loadEquipes() {
+  const r = await sbFetch(SB + "equipes?select=*&order=ordem.asc.nullslast,nome.asc", { cache: "no-store" });
+  if (r.status === 404 || r.status === 400) {
+    equipes = [];
+    perfil.semTabela = true;
+    return;
+  }
+  if (!r.ok) throw await sbErr(r);
+  equipes = await r.json();
+}
+
 async function afterAuth() {
   try {
     await ensureSess();
     perfil = await loadPerfil();
+    if (perfil.status === "aprovado" && !perfil.semTabela) await loadEquipes();
   } catch (e) {
     if (e.login) return;
     showLogin("Não foi possível verificar seu acesso (" + e.message + ").");
@@ -97,8 +116,13 @@ async function afterAuth() {
     showWait(perfil.status);
     return;
   }
+  if (!perfil.admin && !abasLiberadas().length) {
+    showWait("sem-abas");
+    return;
+  }
   $("t-acc").hidden = !perfil.admin;
   hideLogin();
+  aplicarAbas();
   startApp();
   if (perfil.admin) loadAcc(true);
 }
@@ -211,9 +235,11 @@ async function doLogout() {
   descreds = [];
   aval = {};
   veic = {};
+  dividas = [];
+  frota = [];
+  equipes = [];
   ready = false;
   renderAll();
-  tab("mes");
   showLogin("Você saiu. Entre de novo para continuar.");
 }
 
