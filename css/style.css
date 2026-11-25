@@ -4542,3 +4542,22 @@ body.locked .app {
     margin-bottom: 4px;
   }
 }
+.fstats.cinco {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+.dvt td.nw {
+  white-space: nowrap;
+}
+.dvt .ico + .ico {
+  margin-left: 4px;
+}
+.rp-ed td {
+  background: #fbf7f2;
+}
+@media print {
+  .rp-veic {
+    margin: 2px 0 0;
+    font-size: 9pt;
+    color: #5e6966;
+  }
+}
