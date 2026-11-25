@@ -356,6 +356,7 @@ async function refresh(first) {
       if (!$("v-frota").contains(document.activeElement)) renderFrota();
     }
     if (store.modo === "online") setStatus("Atualizado às " + hora());
+    if ($("pgUpd")) $("pgUpd").textContent = "Última atualização: " + fdate(hojeISO()) + " às " + hora();
   } catch (e) {
     if (e.login) return;
     if (first) {

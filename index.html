@@ -10,7 +10,7 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap"
     />
-    <link rel="stylesheet" href="css/style.css?v=20261125a" />
+    <link rel="stylesheet" href="css/style.css?v=20261125e" />
   </head>
   <body>
     <div class="login" id="login" hidden>
@@ -178,15 +178,21 @@
             </button>
             <button type="button" id="pwBtn" class="who-pw">Alterar senha</button>
           </div>
-          Setor de Sinistros<br />Departamento de Notas<span>Uso interno</span>
+          Setor de Sinistros<br />Departamento de Notas<span class="uso">Uso interno</span>
         </div>
       </aside>
 
       <main class="main">
         <header class="topbar">
           <div>
-            <div class="crumb">Sinistros <span>›</span> Notas <span>›</span> <b>Ranking de Oficinas</b></div>
-            <h1 id="pageTitle">Avaliação do mês</h1>
+            <div class="crumb">Início <span>›</span> <b id="pageCrumb">Avaliação do mês</b></div>
+            <div class="pg-head">
+              <span class="pg-ic" id="pageIc" aria-hidden="true"></span>
+              <div>
+                <h1 id="pageTitle">Avaliação do mês</h1>
+                <p class="pg-sub" id="pageSub"></p>
+              </div>
+            </div>
           </div>
           <div class="mpick" id="mpick" role="group" aria-label="Mês de referência">
             <label for="selMes">Mês</label>
@@ -369,90 +375,140 @@
           </section>
 
           <section id="v-dev" hidden>
-            <div class="panel">
-              <div class="phead">
-                <div>
-                  <h2>Devedores</h2>
-                  <p class="psub">
-                    Dívidas das oficinas e os descontos feitos por placa até quitar. O saldo diminui sozinho.
-                  </p>
-                </div>
-                <button type="button" class="btn" id="dvNew"><span aria-hidden="true">+</span> Nova dívida</button>
-              </div>
+            <div class="dsh">
               <div class="banner" id="devBanner" hidden>
                 A tabela de dívidas ainda não existe no Supabase. Rode o SQL de devedores e recarregue a página.
               </div>
-              <div class="fstats" id="devStats"></div>
-              <div class="dv-tools">
-                <label class="srch"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg
-                  ><input type="search" id="dvQ" placeholder="Buscar oficina, veículo ou placa..." aria-label="Buscar dívida"
-                /></label>
-                <label class="fsel"
-                  ><small>Situação</small
-                  ><select id="dvF">
-                    <option value="">Todas</option>
-                    <option value="a">Em pagamento</option>
-                    <option value="q">Quitadas</option>
-                  </select></label
-                >
+              <div class="kcs" id="devStats"></div>
+              <div class="dsh-row">
+                <div class="pv-box">
+                  <h3 class="bx-t"><span class="bx-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20V11M10 20V5M16 20v-7M22 20H2" /></svg></span>Evolução da dívida <small>saldo em aberto no fim de cada mês</small></h3>
+                  <div id="devGraf"></div>
+                </div>
+                <div class="pv-box dsh-crit">
+                  <div class="crit-h">
+                    <h3 class="bx-t"><span class="bx-ic red" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l10 18H2z" /><path d="M12 10v5M12 18h.01" /></svg></span>Devedores críticos</h3>
+                    <button type="button" class="pill-btn" id="devVerTodos">Ver todos →</button>
+                  </div>
+                  <div id="devCrit"></div>
+                </div>
               </div>
-              <div id="devList"></div>
+              <div class="pv-box">
+                <div class="dsh-tools">
+                  <label class="srch"
+                    ><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg
+                    ><input type="search" id="dvQ" placeholder="Buscar por oficina, devedor ou placa..." aria-label="Buscar dívida"
+                  /></label>
+                  <label class="fsel"
+                    ><small>Status</small
+                    ><select id="dvF">
+                      <option value="">Todos</option>
+                      <option value="ok">Em dia</option>
+                      <option value="at">Atenção</option>
+                      <option value="cr">Atrasado</option>
+                      <option value="q">Quitada</option>
+                    </select></label
+                  >
+                  <label class="fsel"
+                    ><small>Ordenar por</small
+                    ><select id="dvO">
+                      <option value="saldo">Maior dívida</option>
+                      <option value="dias">Mais tempo sem desconto</option>
+                      <option value="nome">Nome</option>
+                    </select></label
+                  >
+                  <button type="button" class="btn" id="dvNew"><span aria-hidden="true">+</span> Nova dívida</button>
+                </div>
+                <div id="devList"></div>
+              </div>
               <div class="status" id="devStatus"></div>
             </div>
           </section>
 
           <section id="v-frota" hidden>
-            <div class="panel">
-              <div class="phead">
+            <div class="pv">
+              <header class="pv-top">
                 <div>
-                  <h2>Painel dos veículos Mega</h2>
-                  <p class="psub">Resumo dos gastos com reparos dos veículos da Mega.</p>
+                  <h2>Painel de Gastos do Veículo</h2>
+                  <p>Consulte a placa e acompanhe os gastos e reparos do veículo.</p>
                 </div>
-              </div>
-              <div class="fstats" id="frStats"></div>
-              <div class="fr-dash">
-                <div class="fr-box">
-                  <h3>Gasto por mês</h3>
-                  <div class="fr-meses" id="frMeses"></div>
-                </div>
-                <div class="fr-box">
-                  <h3>Onde foi feito</h3>
-                  <div id="frOnde"></div>
-                </div>
-                <div class="fr-box">
-                  <h3>Veículos que mais gastaram</h3>
-                  <div id="frTop"></div>
-                </div>
-              </div>
-            </div>
-            <div class="panel">
-              <div class="phead">
-                <div>
-                  <h2>Histórico de reparos</h2>
-                  <p class="psub">Clique num veículo para ver e lançar reparos.</p>
-                </div>
-                <div class="fr-acts">
+                <div class="pv-ha">
                   <button type="button" class="btn ghost2" id="frPrint">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M7 14h10v7H7z" /></svg
-                    >Imprimir relatório
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M7 14h10v7H7z" /></svg>Imprimir relatório
                   </button>
                   <button type="button" class="btn" id="frNew"><span aria-hidden="true">+</span> Novo veículo</button>
                 </div>
-              </div>
+              </header>
               <div class="banner" id="frBanner" hidden>
                 A tabela de Veículos Mega ainda não existe no Supabase. Rode o SQL 5 e recarregue a página.
               </div>
-              <div class="dv-tools">
-                <label class="srch"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg
-                  ><input type="search" id="frQ" placeholder="Buscar placa, veículo ou quem está usando..." aria-label="Buscar veículo"
-                /></label>
-                <label class="fsel"><small>Placa</small><select id="frPlaca"></select></label>
-                <label class="fsel"><small>Mês</small><select id="frMes"></select></label>
+
+              <div class="pv-bar">
+                <form class="pv-busca" id="pvForm" autocomplete="off">
+                  <label for="pvPlaca">Placa do veículo</label>
+                  <div class="pv-linha">
+                    <div class="pv-in">
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 13l2-5h14l2 5v5H3z" /><path d="M3 13h18" /></svg>
+                      <input type="text" id="pvPlaca" list="pvPlacas" maxlength="10" placeholder="Ex.: KWG8H49" />
+                      <button type="button" class="pv-x" id="pvLimpar" title="Ver todos os veículos" aria-label="Limpar placa" hidden>×</button>
+                    </div>
+                    <datalist id="pvPlacas"></datalist>
+                    <button type="submit" class="btn pv-go">
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>Consultar
+                    </button>
+                  </div>
+                </form>
+                <div class="pv-per">
+                  <label for="pvMes">Período</label>
+                  <div class="pv-linha">
+                    <select id="pvMes" aria-label="Mês"></select>
+                    <select id="pvAno" aria-label="Ano"></select>
+                    <button type="button" class="pv-hoje" id="pvHoje">Mês atual</button>
+                  </div>
+                </div>
               </div>
-              <div id="frList"></div>
-              <div class="status" id="frStatus"></div>
+              <div class="pv-aviso" id="pvAviso" hidden></div>
+              <div id="pvCad"></div>
+
+              <div class="pv-veic" id="pvVeic"></div>
+
+              <div class="pv-kpis">
+                <div class="pv-kpi mes" id="pvKMes"></div>
+                <div class="pv-kpi ano" id="pvKAno"></div>
+                <div class="pv-kpi ult" id="pvKUlt"></div>
+              </div>
+
+              <div class="pv-graf">
+                <div class="pv-box">
+                  <h3>Evolução dos gastos <span id="pvGrafAno"></span></h3>
+                  <div id="pvLinha"></div>
+                </div>
+                <div class="pv-box">
+                  <h3>Distribuição por local <span id="pvDistPer"></span></h3>
+                  <div id="pvDonut"></div>
+                </div>
+              </div>
+
+              <div class="pv-box pv-hist">
+                <div class="pv-hh">
+                  <h3>Histórico de reparos</h3>
+                  <select id="pvEscopo" aria-label="Período do histórico">
+                    <option value="mes">Mês selecionado</option>
+                    <option value="ano" selected>Ano selecionado</option>
+                    <option value="tudo">Ver todos os registros</option>
+                  </select>
+                </div>
+                <div id="frList"></div>
+              </div>
+
+              <footer class="pv-nota">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8h.01" /></svg>
+                <p>
+                  Os valores consideram somente os reparos cadastrados para a placa consultada. Sem despesas no
+                  período, aparece R$ 0,00. O ano vai de janeiro a dezembro do ano selecionado.
+                </p>
+                <span class="status" id="frStatus"></span>
+              </footer>
             </div>
           </section>
 
@@ -678,25 +734,32 @@
             </div>
           </section>
         </div>
+        <footer class="pg-nota" id="pgNota">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8h.01" /></svg>
+          <p id="pgNotaTxt">Os valores apresentados são referentes aos lançamentos registrados no sistema.</p>
+          <span class="pg-upd" id="pgUpd"></span>
+        </footer>
       </main>
     </div>
 
     <div id="printArea" aria-hidden="true"></div>
 
     <!-- Scripts: a ordem importa (config e utilidades primeiro, main por último) -->
-    <script src="js/config.js?v=20261125a"></script>
-    <script src="js/util.js?v=20261125a"></script>
-    <script src="js/estado.js?v=20261125a"></script>
-    <script src="js/dados.js?v=20261125a"></script>
-    <script src="js/avaliacao.js?v=20261125a"></script>
-    <script src="js/oficinas.js?v=20261125a"></script>
-    <script src="js/historico.js?v=20261125a"></script>
-    <script src="js/financeiro.js?v=20261125a"></script>
-    <script src="js/devedores.js?v=20261125a"></script>
-    <script src="js/frota.js?v=20261125a"></script>
-    <script src="js/relatorio.js?v=20261125a"></script>
-    <script src="js/login.js?v=20261125a"></script>
-    <script src="js/acessos.js?v=20261125a"></script>
-    <script src="js/main.js?v=20261125a"></script>
+    <script src="js/config.js?v=20261125e"></script>
+    <script src="js/util.js?v=20261125e"></script>
+    <script src="js/estado.js?v=20261125e"></script>
+    <script src="js/dados.js?v=20261125e"></script>
+    <script src="js/avaliacao.js?v=20261125e"></script>
+    <script src="js/oficinas.js?v=20261125e"></script>
+    <script src="js/historico.js?v=20261125e"></script>
+    <script src="js/financeiro.js?v=20261125e"></script>
+    <script src="js/graficos.js?v=20261125e"></script>
+    <script src="js/devedores.js?v=20261125e"></script>
+    <script src="js/frota.js?v=20261125e"></script>
+    <script src="js/relatorio.js?v=20261125e"></script>
+    <script src="js/tema.js?v=20261125e"></script>
+    <script src="js/login.js?v=20261125e"></script>
+    <script src="js/acessos.js?v=20261125e"></script>
+    <script src="js/main.js?v=20261125e"></script>
   </body>
 </html>

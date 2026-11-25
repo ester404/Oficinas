@@ -1,9 +1,9 @@
 /* Relatório de reparos dos Veículos Mega, impresso no papel timbrado da Mega.
-   Usa os filtros da aba: placa (ou todas) e mês (ou todos). */
+   Usa a placa consultada (ou todas) e o período escolhido no histórico (mês, ano ou tudo). */
 
 function frRelatorioHTML() {
   const per = frPer();
-  const periodo = per ? nomeMes(per) : "Todos os meses";
+  const periodo = frPerNome();
   // Reparos do período, com o veículo de cada um
   const linhas = [];
   const placaV = frPlaca() ? frVeics()[0] : null;
@@ -61,9 +61,9 @@ function frRelatorioHTML() {
     "</div></header>" +
     '<section class="rp-kpis">' +
     (placaV
-      ? kpi("Reparos" + (per ? " no mês" : ""), linhas.length) +
-        kpi("Gasto em " + nomeMes(per || CUR), money(frSoma(placaV, per || CUR))) +
-        kpi("Gasto em " + (per || CUR).slice(0, 4), money(frSoma(placaV, (per || CUR).slice(0, 4)))) +
+      ? kpi("Reparos no período", linhas.length) +
+        kpi("Gasto em " + nomeMes(frMesKey()), money(frSoma(placaV, frMesKey()))) +
+        kpi("Gasto em " + frAnoSel, money(frSoma(placaV, String(frAnoSel)))) +
         kpi("Gasto total da placa", money(frTotal(placaV)), "tot")
       : kpi("Veículos atendidos", veics.length) +
         kpi("Reparos", linhas.length) +
@@ -123,6 +123,7 @@ function frRelatorioHTML() {
               "</small></td><td>" +
               esc(x.r.descricao || "") +
               (x.r.local ? "<small>Local: " + esc(x.r.local) + "</small>" : "") +
+              (x.r.obs ? "<small>Obs.: " + esc(x.r.obs) + "</small>" : "") +
               '</td><td class="r nw">' +
               money(num(x.r.valor) || 0) +
               "</td></tr>",
@@ -153,7 +154,7 @@ function imprimirRelatorio() {
   document.title =
     "Relatorio Veiculos Mega - " +
     (pv ? pv.placa + " - " : "") +
-    (per ? nomeMes(per).replace("/", "-") : "todos os meses");
+    frPerNome().replace("/", "-");
   const img = area.querySelector(".rp-bg");
   const go = () => {
     window.print();

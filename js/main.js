@@ -80,8 +80,16 @@ function tab(n) {
     $("t-" + t).setAttribute("aria-selected", t === n);
     $("v-" + t).hidden = t !== n;
   }
+  const info = PAGINA[n];
   $("pageTitle").textContent = n === "acc" ? "Acessos" : ABA_NOME[n];
+  $("pageCrumb").textContent = $("pageTitle").textContent;
+  $("pageSub").textContent = info.sub;
+  $("pageIc").innerHTML = '<svg viewBox="0 0 24 24">' + info.ic + "</svg>";
+  $("pgNotaTxt").textContent = info.nota;
+  $("pgNota").hidden = n === "frota";
 }
+
+
 
 ABAS.concat("acc").forEach((t) => ($("t-" + t).onclick = () => tab(t)));
 

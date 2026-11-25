@@ -14,88 +14,148 @@ function divCalc(d) {
   return { total, desc: Math.round(desc * 100) / 100, saldo, quitada: total > 0 && saldo <= 0 };
 }
 
+// Dias desde o último desconto (ou desde o cadastro) e a situação da dívida.
+const DIV_LIMITE_AT = 30,
+  DIV_LIMITE_CR = 60;
+function divUltimo(d) {
+  return (d.descontos || []).reduce((m, x) => (x.data && x.data > m ? x.data : m), "");
+}
+function divStatus(d, c) {
+  c = c || divCalc(d);
+  if (c.quitada) return { k: "q", dias: 0, txt: "Quitada" };
+  const ref = divUltimo(d) || (d.criado_em || "").slice(0, 10);
+  const dias = ref ? Math.max(0, Math.round((new Date(hojeISO()) - new Date(ref)) / 864e5)) : 0;
+  if (dias > DIV_LIMITE_CR) return { k: "cr", dias, txt: "Sem desconto há " + dias + " dias" };
+  if (dias > DIV_LIMITE_AT) return { k: "at", dias, txt: "Atenção · " + dias + " dias" };
+  return { k: "ok", dias, txt: "Em dia" };
+}
+// Placa citada no "referente a" (ex.: "Honda PCX150 (LMD0G98)").
+function divPlaca(d) {
+  const m = (d.referente || "").toUpperCase().match(/\b([A-Z]{3}\d[A-Z0-9]\d{2})\b/);
+  return m ? m[1] : "—";
+}
+
 function divOrdenadas() {
   const q = ($("dvQ").value || "").trim().toUpperCase(),
-    f = $("dvF").value;
+    f = $("dvF").value,
+    o = $("dvO").value;
   return dividas
     .filter((d) => !q || (d.devedor + " " + (d.referente || "")).toUpperCase().includes(q))
-    .filter((d) => !f || (f === "q" ? divCalc(d).quitada : !divCalc(d).quitada))
-    .sort((a, b) => divCalc(b).saldo - divCalc(a).saldo || a.devedor.localeCompare(b.devedor));
+    .filter((d) => !f || divStatus(d).k === f)
+    .sort((a, b) =>
+      o === "nome"
+        ? a.devedor.localeCompare(b.devedor)
+        : o === "dias"
+          ? divStatus(b).dias - divStatus(a).dias
+          : divCalc(b).saldo - divCalc(a).saldo || a.devedor.localeCompare(b.devedor),
+    );
+}
+
+// Saldo em aberto no fim do mês (dívidas menos os descontos feitos até lá).
+function divSaldoEm(fim) {
+  return dividas.reduce((s, d) => {
+    const desc = (d.descontos || []).filter((x) => !x.data || x.data <= fim).reduce((t, x) => t + (num(x.valor) || 0), 0);
+    return s + Math.max(0, (num(d.valor_total) || 0) - desc);
+  }, 0);
+}
+function divDescNoMes(k) {
+  return dividas.reduce(
+    (s, d) => s + (d.descontos || []).filter((x) => (x.data || "").startsWith(k)).reduce((t, x) => t + (num(x.valor) || 0), 0),
+    0,
+  );
 }
 
 // ---------- desenho ----------
 
+const DV_CHIP = { q: "green", ok: "green", at: "amber", cr: "red" };
+
 function renderDev() {
   if (!$("devList")) return;
-  const tot = dividas.reduce(
-    (a, d) => {
-      const c = divCalc(d);
-      a.total += c.total;
-      a.desc += c.desc;
-      a.saldo += Math.max(0, c.saldo);
-      a.quit += c.quitada ? 1 : 0;
-      return a;
-    },
-    { total: 0, desc: 0, saldo: 0, quit: 0 },
-  );
-  const box = (l, v, c) => '<div class="' + (c || "") + '"><small>' + l + "</small><b>" + v + "</b></div>";
+  const ativos = dividas.filter((d) => !divCalc(d).quitada);
+  const saldo = ativos.reduce((s, d) => s + Math.max(0, divCalc(d).saldo), 0);
+  const st = ativos.map((d) => divStatus(d));
+  const nCr = st.filter((x) => x.k === "cr").length,
+    nOk = st.filter((x) => x.k !== "cr").length;
+  const k = CUR,
+    [yy, mm] = k.split("-").map(Number),
+    ant = mm === 1 ? yy - 1 + "-12" : yy + "-" + String(mm - 1).padStart(2, "0");
+  const dMes = divDescNoMes(k),
+    dAnt = divDescNoMes(ant);
   $("devStats").innerHTML =
-    box("Total das dívidas", money(tot.total)) +
-    box("Já descontado", money(tot.desc), "pos") +
-    box("Saldo devedor", money(tot.saldo), "big neg") +
-    box("Dívidas quitadas", tot.quit + " de " + dividas.length);
+    gKpi({ ic: "pessoas", rotulo: "Devedores ativos", valor: ativos.length, sub: '<em class="kc-var">' + (dividas.length - ativos.length) + " quitada(s)</em>" }) +
+    gKpi({ ic: "saco", rotulo: "Valor total em aberto", valor: money(saldo), sub: '<em class="kc-var">de ' + money(dividas.reduce((s, d) => s + divCalc(d).total, 0)) + " em dívidas</em>" }) +
+    gKpi({ ic: "calendario", rotulo: "Descontado no mês", valor: money(dMes), sub: gVar(dMes, dAnt, "vs. mês anterior") }) +
+    gKpi({ ic: "alerta", rotulo: "Sem desconto há +" + DIV_LIMITE_CR + " dias", valor: nCr, sub: '<em class="kc-var">' + nOk + " em dia ou em atenção</em>", tom: nCr ? "red" : "" });
+
+  // Evolução (últimos 6 meses)
+  const meses = [];
+  let y = yy,
+    m = mm;
+  for (let i = 0; i < 6; i++) {
+    meses.unshift(y + "-" + String(m).padStart(2, "0"));
+    if (--m === 0) (m = 12), y--;
+  }
+  const fim = (k2) => {
+    const [a, b] = k2.split("-").map(Number);
+    return k2 + "-" + String(new Date(a, b, 0).getDate()).padStart(2, "0");
+  };
+  $("devGraf").innerHTML = gLinha(
+    meses.map((k2) => divSaldoEm(fim(k2))),
+    meses.map((k2) => MESES[Number(k2.slice(5)) - 1].slice(0, 3)),
+    5,
+    (v) => (v >= 1000 ? "R$ " + Math.round(v / 1000) + "k" : "R$ " + Math.round(v)),
+  );
+
+  // Críticos: mais tempo sem desconto
+  const crit = ativos
+    .map((d) => ({ d, s: divStatus(d), c: divCalc(d) }))
+    .sort((a, b) => b.s.dias - a.s.dias || b.c.saldo - a.c.saldo)
+    .slice(0, 4);
+  $("devCrit").innerHTML = crit.length
+    ? crit
+        .map(
+          (x) =>
+            '<div class="crit-i" data-dvopen="' + esc(x.d.id) + '"><span class="av">' + esc(gIniciais(x.d.devedor)) + "</span><div class=\"crit-n\"><b>" + esc(x.d.devedor) +
+            '</b><strong>' + money(Math.max(0, x.c.saldo)) + '</strong></div><span class="chip ' + DV_CHIP[x.s.k] + '">' +
+            (x.s.k === "ok" ? "Em dia" : "Sem desconto há " + x.s.dias + " dias") + "</span></div>",
+        )
+        .join("")
+    : '<p class="pv-vazio">Nenhuma dívida em aberto.</p>';
 
   $("devBanner").hidden = divOk;
   const L = divOrdenadas();
   let h = devEdit === "nova" ? divForm(null) : "";
   if (!dividas.length && devEdit !== "nova")
-    h +=
-      '<div class="vempty"><b>Nenhuma dívida cadastrada</b><span>Clique em “Nova dívida” para lançar a primeira.</span></div>';
+    h += '<div class="vempty"><b>Nenhuma dívida cadastrada</b><span>Clique em “Nova dívida” para lançar a primeira.</span></div>';
   else if (!L.length && devEdit !== "nova")
     h += '<div class="vempty"><b>Nada encontrado</b><span>Mude a busca ou o filtro.</span></div>';
-  h += L.map(divCard).join("");
+  if (L.length)
+    h +=
+      '<div class="scroll"><table class="pv-t dsh-t"><thead><tr><th>Devedor</th><th>Placa</th><th class="r">Valor total</th><th class="r">Descontado</th><th class="r">Em aberto</th><th>Último desconto</th><th>Status</th><th class="c">Ações</th></tr></thead><tbody>' +
+      L.map(divLinha).join("") +
+      "</tbody></table></div>";
   $("devList").innerHTML = h;
 }
 
-function divCard(d) {
+function divLinha(d) {
   const c = divCalc(d),
+    s = divStatus(d, c),
     id = esc(d.id),
     aberto = devOpen === d.id;
   const pct = c.total ? Math.min(100, Math.round((c.desc / c.total) * 100)) : 0;
+  const ult = divUltimo(d);
   let h =
-    '<article class="dv' +
-    (c.quitada ? " ok" : "") +
-    (aberto ? " open" : "") +
-    '" data-dv="' +
-    id +
-    '"><button type="button" class="dv-head" data-dvopen="' +
-    id +
-    '" aria-expanded="' +
-    aberto +
-    '"><span class="dv-ic">' +
-    DIV_IC +
-    '</span><span class="dv-t"><b>' +
-    esc(d.devedor) +
-    "</b><small>" +
-    esc(d.referente || "") +
-    '</small></span><span class="dv-num"><small>Total</small>' +
-    money(c.total) +
-    '</span><span class="dv-num"><small>Descontado</small>' +
-    money(c.desc) +
-    '</span><span class="dv-num saldo"><small>' +
-    (c.quitada ? "Quitada" : "Saldo devedor") +
-    "</small>" +
-    money(Math.max(0, c.saldo)) +
-    '</span><span class="dv-chip">' +
-    (c.quitada ? "Quitada" : "Em pagamento") +
-    '</span><svg class="dv-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>' +
-    '<div class="dv-bar" title="' +
-    pct +
-    '% descontado"><i style="width:' +
-    pct +
-    '%"></i></div>';
-  if (aberto) h += devEdit === d.id ? divForm(d) : divDetail(d, c);
-  return h + "</article>";
+    '<tr data-dv="' + id + '"' + (aberto ? ' class="on"' : "") + '><td><div class="dv-who"><span class="av">' + esc(gIniciais(d.devedor)) +
+    "</span><div><b>" + esc(d.devedor) + "</b><small>" + esc(d.referente || "") + '</small><span class="mini-bar" title="' + pct +
+    '% descontado"><i style="width:' + pct + '%"></i></span></div></div></td><td class="nw"><b>' + esc(divPlaca(d)) + '</b></td><td class="r nw">' +
+    money(c.total) + '</td><td class="r nw">' + money(c.desc) + '</td><td class="r nw pv-val ' + (c.quitada ? "tpos" : "tneg") + '">' +
+    money(Math.max(0, c.saldo)) + '</td><td class="nw">' + (ult ? fdate(ult) : '<span class="z">—</span>') + '</td><td><span class="chip ' +
+    DV_CHIP[s.k] + '">' + s.txt + '</span></td><td class="c nw"><button type="button" class="ico" data-dvopen="' + id +
+    '" title="Ver descontos" aria-label="Ver descontos">' + gSvg("olho") + '</button><button type="button" class="ico" data-dved="' + id +
+    '" title="Editar dívida" aria-label="Editar dívida">' + ICO_ED + '</button><button type="button" class="ico red" data-dvdel="' + id +
+    '" title="Excluir dívida" aria-label="Excluir dívida">' + ICO_TR + "</button></td></tr>";
+  if (aberto) h += '<tr class="dv-det" data-dv="' + id + '"><td colspan="8">' + (devEdit === d.id ? divForm(d) : divDetail(d, c)) + "</td></tr>";
+  return h;
 }
 
 function divDetail(d, c) {
@@ -231,6 +291,22 @@ $("dvNew").onclick = () => {
 };
 $("dvQ").addEventListener("input", renderDev);
 $("dvF").addEventListener("input", renderDev);
+$("dvO").addEventListener("input", renderDev);
+$("devVerTodos").onclick = () => {
+  $("dvF").value = "";
+  $("dvO").value = "dias";
+  renderDev();
+  $("devList").scrollIntoView({ behavior: "smooth", block: "start" });
+};
+$("devCrit").addEventListener("click", (e) => {
+  const it = e.target.closest("[data-dvopen]");
+  if (!it) return;
+  devOpen = it.dataset.dvopen;
+  devEdit = null;
+  renderDev();
+  const tr = document.querySelector('#devList tr[data-dv="' + CSS.escape(devOpen) + '"]');
+  if (tr) tr.scrollIntoView({ behavior: "smooth", block: "center" });
+});
 
 $("devList").addEventListener("click", (e) => {
   const op = e.target.closest("[data-dvopen]");
@@ -248,6 +324,7 @@ $("devList").addEventListener("click", (e) => {
   const ed = e.target.closest("[data-dved]");
   if (ed) {
     devEdit = ed.dataset.dved;
+    devOpen = ed.dataset.dved;
     renderDev();
     $("dfDev").focus();
     return;
