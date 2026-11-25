@@ -115,7 +115,7 @@ function renderDev() {
     ? crit
         .map(
           (x) =>
-            '<div class="crit-i" data-dvopen="' + esc(x.d.id) + '"><span class="av">' + esc(gIniciais(x.d.devedor)) + "</span><div class=\"crit-n\"><b>" + esc(x.d.devedor) +
+            '<div class="crit-i" data-dvopen="' + esc(x.d.id) + '"><span class="dav">' + esc(gIniciais(x.d.devedor)) + "</span><div class=\"crit-n\"><b>" + esc(x.d.devedor) +
             '</b><strong>' + money(Math.max(0, x.c.saldo)) + '</strong></div><span class="chip ' + DV_CHIP[x.s.k] + '">' +
             (x.s.k === "ok" ? "Em dia" : "Sem desconto há " + x.s.dias + " dias") + "</span></div>",
         )
@@ -145,7 +145,7 @@ function divLinha(d) {
   const pct = c.total ? Math.min(100, Math.round((c.desc / c.total) * 100)) : 0;
   const ult = divUltimo(d);
   let h =
-    '<tr data-dv="' + id + '"' + (aberto ? ' class="on"' : "") + '><td><div class="dv-who"><span class="av">' + esc(gIniciais(d.devedor)) +
+    '<tr data-dv="' + id + '"' + (aberto ? ' class="on"' : "") + '><td><div class="dv-who"><span class="dav">' + esc(gIniciais(d.devedor)) +
     "</span><div><b>" + esc(d.devedor) + "</b><small>" + esc(d.referente || "") + '</small><span class="mini-bar" title="' + pct +
     '% descontado"><i style="width:' + pct + '%"></i></span></div></div></td><td class="nw"><b>' + esc(divPlaca(d)) + '</b></td><td class="r nw">' +
     money(c.total) + '</td><td class="r nw">' + money(c.desc) + '</td><td class="r nw pv-val ' + (c.quitada ? "tpos" : "tneg") + '">' +

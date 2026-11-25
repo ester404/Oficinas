@@ -6,7 +6,7 @@ let vgEdit = null; // veículo sendo editado (posição na lista)
 const CRIT_TXT = {
   q: ["Qualidade do reparo", "Sem retrabalho; sem reclamação de peças ou pintura"],
   p: ["Prazo de entrega", "Veículo entregue na data prometida ou antes"],
-  s: ["Satisfação do cliente", "Notas e avaliações dos associados"],
+  s: ["Satisfação do cliente", "Notas e avaliações dos segurados"],
   o: ["Preço e orçamento", "Orçamento final igual ao aprovado, sem extras"],
   d: ["Documentação", "Notas fiscais e fotos enviadas rápido"],
   e: ["Estrutura da oficina", "Ferramentas, alinhamento e organização"],

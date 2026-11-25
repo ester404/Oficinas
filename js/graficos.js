@@ -19,7 +19,7 @@ const gSvg = (k) => '<svg viewBox="0 0 24 24" aria-hidden="true">' + (GIC[k] || 
 
 // Seta de variação (para baixo é bom quando "menorBom").
 function gVar(atual, antes, rotulo, menorBom) {
-  if (!antes) return '<em class="kc-var">' + (atual ? "sem base " + rotulo.replace("vs. ", "no ") : "—") + "</em>";
+  if (!antes) return '<em class="kc-var">' + (atual ? "sem lançamentos " + rotulo.replace(/^vs\. (\d{4})/, "em $1").replace(/^vs\. /, "no ") : "—") + "</em>";
   const p = Math.round(((atual - antes) / antes) * 1000) / 10;
   if (!p) return '<em class="kc-var">— sem variação</em>';
   const bom = menorBom ? p < 0 : p > 0;
@@ -85,7 +85,8 @@ function gLinha(vals, rotulos, sel, fmt) {
 
 const G_CORES = ["#0b6b55", "#5cc9a7", "#f2b33d", "#e7774f", "#8f84e0", "#5b8bd9", "#b9c4c1"];
 // Rosca com legenda: L = [[rótulo, valor]], centro = texto do meio.
-function gRosca(L, centro, sub) {
+function gRosca(L, centro, sub, fmt) {
+  fmt = fmt || money;
   const tot = L.reduce((s, x) => s + x[1], 0);
   if (!tot) return '<p class="pv-vazio">Sem valores no período.<br><b>R$ 0,00</b></p>';
   const C = 2 * Math.PI * 52;
@@ -103,7 +104,7 @@ function gRosca(L, centro, sub) {
     "</g></svg><div><b>" + centro + "</b><small>" + sub + '</small></div></div><ul class="pv-leg">' +
     L.map(
       ([k, v], i) =>
-        '<li><i style="background:' + G_CORES[i % G_CORES.length] + '"></i><span>' + esc(k) + "</span><b>" + money(v) + "</b><em>" +
+        '<li><i style="background:' + G_CORES[i % G_CORES.length] + '"></i><span>' + esc(k) + "</span><b>" + fmt(v) + "</b><em>" +
         String(Math.round((v / tot) * 1000) / 10).replace(".", ",") + "%</em></li>",
     ).join("") +
     "</ul></div>"

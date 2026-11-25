@@ -5896,7 +5896,7 @@ textarea:focus {
   color: var(--red);
   font-variant-numeric: tabular-nums;
 }
-.av {
+.dav {
   width: 38px;
   height: 38px;
   border-radius: 50%;
@@ -5908,11 +5908,11 @@ textarea:focus {
   font-size: 0.8rem;
   flex: none;
 }
-.crit-i:nth-child(3n + 2) .av {
+.crit-i:nth-child(3n + 2) .dav {
   background: #e6efff;
   color: #2a5fae;
 }
-.crit-i:nth-child(3n + 3) .av {
+.crit-i:nth-child(3n + 3) .dav {
   background: #fff1d6;
   color: #9a6400;
 }
@@ -6035,4 +6035,192 @@ textarea:focus {
 }
 .dsh-tools .fsel {
   flex: 0 0 210px;
+}
+
+/* ---------- painéis de topo das abas ---------- */
+.dsh:empty {
+  display: none;
+}
+#v-fin > .dsh,
+#v-acc > .dsh {
+  margin-bottom: 16px;
+}
+.kcs.k5 {
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+.kc.amber {
+  background: linear-gradient(135deg, #fff3dc, #fffaf0);
+  border-color: #f4e2b8;
+}
+.kc.amber .kc-ic svg {
+  stroke: #b77b10;
+}
+.kc.dark .kc-var {
+  color: #bfe9da;
+}
+.kc .chip {
+  margin-top: 4px;
+}
+.kc b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.kc > div {
+  min-width: 0;
+}
+/* barras horizontais do ranking */
+.hb {
+  display: grid;
+  gap: 12px;
+  padding-top: 8px;
+}
+.hb-i {
+  display: grid;
+  grid-template-columns: 26px minmax(110px, 190px) 1fr auto;
+  gap: 10px;
+  align-items: center;
+  font-size: 0.86rem;
+}
+.hb-i b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 700;
+}
+.hb-n {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 0.74rem;
+  font-weight: 800;
+  background: #eef2f0;
+  color: var(--muted);
+}
+.hb-n.p1 {
+  background: #fde7a8;
+  color: #8a5d00;
+}
+.hb-n.p2 {
+  background: #e3e8e6;
+  color: #4b5856;
+}
+.hb-n.p3 {
+  background: #f6d1b8;
+  color: #8a3f12;
+}
+.hb-t {
+  height: 16px;
+  background: #f0f4f2;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.hb-t i {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: #0b6b55;
+}
+.hb-t i.Diamante {
+  background: #2a9bb0;
+}
+.hb-t i.Ouro {
+  background: #e3a72f;
+}
+.hb-t i.Prata {
+  background: #9aa5a2;
+}
+.hb-t i.Bronze {
+  background: #d27a45;
+}
+.hb-i em {
+  font-style: normal;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+/* caixa "Como funciona?" */
+.pv-box.como {
+  background: linear-gradient(135deg, #e3f5ee, #f2fbf7);
+  border-color: #d3eee3;
+}
+.como p {
+  margin: 4px 0 10px;
+  font-size: 0.9rem;
+}
+.como ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.como li {
+  position: relative;
+  padding-left: 30px;
+  font-size: 0.9rem;
+}
+.como li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: -1px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #0b6b55;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+}
+/* peso na lista de critérios */
+.wt {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.wt span {
+  width: 110px;
+  height: 8px;
+  border-radius: 8px;
+  background: #edf3f0;
+  overflow: hidden;
+}
+.wt i {
+  display: block;
+  height: 100%;
+  background: #109879;
+}
+/* o resumo antigo da avaliação vira só níveis + andamento */
+#stats4 {
+  display: none;
+}
+.kc {
+  padding: 16px 18px;
+  gap: 14px;
+}
+.kc-ic {
+  width: 46px;
+  height: 46px;
+}
+.kc-ic svg {
+  width: 40px;
+  height: 40px;
+}
+.kc > div > b {
+  font-size: clamp(1.15rem, 1.55vw, 1.6rem);
+  white-space: normal;
+  overflow: visible;
+  overflow-wrap: anywhere;
+}
+.kc small {
+  font-size: 0.84rem;
+}
+
+.kc-var b {
+  font-size: 0.8rem !important;
+  display: inline !important;
 }

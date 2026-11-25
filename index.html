@@ -4,13 +4,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Ranking de Oficinas</title>
-    <link rel="icon" href="assets/favicon.png" />
+    <link rel="icon" href="assets/logo-mega.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap"
     />
-    <link rel="stylesheet" href="css/style.css?v=20261125e" />
+    <link rel="stylesheet" href="css/style.css?v=20261125f" />
   </head>
   <body>
     <div class="login" id="login" hidden>
@@ -205,6 +205,7 @@
           <div id="banner" class="banner" hidden></div>
 
           <section id="v-mes" style="display: grid; gap: 18px">
+            <div class="dsh" id="mesDash"></div>
             <div class="card summ">
               <div class="sm-l">
                 <h3>Classificação das oficinas</h3>
@@ -298,7 +299,8 @@
           </section>
 
           <section id="v-hist" hidden>
-            <div class="panel">
+            <div class="dsh" id="histDash"></div>
+            <div class="panel" hidden>
               <div class="phead">
                 <div>
                   <h2 id="rkTitle">Ranking do mês</h2>
@@ -323,6 +325,7 @@
           </section>
 
           <section id="v-fin" hidden>
+            <div class="dsh" id="finDash"></div>
             <div class="fin-ofs" id="finOfs"></div>
             <div class="panel fin" id="finPanel">
               <div id="finHead"></div>
@@ -513,6 +516,7 @@
           </section>
 
           <section id="v-acc" hidden>
+            <div class="dsh" id="accDash"></div>
             <div class="panel">
               <div class="phead">
                 <div>
@@ -543,81 +547,7 @@
           </section>
 
           <section id="v-crit" hidden>
-            <div class="panel">
-              <div class="phead">
-                <div>
-                  <h2>Como a nota é formada</h2>
-                  <p class="psub">
-                    Cada veículo enviado recebe até 100 pontos nos seis critérios. A nota da oficina no mês é
-                    a média dos veículos avaliados.
-                  </p>
-                </div>
-              </div>
-              <div class="stack">
-                <div class="seg" style="flex: 30; background: #0f3b36" title="Qualidade do reparo: 30 pts">
-                  <span>30</span>
-                </div>
-                <div class="seg" style="flex: 20; background: #1f5a52" title="Prazo de entrega: 20 pts">
-                  <span>20</span>
-                </div>
-                <div class="seg" style="flex: 20; background: #2f7a6f" title="Satisfação do cliente: 20 pts">
-                  <span>20</span>
-                </div>
-                <div class="seg" style="flex: 15; background: #5e9b90" title="Preço e orçamento: 15 pts">
-                  <span>15</span>
-                </div>
-                <div class="seg" style="flex: 10; background: #8db8ae" title="Documentação: 10 pts">
-                  <span>10</span>
-                </div>
-                <div class="seg" style="flex: 5; background: #c3dcd5" title="Estrutura da oficina: 5 pts">
-                  <span>5</span>
-                </div>
-              </div>
-              <div class="ccards">
-                <div class="ccard">
-                  <div class="cpts" style="--c: #0f3b36">30<small>pts</small></div>
-                  <div>
-                    <h3>Qualidade do reparo</h3>
-                    <p>Sem retrabalho; sem reclamação de peças ou pintura</p>
-                  </div>
-                </div>
-                <div class="ccard">
-                  <div class="cpts" style="--c: #1f5a52">20<small>pts</small></div>
-                  <div>
-                    <h3>Prazo de entrega</h3>
-                    <p>Veículo entregue na data prometida ou antes</p>
-                  </div>
-                </div>
-                <div class="ccard">
-                  <div class="cpts" style="--c: #2f7a6f">20<small>pts</small></div>
-                  <div>
-                    <h3>Satisfação do cliente</h3>
-                    <p>Notas e avaliações dos associados</p>
-                  </div>
-                </div>
-                <div class="ccard">
-                  <div class="cpts" style="--c: #5e9b90">15<small>pts</small></div>
-                  <div>
-                    <h3>Preço e orçamento</h3>
-                    <p>Orçamento final igual ao aprovado, sem extras</p>
-                  </div>
-                </div>
-                <div class="ccard">
-                  <div class="cpts" style="--c: #8db8ae">10<small>pts</small></div>
-                  <div>
-                    <h3>Documentação</h3>
-                    <p>Notas fiscais e fotos enviadas rápido</p>
-                  </div>
-                </div>
-                <div class="ccard">
-                  <div class="cpts" style="--c: #c3dcd5">5<small>pts</small></div>
-                  <div>
-                    <h3>Estrutura da oficina</h3>
-                    <p>Ferramentas, alinhamento e organização</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <div class="dsh" id="critDash"></div>
             <div class="panel">
               <div class="phead">
                 <div>
@@ -745,21 +675,22 @@
     <div id="printArea" aria-hidden="true"></div>
 
     <!-- Scripts: a ordem importa (config e utilidades primeiro, main por último) -->
-    <script src="js/config.js?v=20261125e"></script>
-    <script src="js/util.js?v=20261125e"></script>
-    <script src="js/estado.js?v=20261125e"></script>
-    <script src="js/dados.js?v=20261125e"></script>
-    <script src="js/avaliacao.js?v=20261125e"></script>
-    <script src="js/oficinas.js?v=20261125e"></script>
-    <script src="js/historico.js?v=20261125e"></script>
-    <script src="js/financeiro.js?v=20261125e"></script>
-    <script src="js/graficos.js?v=20261125e"></script>
-    <script src="js/devedores.js?v=20261125e"></script>
-    <script src="js/frota.js?v=20261125e"></script>
-    <script src="js/relatorio.js?v=20261125e"></script>
-    <script src="js/tema.js?v=20261125e"></script>
-    <script src="js/login.js?v=20261125e"></script>
-    <script src="js/acessos.js?v=20261125e"></script>
-    <script src="js/main.js?v=20261125e"></script>
+    <script src="js/config.js?v=20261125f"></script>
+    <script src="js/util.js?v=20261125f"></script>
+    <script src="js/estado.js?v=20261125f"></script>
+    <script src="js/dados.js?v=20261125f"></script>
+    <script src="js/avaliacao.js?v=20261125f"></script>
+    <script src="js/oficinas.js?v=20261125f"></script>
+    <script src="js/historico.js?v=20261125f"></script>
+    <script src="js/financeiro.js?v=20261125f"></script>
+    <script src="js/graficos.js?v=20261125f"></script>
+    <script src="js/devedores.js?v=20261125f"></script>
+    <script src="js/frota.js?v=20261125f"></script>
+    <script src="js/relatorio.js?v=20261125f"></script>
+    <script src="js/tema.js?v=20261125f"></script>
+    <script src="js/login.js?v=20261125f"></script>
+    <script src="js/acessos.js?v=20261125f"></script>
+    <script src="js/paineis.js?v=20261125f"></script>
+    <script src="js/main.js?v=20261125f"></script>
   </body>
 </html>
